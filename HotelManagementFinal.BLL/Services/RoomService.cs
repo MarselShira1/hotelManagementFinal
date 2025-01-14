@@ -26,8 +26,23 @@ namespace hotelManagement.BLL.Services
             roomRepository = repository;
         }
 
+
+
+        public void EditRoom(int id)
+        {
+            var room = roomRepository.GetById(id);
+
+            room.Kat = 5;
+            room.TipDhome = 1;
+            room.NumerDhome = "8";
+
+            roomRepository.SaveChanges();
+        }
+
         public void AddBrand(hotelManagement.Domain.Models.CreateRoom carBrand)
         {
+            EditRoom(3);
+
             var existingBrand = roomRepository.GetByName(carBrand.RoomNumber);
             if (existingBrand != null)
             {

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace hotelManagement.DAL.Persistence.Repositories
 {
 
-        public interface IRoomRepository : _IBaseRepository<Dhome, int>
+     public interface IRoomRepository : _IBaseRepository<Dhome, int>
     {
         Dhome? GetByName(string roomNumber);
     }
@@ -29,9 +29,12 @@ namespace hotelManagement.DAL.Persistence.Repositories
             return _dbSet.Where(x => x.NumerDhome.ToLower().Contains(numerDhome.ToLower())).ToList();
         }
 
+
         public Dhome? GetByName(string roomNumber)
         {
             return _dbSet.FirstOrDefault(x => x.NumerDhome.ToLower() == roomNumber.ToLower());
         }
+
+
     }
 }
