@@ -1,0 +1,175 @@
+﻿@model HotelManagement.Models.RoomViewModel
+    
+<div class="text-center">
+    <h1 class="display-4">Rooms</h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">+</button>
+</div>
+
+<div class="modal fade" id="addRoomModal" tabindex="-1" aria-labelledby="addRoomLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="roomForm">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="NewRoom_RoomTypeId" class="form-label">Choose room type</label>
+                        <select id="NewRoom_RoomTypeId" class="form-select" required>
+                            <option value="">Select Room Type</option>
+                            @foreach (var roomType in Model.RoomTypes)
+                            {
+                                <option value="@roomType.Id">@roomType.Emer</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="NewRoom_room_floor" class="form-label">Room Floor:</label>
+                        <input id="NewRoom_room_floor" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="NewRoom_room_number" class="form-label">Room Number:</label>
+                        <input id="NewRoom_room_number" class="form-control" />
+                    </div>
+                    <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* <div class="modal fade" id="editRoomTypeModal" tabindex="-1" aria-labelledby="editRoomTypeLabel" aria-hidden="true"> *@
+@*     <div class="modal-dialog"> *@
+@*         <div class="modal-content"> *@
+@*             <div class="modal-header"> *@
+@*                 <h5 class="modal-title" id="editRoomTypeLabel">Edit Room Type</h5> *@
+@*                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+@*             </div> *@
+@*             <div class="modal-body"> *@
+@*                 <form method="post" asp-action="EditRoomType" asp-controller="RoomType"> *@
+@*                     @Html.AntiForgeryToken() *@
+@*                     <input type="hidden" asp-for="EditRoomType.Id" name="EditRoomType.Id" /> *@
+@*                     <div class="mb-3"> *@
+@*                         <label asp-for="EditRoomType.Emer" class="form-label">Name</label> *@
+@*                         <input type="text" asp-for="EditRoomType.Emer" class="form-control" name="EditRoomType.Emer" /> *@
+@*                     </div> *@
+@*                     <div class="mb-3"> *@
+@*                         <label asp-for="EditRoomType.Cmim_baze" class="form-label">Base Price</label> *@
+@*                         <input type="number" asp-for="EditRoomType.Cmim_baze" class="form-control" name="EditRoomType.Cmim_baze" /> *@
+@*                     </div> *@
+@*                     <div class="mb-3"> *@
+@*                         <label asp-for="EditRoomType.Siperfaqe" class="form-label">Area</label> *@
+@*                         <input type="number" asp-for="EditRoomType.Siperfaqe" class="form-control" name="EditRoomType.Siperfaqe" /> *@
+@*                     </div> *@
+@*                     <div class="mb-3"> *@
+@*                         <label asp-for="EditRoomType.Kapacitet" class="form-label">Capacity</label> *@
+@*                         <input type="number" asp-for="EditRoomType.Kapacitet" class="form-control" name="EditRoomType.Kapacitet" /> *@
+@*                     </div> *@
+@*                     <div class="mb-3"> *@
+@*                         <label asp-for="EditRoomType.Pershkrim" class="form-label">Description</label> *@
+@*                         <textarea asp-for="EditRoomType.Pershkrim" class="form-control"></textarea> *@
+@*                     </div> *@
+@*                     <button type="submit" class="btn btn-primary">Save Changes</button> *@
+@*                 </form> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Type</th>
+            <th>Floor</th>
+            <th>Room Number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in Model.Room)
+        {
+            <tr>
+                <td>@room.Id</td>
+                <td>@(room.RoomType?.Emer ?? "N/A")</td>
+                <td>@room.room_number</td>
+                <td>@room.room_floor</td>
+                <td>
+                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#editRoomModal"
+                            onclick="populateEditModal({
+                                    id: '@room.Id',
+                                    roomTypeId: '@(room.RoomType?.Id ?? 0)',
+                                    roomTypeName: '@(room.RoomType?.Emer ?? "")',
+                                    roomNumber: '@room.room_number',
+                                    roomFloor: '@room.room_floor'
+                                })">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+
+                    <form method="post" asp-action="DeleteRoom" asp-controller="Room"
+                          style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this room?');">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@room.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+        function populateEditModal(room) {
+        console.log("Room:", room);
+
+        document.getElementById('editRoomId').value = room.id;
+        document.getElementById('editRoomType').value = room.roomTypeId;
+        document.getElementById('editRoomTypeName').textContent = room.roomTypeName;
+        document.getElementById('editRoomNumber').value = room.roomNumber;
+        document.getElementById('editRoomFloor').value = room.roomFloor;
+    }
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#submitButton').click(function (event) {
+            event.preventDefault();
+debugger;
+            var roomTypeId = $('#NewRoom_RoomTypeId').val();
+            var roomFloor = $('#NewRoom_room_floor').val();
+            var roomNumber = $('#NewRoom_room_number').val();
+
+            $.ajax({
+                type: "POST",
+                    url: '@Url.Action("CreateRoomSql", "Room")',
+                data: {
+                    RoomTypeId: roomTypeId,
+                    RoomFloor: roomFloor,
+                    RoomNumber: roomNumber
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert('Room created successfully.');
+                        // Optional: reload the page or update the UI
+                    } else {
+                        alert('Failed to create room: ' + response.errors.join(', '));
+                    }
+                },
+                error: function () {
+                    alert('An error occurred.');
+                }
+            });
+        });
+    });
+</script>
+
