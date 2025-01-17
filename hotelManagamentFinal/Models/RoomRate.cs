@@ -15,3 +15,5 @@ public partial class RoomRate
 
     public virtual ICollection<RoomRateRange> RoomRateRanges { get; set; } = new List<RoomRateRange>();
 }
+
+

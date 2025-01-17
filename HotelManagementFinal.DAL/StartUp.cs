@@ -20,6 +20,7 @@ namespace hotelManagement.DAL
                 opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
             services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IRoomRateRepository, RoomRateRepository>();
         }
     }
 }

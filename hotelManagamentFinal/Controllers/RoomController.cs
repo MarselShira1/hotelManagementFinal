@@ -33,7 +33,7 @@ namespace HotelManagement.Controllers
         }
 
 
-
+       
         [HttpPost]
         public IActionResult CreateRoomSql(NewRoomDTO model)
         {

@@ -20,6 +20,7 @@ public interface _IBaseRepository<T, T1> where T : BaseEntity<T1>
     T GetById(T1 id);
     IEnumerable<T> GetAll();
     void Add(T entity);
+    void Delete(T entity);
     void SaveChanges();
 }
 
@@ -33,10 +34,7 @@ internal class _BaseRepository<T, T1> : _IBaseRepository<T, T1> where T : BaseEn
         _dbSet = dbContext.Set<T>();
     }
 
-    public void Add(T entity)
-    {
-        _dbSet.Add(entity);
-    }
+  
 
     public IEnumerable<T> GetAll()
     {
@@ -52,5 +50,14 @@ internal class _BaseRepository<T, T1> : _IBaseRepository<T, T1> where T : BaseEn
     {
         _dbContext.SaveChanges();
     }
+    public void Add(T entity)
+    {
+        _dbSet.Add(entity);
+    }
+    public void Delete(T entity)
+    {
+        _dbSet.Remove(entity);
+    }
+
 }
 
