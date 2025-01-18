@@ -38,7 +38,7 @@ namespace hotelManagement.BLL.Services
             var newRoomType = new TipDhome
             {
                 Emer = createRoomType.Emer,
-                Cmim = createRoomType.Cmim,
+                //Cmim = createRoomType.Cmim,
                 Siperfaqe = createRoomType.Siperfaqe,
                 Pershkrim = createRoomType.Pershkrim,
                 Kapacitet = createRoomType.Kapacitet
@@ -59,7 +59,7 @@ namespace hotelManagement.BLL.Services
             }
 
             roomType.Emer = createRoomType.Emer;
-            roomType.Cmim = createRoomType.Cmim;
+            //roomType.Cmim = createRoomType.Cmim;
             roomType.Siperfaqe = createRoomType.Siperfaqe;
             roomType.Pershkrim = createRoomType.Pershkrim;
             roomType.Kapacitet = createRoomType.Kapacitet;

@@ -33,7 +33,7 @@ namespace hotelManagementFinal.Controllers
             var model = new CreateRoomType
             {
                 Emer = roomType.Emer,
-                Cmim = roomType.Cmim,
+                //Cmim = roomType.Cmim,
                 Siperfaqe = (decimal)roomType.Siperfaqe,
                 Pershkrim = roomType.Pershkrim,
                 Kapacitet = roomType.Kapacitet
