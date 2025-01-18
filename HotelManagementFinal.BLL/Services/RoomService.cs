@@ -41,7 +41,7 @@ namespace hotelManagement.BLL.Services
 
         public void AddBrand(hotelManagement.Domain.Models.CreateRoom carBrand)
         {
-            EditRoom(3);
+            //EditRoom(3);
 
             var existingBrand = roomRepository.GetByName(carBrand.RoomNumber);
             if (existingBrand != null)

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace hotelManagement.DAL.Persistence.Entities;
+namespace hotelManagamentFinal.Models3;
 
-public partial class Dhome : BaseEntity<int>
+public partial class Dhome
 {
     public int Id { get; set; }
 
@@ -12,6 +12,12 @@ public partial class Dhome : BaseEntity<int>
     public int? Kat { get; set; }
 
     public string NumerDhome { get; set; } = null!;
+
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
 
     public virtual ICollection<Rezervim> Rezervims { get; set; } = new List<Rezervim>();
 
