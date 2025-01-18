@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace hotelManagamentFinal.Models3;
+namespace hotelManagement.DAL.Persistence.Entities;
 
-public partial class Privilegj
+public partial class Privilegj : BaseEntity<int>
 {
     public int Id { get; set; }
 

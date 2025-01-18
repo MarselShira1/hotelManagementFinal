@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace hotelManagamentFinal.Models3;
+namespace hotelManagement.DAL.Persistence.Entities;
 
-public partial class ExtraService
+public partial class ExtraService : BaseEntity<int>
 {
     public int Id { get; set; }
 
