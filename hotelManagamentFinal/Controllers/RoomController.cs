@@ -3,6 +3,7 @@ using HotelManagement.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using hotelManagement.BLL.Services;
+using hotelManagement.Domain.Models;
 namespace HotelManagement.Controllers
 {
     public class RoomController : Controller 
@@ -32,8 +33,9 @@ namespace HotelManagement.Controllers
             return View(model);
         }
 
-
-
+        //Marsel
+        //metoda per shtimin e nje dhome
+        //15/01/2024
         [HttpPost]
         public IActionResult CreateRoomSql(NewRoomDTO model)
         {
@@ -41,55 +43,27 @@ namespace HotelManagement.Controllers
             {
                 return View(model);
             }
-            roomsService.AddBrand(new hotelManagement.Domain.Models.CreateRoom
+            roomsService.AddBrand(new CreateRoom
             {
                 RoomFloor = model.RoomFloor,
                 RoomNumber = model.RoomNumber.ToString(),
                 RoomTypeId = model.RoomTypeId,
             });
             return RedirectToAction(nameof(Index));
-            if (ModelState.IsValid)
-            {
-                return Json(new { success = true });
-            }
-            return Json(new
-            {
-                success = false,
-                errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
-            });
+           
         }
 
-                [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateRoom([FromForm] RoomViewModel model)
+        public async Task<IActionResult> GetRoomList()
         {
-            if (!ModelState.IsValid)
+            try
             {
-                foreach (var key in ModelState.Keys)
-                {
-                    var errors = ModelState[key].Errors;
-                    foreach (var error in errors)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Validation error on {key}: {error.ErrorMessage}");
-                    }
-                }
-
-                model.RoomTypes = _context.RoomTypes.ToList();
-                model.Room = _context.Rooms.Include(r => r.RoomType).ToList();
-                return View("RoomView", model);
+                var rooms = await roomsService.GetRoomsAsync();
+                return Json(rooms);
             }
-
-            var room = new Room
+            catch (Exception ex)
             {
-                RoomTypeId = model.NewRoom.RoomTypeId,
-                room_floor = model.NewRoom.room_floor,
-                room_number = model.NewRoom.room_number
-            };
-
-            _context.Rooms.Add(room);
-            _context.SaveChanges();
-
-            return RedirectToAction("RoomView");
+                return null;
+            }
         }
 
     }

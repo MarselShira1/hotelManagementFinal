@@ -15,7 +15,7 @@ namespace hotelManagement.BLL.Services
     public interface IRoomService
     {
         void AddBrand(hotelManagement.Domain.Models.CreateRoom room);
-        //
+        Task<IEnumerable<Dhome>> GetRoomsAsync();
     }
     //
     internal class RoomService : IRoomService
@@ -26,6 +26,10 @@ namespace hotelManagement.BLL.Services
             roomRepository = repository;
         }
 
+        public async Task<IEnumerable<Dhome>> GetRoomsAsync()
+        {
+            return await roomRepository.GetAllRoomsAsync();
+        }
 
 
         public void EditRoom(int id)
