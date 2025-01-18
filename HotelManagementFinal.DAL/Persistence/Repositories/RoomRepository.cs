@@ -13,6 +13,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
      public interface IRoomRepository : _IBaseRepository<Dhome, int>
     {
         Dhome? GetByName(string roomNumber);
+        Task<IEnumerable<Dhome>> GetAllRoomsAsync();
     }
 
     internal class RoomRepository : _BaseRepository<Dhome, int>, IRoomRepository
@@ -35,6 +36,10 @@ namespace hotelManagement.DAL.Persistence.Repositories
             return _dbSet.FirstOrDefault(x => x.NumerDhome.ToLower() == roomNumber.ToLower());
         }
 
+        public async Task<IEnumerable<Dhome>> GetAllRoomsAsync()
+        {
+            return  base.GetAll();
+        }
 
     }
 }

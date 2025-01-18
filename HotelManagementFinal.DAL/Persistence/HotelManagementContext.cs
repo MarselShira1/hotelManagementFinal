@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-
-namespace hotelManagamentFinal.Models3;
+using hotelManagement.DAL.Persistence.Entities;
+using Action = hotelManagement.DAL.Persistence.Entities.Action;
+namespace hotelManagement.DAL.Persistence;
 
 public partial class HotelManagementContext : DbContext
 {

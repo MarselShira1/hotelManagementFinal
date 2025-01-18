@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace hotelManagamentFinal.Models3;
+namespace hotelManagement.DAL.Persistence.Entities;
 
-public partial class Dhome
+public partial class Dhome : BaseEntity<int>
 {
     public int Id { get; set; }
 
