@@ -35,7 +35,10 @@ namespace hotelManagement.BLL.Services
             var roomRateToAdd = new hotelManagement.DAL.Persistence.Entities.RoomRate
             {
                 Emer = roomRate.Name,
-                CmimBaze = decimal.Parse(roomRate.base_price)
+                CmimBaze = decimal.Parse(roomRate.base_price),
+                TipDhomeId = 1 ,//statike sa per test,
+                CreatedOn = DateTime.Now,
+                Invalidated = 1
             };
 
             RoomRateRepository.Add(roomRateToAdd);

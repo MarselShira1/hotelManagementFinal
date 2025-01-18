@@ -20,31 +20,41 @@ namespace HotelManagement.Controllers
             var rates = _roomRateService.GetAllRoomRates();
             var model = new RoomRateViewModel
             {
-                Rates = rates.Select(r => new RoomRate
+                Rates = rates.Select(r => new RoomRateDTO
                 {
                     Id = r.Id,
                     Emer = r.Emer,
                     CmimBaze = r.CmimBaze
                 }).ToList(),
-                NewRate = new RoomRate()
+                NewRate = new RoomRateDTO()
             };
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateRate(RoomRate model)
+        public IActionResult CreateRate(RoomRateDTO model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors)
                                               .Select(e => e.ErrorMessage)
                                               .ToList();
                 Console.WriteLine("Validation Errors: " + string.Join(", ", errors));
+
+                //shtim i room rate
+                _roomRateService.AddRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
+                {
+                    Name = model.Emer,
+                    base_price = model.CmimBaze.ToString()
+                });
+
+
+                //marrja listes me room rate
                 var rates = _roomRateService.GetAllRoomRates();
                 var viewModel = new RoomRateViewModel
                 {
-                    Rates = rates.Select(rate => new RoomRate
+                    Rates = rates.Select(rate => new RoomRateDTO
                     {
                         Id = rate.Id,
                         Emer = rate.Emer,
@@ -55,12 +65,7 @@ namespace HotelManagement.Controllers
                 return View("RateView", viewModel);
             }
 
-            _roomRateService.AddRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
-            {
-                Name = model.Emer,
-                base_price = model.CmimBaze.ToString()
-            });
-
+          
             return RedirectToAction("RateView");
         }
 
@@ -82,30 +87,32 @@ namespace HotelManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditRate(RoomRate model)
+        public IActionResult EditRate(RoomRateDTO model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
+
+                _roomRateService.UpdateRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
+                {
+                    Name = model.Emer,
+                    base_price = model.CmimBaze.ToString(),
+                    Id = model.Id // Ensure ID is passed for updating the correct record
+                });
+
+
                 var rates = _roomRateService.GetAllRoomRates();
                 var viewModel = new RoomRateViewModel
                 {
-                    Rates = rates.Select(rate => new RoomRate
+                    Rates = rates.Select(rate => new RoomRateDTO
                     {
                         Id = rate.Id,
                         Emer = rate.Emer,
                         CmimBaze = rate.CmimBaze
                     }).ToList(),
-                    NewRate = new RoomRate()
+                    NewRate = new RoomRateDTO()
                 };
                 return View("RateView", viewModel);
             }
-
-            _roomRateService.UpdateRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
-            {
-                Name = model.Emer,
-                base_price = model.CmimBaze.ToString(),
-                Id = model.Id // Ensure ID is passed for updating the correct record
-            });
 
             return RedirectToAction("RateView");
         }

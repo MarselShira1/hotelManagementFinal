@@ -11,9 +11,7 @@ builder.Services.RegisterBLLServices(builder.Configuration);
 builder.Services.AddDbContext<HotelManagementDbContext>(options =>
     options.UseInMemoryDatabase("HotelManagementDb")
     );
-
-builder.Services.AddDbContext<HotelManagementContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+ 
 
 
 var app = builder.Build();
