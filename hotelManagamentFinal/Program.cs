@@ -1,3 +1,4 @@
+using hotelManagement.BLL.Services;
 using HotelManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,4 +33,3 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-

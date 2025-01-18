@@ -1,100 +1,100 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using HotelManagement.Models;
-using System.Linq;
+﻿using HotelManagement.Models;
+using HotelManagement.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
+using hotelManagement.BLL.Services;
+using HotelManagementFinal.Domain.Models;
 
-namespace HotelManagement.Controllers
+namespace hotelManagementFinal.Controllers
 {
     public class RoomTypeController : Controller
     {
-        private readonly HotelManagementDbContext _context;
+        private readonly IRoomTypeService roomTypeService;
 
-        public RoomTypeController(HotelManagementDbContext context)
+        public RoomTypeController(IRoomTypeService service)
         {
-            _context = context;
+            roomTypeService = service;
         }
 
+        // Get all room types
         public IActionResult RoomTypeView()
         {
-            var roomTypes = _context.RoomTypes.ToList();
-            var model = new RoomTypeViewModel
+            var roomTypes = roomTypeService.GetAllRoomTypes().ToList();
+            return View(roomTypes);
+        }
+
+        // Get a specific room type by ID
+        public IActionResult EditRoomType(int id)
+        {
+            var roomType = roomTypeService.GetRoomTypeById(id);
+            if (roomType == null)
             {
-                RoomTypes = roomTypes,
-                NewRoomType = new RoomType(), 
-                EditRoomType = new RoomType() 
+                return NotFound();
+            }
+            var model = new CreateRoomType
+            {
+                Emer = roomType.Emer,
+                Cmim = roomType.Cmim,
+                Siperfaqe = (decimal)roomType.Siperfaqe,
+                Pershkrim = roomType.Pershkrim,
+                Kapacitet = roomType.Kapacitet
             };
             return View(model);
         }
 
+        // Edit an existing room type
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateRoomType([FromForm] RoomTypeViewModel model)  
+        public IActionResult EditRoomType(int id, CreateRoomType model)
         {
-
-            if (model?.NewRoomType != null)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.RoomTypes.Add(model.NewRoomType);
-                    _context.SaveChanges();
-                    return RedirectToAction("RoomTypeView");
-                }
-                catch (Exception ex)
-                {
-                    return RedirectToAction("RoomTypeView");
-                }
+                return View(model);
             }
-
-            model = model ?? new RoomTypeViewModel();
-            model.RoomTypes = _context.RoomTypes.ToList();
-            return View("RoomTypeView", model);
+            try
+            {
+                roomTypeService.EditRoomType(id, model);
+                return RedirectToAction(nameof(RoomTypeView));
+            }
+            catch
+            {
+                return View(model);
+            }
         }
 
-        
+        // Create a new room type
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditRoomType(RoomTypeViewModel model)
+        public IActionResult CreateRoomType(CreateRoomType model)
         {
-            //System.Diagnostics.Debug.WriteLine($"EditRoomType action hit with id: {model?.EditRoomType?.Id}");
-
-            if (model?.EditRoomType != null)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    var roomType = _context.RoomTypes.Find(model.EditRoomType.Id);
-                    if (roomType != null)
-                    {
-                        roomType.Emer = model.EditRoomType.Emer;
-                        roomType.Cmim_baze = model.EditRoomType.Cmim_baze;
-                        roomType.Siperfaqe = model.EditRoomType.Siperfaqe;
-                        roomType.Pershkrim = model.EditRoomType.Pershkrim;
-                        roomType.Kapacitet = model.EditRoomType.Kapacitet;
-
-                        _context.SaveChanges();
-                        return RedirectToAction("RoomTypeView");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Error saving: {ex.Message}");
-                    ModelState.AddModelError("", "Error saving changes");
-                }
+                return View(model);
             }
-            model = model ?? new RoomTypeViewModel();
-            model.RoomTypes = _context.RoomTypes.ToList();
-            return View("RoomTypeView", model);
+            try
+            {
+                roomTypeService.AddRoomType(model);
+                return RedirectToAction(nameof(RoomTypeView));
+            }
+            catch
+            {
+                return View(model);
+            }
         }
 
+        // Delete a room type
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteRoomType(int id)
         {
-            var roomType = _context.RoomTypes.Find(id);
-            if (roomType != null)
+            try
             {
-                _context.RoomTypes.Remove(roomType);
-                _context.SaveChanges();
+                roomTypeService.RemoveRoomType(id);
+                return RedirectToAction(nameof(RoomTypeView));
             }
-            return RedirectToAction("RoomTypeView");
+            catch
+            {
+                return BadRequest();
+            }
         }
     }
 }
