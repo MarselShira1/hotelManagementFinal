@@ -41,44 +41,6 @@
 </div>
 
 
-@* <div class="modal fade" id="editRoomTypeModal" tabindex="-1" aria-labelledby="editRoomTypeLabel" aria-hidden="true"> *@
-@*     <div class="modal-dialog"> *@
-@*         <div class="modal-content"> *@
-@*             <div class="modal-header"> *@
-@*                 <h5 class="modal-title" id="editRoomTypeLabel">Edit Room Type</h5> *@
-@*                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
-@*             </div> *@
-@*             <div class="modal-body"> *@
-@*                 <form method="post" asp-action="EditRoomType" asp-controller="RoomType"> *@
-@*                     @Html.AntiForgeryToken() *@
-@*                     <input type="hidden" asp-for="EditRoomType.Id" name="EditRoomType.Id" /> *@
-@*                     <div class="mb-3"> *@
-@*                         <label asp-for="EditRoomType.Emer" class="form-label">Name</label> *@
-@*                         <input type="text" asp-for="EditRoomType.Emer" class="form-control" name="EditRoomType.Emer" /> *@
-@*                     </div> *@
-@*                     <div class="mb-3"> *@
-@*                         <label asp-for="EditRoomType.Cmim_baze" class="form-label">Base Price</label> *@
-@*                         <input type="number" asp-for="EditRoomType.Cmim_baze" class="form-control" name="EditRoomType.Cmim_baze" /> *@
-@*                     </div> *@
-@*                     <div class="mb-3"> *@
-@*                         <label asp-for="EditRoomType.Siperfaqe" class="form-label">Area</label> *@
-@*                         <input type="number" asp-for="EditRoomType.Siperfaqe" class="form-control" name="EditRoomType.Siperfaqe" /> *@
-@*                     </div> *@
-@*                     <div class="mb-3"> *@
-@*                         <label asp-for="EditRoomType.Kapacitet" class="form-label">Capacity</label> *@
-@*                         <input type="number" asp-for="EditRoomType.Kapacitet" class="form-control" name="EditRoomType.Kapacitet" /> *@
-@*                     </div> *@
-@*                     <div class="mb-3"> *@
-@*                         <label asp-for="EditRoomType.Pershkrim" class="form-label">Description</label> *@
-@*                         <textarea asp-for="EditRoomType.Pershkrim" class="form-control"></textarea> *@
-@*                     </div> *@
-@*                     <button type="submit" class="btn btn-primary">Save Changes</button> *@
-@*                 </form> *@
-@*             </div> *@
-@*         </div> *@
-@*     </div> *@
-@* </div> *@
-
 <br />
 
 <table class="table">
@@ -141,7 +103,59 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+
+
+            function loadRoomData() {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetRoomList", "Room")', // Controller action URL
+                    success: function (rooms) {
+                        var tbody = $("table tbody");
+                        tbody.empty(); // Clear the table body before appending new rows
+
+                        rooms.forEach(function (room) {
+                            debugger
+                            var row = `
+                                <tr>
+                                    <td>${room.id}</td>
+                                            <td>${room.tipDhome ? room.tipDhome: "N/A"}</td>
+                                        <td>${room.kat}</td>
+                                        <td>${room.numerDhome}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#editRoomModal"
+                                                onclick="populateEditModal({
+                                                    id: '${room.id}',
+                                                    roomTypeId: '${room.roomType ? room.roomType.id : 0}',
+                                                        roomTypeName: '${room.tipDhome ? room.tipDhome : ""}',
+                                                    roomNumber: '${room.numerDhome}',
+                                                    roomFloor: '${room.kat}'
+                                                })">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+
+                                        <form method="post" asp-action="DeleteRoom" asp-controller="Room"
+                                              style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this room?');">
+                                            <input type="hidden" name="id" value="${room.id}" />
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>`;
+                            tbody.append(row);
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to load room data.');
+                    }
+                });
+            }
+
     $(document).ready(function () {
+             loadRoomData();
+
+
         $('#submitButton').click(function (event) {
             event.preventDefault();
 debugger;
