@@ -40,10 +40,12 @@ internal class _BaseRepository<T, T1> : _IBaseRepository<T, T1> where T : BaseEn
 
     public IEnumerable<T> GetAll()
     {
-        return [.. _dbSet.AsNoTracking()];
+        return _dbSet.AsNoTracking();  
     }
 
-    public T GetById(T1 id)
+
+
+public T GetById(T1 id)
     {
         return _dbSet.Find(id);
     }

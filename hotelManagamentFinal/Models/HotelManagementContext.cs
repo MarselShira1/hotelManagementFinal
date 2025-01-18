@@ -322,9 +322,6 @@ public partial class HotelManagementContext : DbContext
             entity.ToTable("Tip_dhome");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Cmim)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("cmim");
             entity.Property(e => e.Emer)
                 .HasMaxLength(50)
                 .HasColumnName("emer");

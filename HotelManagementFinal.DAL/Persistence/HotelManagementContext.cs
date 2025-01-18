@@ -49,7 +49,7 @@ public partial class HotelManagementContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS01;Database=HotelManagement;User ID=klajdi1;Password=klajdi123;Trusted_Connection=False;TrustServerCertificate=Yes");
+        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS01;Database=HotelManagement;User ID=sa;Password=Klajdi1234;Trusted_Connection=False;TrustServerCertificate=Yes");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -324,9 +324,6 @@ public partial class HotelManagementContext : DbContext
             entity.ToTable("Tip_dhome");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Cmim)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("cmim");
             entity.Property(e => e.Emer)
                 .HasMaxLength(50)
                 .HasColumnName("emer");
