@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace hotelManagement.DAL.Persistence.Entities;
 
+namespace hotelManagamentFinal.Models3;
 
-public partial class Fature : BaseEntity<int>
+public partial class Fature
 {
     public int Id { get; set; }
 
@@ -18,6 +18,12 @@ public partial class Fature : BaseEntity<int>
     public string? Status { get; set; }
 
     public DateOnly DateFature { get; set; }
+
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
 
     public virtual ICollection<Pagese> Pageses { get; set; } = new List<Pagese>();
 

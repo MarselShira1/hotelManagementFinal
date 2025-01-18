@@ -1,16 +1,21 @@
-﻿using hotelManagement.DAL.Persistence.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-namespace hotelManagement.DAL.Persistence.Entities;
 
+namespace hotelManagamentFinal.Models3;
 
-public partial class Privilegj : BaseEntity<int>
+public partial class Privilegj
 {
     public int Id { get; set; }
 
     public int Action { get; set; }
 
     public int Rol { get; set; }
+
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
 
     public virtual Action ActionNavigation { get; set; } = null!;
 

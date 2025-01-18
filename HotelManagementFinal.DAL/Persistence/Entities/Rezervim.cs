@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace hotelManagement.DAL.Persistence.Entities;
 
+namespace hotelManagamentFinal.Models3;
 
-public partial class Rezervim : BaseEntity<int>
+public partial class Rezervim
 {
     public int Id { get; set; }
 
@@ -20,6 +20,12 @@ public partial class Rezervim : BaseEntity<int>
     public DateOnly CheckOut { get; set; }
 
     public decimal Cmim { get; set; }
+
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
 
     public virtual Akomodim? AkomodimNavigation { get; set; }
 
