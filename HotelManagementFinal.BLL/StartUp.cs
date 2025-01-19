@@ -1,5 +1,6 @@
 ﻿using hotelManagement.BLL.Services;
 using hotelManagement.DAL;
+using HotelManagementFinal.BLL.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -15,7 +16,7 @@ public static class Startup
         services.RegisterDALServices(config);   
         services.AddScoped<IRoomService, RoomService>();
         services.AddScoped<IRoomTypeService, RoomTypeService>();
-
+        services.AddTransient<IMailSenderService, MailSenderService>();
         services.AddScoped<IRoomRateService, RoomRateService>();
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using hotelManagement.BLL.Services;
 using hotelManagement.Domain.Models;
+using HotelManagementFinal.BLL.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 namespace HotelManagement.Controllers
 {
     public class RoomController : Controller 
@@ -11,6 +13,7 @@ namespace HotelManagement.Controllers
 //
         private readonly HotelManagementDbContext _context;
         private readonly IRoomService roomsService;
+        private readonly IEmailSender emailSender;
         public RoomController(HotelManagementDbContext context, IRoomService service)
         {
             _context = context;
@@ -39,6 +42,7 @@ namespace HotelManagement.Controllers
         [HttpPost]
         public IActionResult CreateRoomSql(NewRoomDTO model)
         {
+            SendEmail();
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -52,6 +56,13 @@ namespace HotelManagement.Controllers
             return RedirectToAction(nameof(Index));
            
         }
+
+        public async Task<IActionResult> SendEmail()
+        {
+            await emailSender.SendEmailAsync("selishria2017@gmail.com", "Test Subject", "This is a test email.");
+            return Ok("Email sent successfully!");
+        }
+
 
         public async Task<IActionResult> GetRoomList()
         {
