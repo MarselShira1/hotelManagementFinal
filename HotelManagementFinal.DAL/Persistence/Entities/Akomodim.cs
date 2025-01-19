@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 
 namespace hotelManagement.DAL.Persistence.Entities;
 
@@ -16,6 +16,12 @@ public partial class Akomodim : BaseEntity<int>
     public decimal Cmim { get; set; }
 
     public bool KrevatExtra { get; set; }
+
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
 
     public virtual ICollection<Rezervim> Rezervims { get; set; } = new List<Rezervim>();
 }

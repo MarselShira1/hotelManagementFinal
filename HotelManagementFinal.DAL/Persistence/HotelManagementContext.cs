@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using hotelManagement.DAL.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
+using hotelManagement.DAL.Persistence.Entities;
 using Action = hotelManagement.DAL.Persistence.Entities.Action;
-
 namespace hotelManagement.DAL.Persistence;
 
 public partial class HotelManagementContext : DbContext
@@ -17,7 +16,7 @@ public partial class HotelManagementContext : DbContext
     {
     }
 
-    public virtual DbSet<Entities.Action> Actions { get; set; }
+    public virtual DbSet<Action> Actions { get; set; }
 
     public virtual DbSet<Akomodim> Akomodims { get; set; }
 
@@ -49,13 +48,13 @@ public partial class HotelManagementContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=MARSEL\\MSSQLSERVER1;Database=HotelManagement;User ID=hotelManagement1;Password=hotelManagement1;Trusted_Connection=False;TrustServerCertificate=Yes");
+        => optionsBuilder.UseSqlServer("Server=XHENI;Database=HotelManagement;User ID=sa;Password=xhenixheni2003;Trusted_Connection=False;TrustServerCertificate=Yes");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Action>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Action__3213E83FDBDBB588");
+            entity.HasKey(e => e.Id).HasName("PK__Action__3213E83F3AC4001F");
 
             entity.ToTable("Action");
 
@@ -63,6 +62,8 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.Action1)
                 .HasMaxLength(50)
                 .HasColumnName("action");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Pershkrim)
                 .HasMaxLength(255)
                 .HasColumnName("pershkrim");
@@ -70,7 +71,7 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<Akomodim>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Akomodim__3213E83F0F7E9F72");
+            entity.HasKey(e => e.Id).HasName("PK__Akomodim__3213E83FCC7936E6");
 
             entity.ToTable("Akomodim");
 
@@ -79,21 +80,25 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.Cmim)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("cmim");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Emer)
                 .HasMaxLength(50)
                 .HasColumnName("emer");
             entity.Property(e => e.Femije).HasColumnName("femije");
             entity.Property(e => e.KrevatExtra).HasColumnName("krevat_extra");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Dhome>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Dhome__3213E83FADA7053C");
+            entity.HasKey(e => e.Id).HasName("PK__Dhome__3213E83F1285888A");
 
             entity.ToTable("Dhome");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Kat).HasColumnName("kat");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.NumerDhome)
                 .HasMaxLength(10)
                 .HasColumnName("numer_dhome");
@@ -107,14 +112,16 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<ExtraService>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Extra_Se__3213E83F74321873");
+            entity.HasKey(e => e.Id).HasName("PK__Extra_Se__3213E83FD56C0A74");
 
             entity.ToTable("Extra_Service");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Emer)
                 .HasMaxLength(50)
                 .HasColumnName("emer");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Pershkrim)
                 .HasMaxLength(255)
                 .HasColumnName("pershkrim");
@@ -122,12 +129,14 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<Fature>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Fature__3213E83F24F7FE2A");
+            entity.HasKey(e => e.Id).HasName("PK__Fature__3213E83FE20FB342");
 
             entity.ToTable("Fature");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.DateFature).HasColumnName("date_fature");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Rezervim).HasColumnName("rezervim");
             entity.Property(e => e.RoomCharge)
                 .HasColumnType("decimal(10, 2)")
@@ -150,16 +159,18 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<Pagese>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Pagese__3213E83FDF1DDDFC");
+            entity.HasKey(e => e.Id).HasName("PK__Pagese__3213E83F98F9EDBA");
 
             entity.ToTable("Pagese");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.DatePagese).HasColumnName("date_pagese");
             entity.Property(e => e.Fature).HasColumnName("fature");
             entity.Property(e => e.Menyre)
                 .HasMaxLength(50)
                 .HasColumnName("menyre");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Total)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("total");
@@ -172,12 +183,14 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<Privilegj>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Privileg__3213E83FA168C80C");
+            entity.HasKey(e => e.Id).HasName("PK__Privileg__3213E83FDDFA1DFB");
 
             entity.ToTable("Privilegj");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Action).HasColumnName("action");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Rol).HasColumnName("rol");
 
             entity.HasOne(d => d.ActionNavigation).WithMany(p => p.Privilegjs)
@@ -193,12 +206,14 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Review__3213E83F340D5072");
+            entity.HasKey(e => e.Id).HasName("PK__Review__3213E83FD6859F07");
 
             entity.ToTable("Review");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Date).HasColumnName("date");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Pershkrim)
                 .HasMaxLength(255)
                 .HasColumnName("pershkrim");
@@ -213,7 +228,7 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<Rezervim>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Rezervim__3213E83F284C1B56");
+            entity.HasKey(e => e.Id).HasName("PK__Rezervim__3213E83F27743923");
 
             entity.ToTable("Rezervim");
 
@@ -224,7 +239,9 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.Cmim)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("cmim");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Dhome).HasColumnName("dhome");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.RoomRate).HasColumnName("room_rate");
             entity.Property(e => e.User).HasColumnName("user");
 
@@ -249,11 +266,13 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<RezervimService>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Rezervim__3213E83FD24DA3E8");
+            entity.HasKey(e => e.Id).HasName("PK__Rezervim__3213E83F06C4BE99");
 
             entity.ToTable("Rezervim_Service");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Rezervim).HasColumnName("rezervim");
             entity.Property(e => e.Sasi).HasColumnName("sasi");
             entity.Property(e => e.Sherbim).HasColumnName("sherbim");
@@ -266,19 +285,21 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3213E83FCD91C39A");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3213E83FC7E12958");
 
             entity.ToTable("Role");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.EmerRoli)
                 .HasMaxLength(50)
                 .HasColumnName("emer_roli");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<RoomRate>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Room_Rat__3213E83FA8C6F001");
+            entity.HasKey(e => e.Id).HasName("PK__Room_Rat__3213E83F7D77E30B");
 
             entity.ToTable("Room_Rate");
 
@@ -286,18 +307,27 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.CmimBaze)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("cmim_baze");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Emer)
                 .HasMaxLength(50)
                 .HasColumnName("emer");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.TipDhomeId).HasColumnName("Tip_dhome_Id");
+
+            entity.HasOne(d => d.TipDhome).WithMany(p => p.RoomRates)
+                .HasForeignKey(d => d.TipDhomeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Room_Rate_Tip_dhome");
         });
 
         modelBuilder.Entity<RoomRateRange>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Room_Rat__3213E83FF0D65227");
+            entity.HasKey(e => e.Id).HasName("PK__Room_Rat__3213E83F9269A2A3");
 
             entity.ToTable("Room_Rate_Ranges");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .HasColumnName("description");
@@ -305,6 +335,7 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.HolidayPricing)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("holiday_pricing");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.RoomRateId).HasColumnName("room_rate_id");
             entity.Property(e => e.StartDate).HasColumnName("start_date");
             entity.Property(e => e.WeekendPricing)
@@ -319,18 +350,17 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<TipDhome>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Tip_dhom__3213E83F8FAA4439");
+            entity.HasKey(e => e.Id).HasName("PK__Tip_dhom__3213E83FBF176496");
 
             entity.ToTable("Tip_dhome");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Cmim)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("cmim");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Emer)
                 .HasMaxLength(50)
                 .HasColumnName("emer");
             entity.Property(e => e.Kapacitet).HasColumnName("kapacitet");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Pershkrim)
                 .HasMaxLength(255)
                 .HasColumnName("pershkrim");
@@ -341,13 +371,14 @@ public partial class HotelManagementContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3213E83FD058E8B0");
+            entity.HasKey(e => e.Id).HasName("PK__User__3213E83F27E98752");
 
             entity.ToTable("User");
 
-            entity.HasIndex(e => e.Email, "UQ__User__AB6E61640BA26EED").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__User__AB6E616432F7D37A").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasColumnName("email");
@@ -357,6 +388,7 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.Mbiemer)
                 .HasMaxLength(50)
                 .HasColumnName("mbiemer");
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Password)
                 .HasMaxLength(100)
                 .HasColumnName("password");

@@ -1,0 +1,152 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model HotelManagement.Models.RoomRateViewModel
+
+
+<div class="text-center">
+    <h1 class="display-4">Room Rates</h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRateModal">
+        + Add Rate
+    </button>
+</div>
+
+
+<div class="modal fade" id="addRateModal" tabindex="-1" aria-labelledby="addRateLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Room Rate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Forma për shtim -->
+                
+
+                <form method="post" action="/RoomRate/CreateRate">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label" for="Emer">Name</label>
+                        <input class="form-control" type="text" id="Emer" name="Emer" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Emer" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="CmimBaze">Base Price</label>
+                        <input class="form-control" type="text" id="CmimBaze" name="CmimBaze" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="CmimBaze" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+
+
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@foreach (var rate in Model.Rates)
+{
+    <div class="modal fade" id="editRateModal-@rate.Id" tabindex="-1" aria-labelledby="editRateLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Room Rate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/RoomRate/EditRate">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Id" value="@rate.Id" />
+                        <div class="mb-3">
+                            <label class="form-label" for="Emer">Name</label>
+                            <input class="form-control" type="text" id="Emer" name="Emer" value="@rate.Emer" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="CmimBaze">Base Price</label>
+                            <input class="form-control" type="text" id="CmimBaze" name="CmimBaze" value="@rate.CmimBaze" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Base Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rate in Model.Rates)
+        {
+            <tr>
+                <td>@rate.Id</td>
+                <td>@rate.Emer</td>
+                <td>@rate.CmimBaze</td>
+                <td>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRateModal-@rate.Id">  Edit</button>
+                    <form method="post" asp-action="DeleteRate" asp-controller="RoomRate" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@rate.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<!--
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+        $(document).ready(function () {
+            $('#submitButton').click(function (event) {
+                event.preventDefault();
+    debugger;
+                var Emer = $('#Name').val();
+                var CmimBaze = $('#basePrice').val();
+                $.ajax({
+                    type: "POST",
+                        url: '@Url.Action("CreateRate", "RoomRate")',
+                    data: {
+                        Emer: Emer,
+                        CmimBaze: CmimBaze,
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Room created successfully.');
+                            // Optional: reload the page or update the UI
+                        } else {
+                            alert('Failed to create room: ' + response.errors.join(', '));
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred.');
+                    }
+                });
+            });
+        });
+		</script>-->

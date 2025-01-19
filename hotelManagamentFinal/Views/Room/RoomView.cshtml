@@ -162,7 +162,7 @@ debugger;
             var roomTypeId = $('#NewRoom_RoomTypeId').val();
             var roomFloor = $('#NewRoom_room_floor').val();
             var roomNumber = $('#NewRoom_room_number').val();
-
+            //un e kam bo shtimin me ajax po mund e me epershtat si kjo do i them chatit se sdi vete lot
             $.ajax({
                 type: "POST",
                     url: '@Url.Action("CreateRoomSql", "Room")',

@@ -14,6 +14,9 @@ public static class Startup
     {
         services.RegisterDALServices(config);   
         services.AddScoped<IRoomService, RoomService>();
+        services.AddScoped<IRoomTypeService, RoomTypeService>();
+
+        services.AddScoped<IRoomRateService, RoomRateService>();
     }
 }
 

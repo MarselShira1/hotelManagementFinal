@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace hotelManagement.DAL.Persistence.Entities;
 
+namespace hotelManagement.DAL.Persistence.Entities;
 
 public partial class User : BaseEntity<int>
 {
@@ -16,6 +16,12 @@ public partial class User : BaseEntity<int>
     public string Password { get; set; } = null!;
 
     public int Role { get; set; }
+
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 

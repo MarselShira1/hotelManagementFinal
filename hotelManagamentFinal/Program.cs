@@ -1,3 +1,4 @@
+using hotelManagement.BLL.Services;
 using HotelManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,9 @@ builder.Services.RegisterBLLServices(builder.Configuration);
 builder.Services.AddDbContext<HotelManagementDbContext>(options =>
     options.UseInMemoryDatabase("HotelManagementDb")
     );
+ 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,4 +36,3 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-

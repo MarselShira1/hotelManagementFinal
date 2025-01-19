@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace hotelManagement.DAL.Persistence.Entities;
 
+namespace hotelManagement.DAL.Persistence.Entities;
 
 public partial class Pagese : BaseEntity<int>
 {
@@ -14,6 +14,12 @@ public partial class Pagese : BaseEntity<int>
     public string Menyre { get; set; } = null!;
 
     public DateOnly DatePagese { get; set; }
+
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
 
     public virtual Fature FatureNavigation { get; set; } = null!;
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace hotelManagement.DAL.Persistence.Entities;
 
+namespace hotelManagement.DAL.Persistence.Entities;
 
 public partial class RoomRateRange : BaseEntity<int>
 {
@@ -18,6 +18,12 @@ public partial class RoomRateRange : BaseEntity<int>
     public decimal? HolidayPricing { get; set; }
 
     public string? Description { get; set; }
+
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
 
     public virtual RoomRate RoomRate { get; set; } = null!;
 }

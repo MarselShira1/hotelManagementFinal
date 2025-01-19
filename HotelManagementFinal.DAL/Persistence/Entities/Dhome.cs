@@ -13,6 +13,12 @@ public partial class Dhome : BaseEntity<int>
 
     public string NumerDhome { get; set; } = null!;
 
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
+
     public virtual ICollection<Rezervim> Rezervims { get; set; } = new List<Rezervim>();
 
     public virtual TipDhome TipDhomeNavigation { get; set; } = null!;

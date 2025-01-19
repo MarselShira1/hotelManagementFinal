@@ -1,8 +1,7 @@
-﻿using hotelManagement.DAL.Persistence.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-namespace hotelManagement.DAL.Persistence.Entities;
 
+namespace hotelManagement.DAL.Persistence.Entities;
 
 public partial class Privilegj : BaseEntity<int>
 {
@@ -11,6 +10,12 @@ public partial class Privilegj : BaseEntity<int>
     public int Action { get; set; }
 
     public int Rol { get; set; }
+
+    public DateTime? CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public byte? Invalidated { get; set; }
 
     public virtual Action ActionNavigation { get; set; } = null!;
 
