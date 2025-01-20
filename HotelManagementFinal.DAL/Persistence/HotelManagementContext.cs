@@ -3,17 +3,26 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using hotelManagement.DAL.Persistence.Entities;
 using Action = hotelManagement.DAL.Persistence.Entities.Action;
+using Microsoft.Extensions.Configuration;
 namespace hotelManagement.DAL.Persistence;
 
 public partial class HotelManagementContext : DbContext
 {
-    public HotelManagementContext()
-    {
-    }
+    private readonly IConfiguration _configuration;
 
-    public HotelManagementContext(DbContextOptions<HotelManagementContext> options)
+    public HotelManagementContext(DbContextOptions<HotelManagementContext> options, IConfiguration configuration)
         : base(options)
     {
+        _configuration = configuration;
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
+            optionsBuilder.UseSqlServer(connectionString);
+        }
     }
 
     public virtual DbSet<Action> Actions { get; set; }
@@ -40,15 +49,11 @@ public partial class HotelManagementContext : DbContext
 
     public virtual DbSet<RoomRate> RoomRates { get; set; }
 
-    public virtual DbSet<RoomRateRange> RoomRateRanges { get; set; }
+    public virtual DbSet<RoomRateRangeDataAccess> RoomRateRanges { get; set; }
 
     public virtual DbSet<TipDhome> TipDhomes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=XHENI;Database=HotelManagement;User ID=sa;Password=xhenixheni2003;Trusted_Connection=False;TrustServerCertificate=Yes");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -320,7 +325,7 @@ public partial class HotelManagementContext : DbContext
                 .HasConstraintName("FK_Room_Rate_Tip_dhome");
         });
 
-        modelBuilder.Entity<RoomRateRange>(entity =>
+        modelBuilder.Entity<RoomRateRangeDataAccess>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Room_Rat__3213E83F9269A2A3");
 

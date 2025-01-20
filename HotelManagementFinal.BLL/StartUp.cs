@@ -17,6 +17,7 @@ public static class Startup
         services.AddScoped<IRoomTypeService, RoomTypeService>();
 
         services.AddScoped<IRoomRateService, RoomRateService>();
+        services.AddScoped<IRoomRateRangesService, RoomRateRangesService>();
     }
 }
 

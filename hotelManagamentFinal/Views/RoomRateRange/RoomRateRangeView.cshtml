@@ -1,5 +1,5 @@
-﻿﻿@model HotelManagement.Models.RoomRateRangesViewModel
-
+﻿@using HotelManagement.Models
+@model RoomRateRangesViewModel
 <div class="text-center">
     <h1 class="display-4">Room Rate Ranges </h1>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomRateRangeModal">+</button>
@@ -17,15 +17,17 @@
                 <form method="post" asp-action="CreateRoomRateRange" asp-controller="RoomRateRange">
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
-                        <label asp-for="NewRoomRateRange.rate_id" class="form-label">Choose room rate</label>
-                        <select asp-for="NewRoomRateRange.rate_id" class="form-select" required>
+                        <label asp-for="NewRoomRateRange.RoomRateId" class="form-label">Choose room rate</label>
+                        <select asp-for="NewRoomRateRange.RoomRateId" class="form-select" required>
                             <option value="">Select Room Type</option>
                             @foreach (var roomRate in Model.roomRates)
                             {
-                                <option value="@roomRate.Id">@($"{roomRate.RoomType.Emer} - {roomRate.Name}")</option>
+                                <option value="@roomRate.Id">
+                                    @(roomRate.TipDhome != null ? $"{roomRate.TipDhome.Emer} - {roomRate.Emer}" : roomRate.Emer)
+                                </option>
                             }
                         </select>
-                        <span asp-validation-for="NewRoomRateRange.rate_id" class="text-danger"></span>
+                        <span asp-validation-for="NewRoomRateRange.RoomRateId" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label asp-for="NewRoomRateRange.StartDate" class="form-label">Choose start date: </label>
@@ -38,19 +40,19 @@
                         <span asp-validation-for="NewRoomRateRange.EndDate" class="text-danger" ></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="NewRoomRateRange.weekend_factor" class="form-label">Choose weekend factor</label>
-                        <input asp-for="NewRoomRateRange.weekend_factor" class="form-control" type="number" min="0" />
-                        <span asp-validation-for="NewRoomRateRange.weekend_factor" class="text-danger"></span>
+                        <label asp-for="NewRoomRateRange.WeekendPricing" class="form-label">Choose weekend factor</label>
+                        <input asp-for="NewRoomRateRange.WeekendPricing" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="NewRoomRateRange.WeekendPricing" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="NewRoomRateRange.holiday_factor" class="form-label">Choose holiday factor</label>
-                        <input asp-for="NewRoomRateRange.holiday_factor" class="form-control" type="number" min="0"/>
-                        <span asp-validation-for="NewRoomRateRange.holiday_factor" class="text-danger"></span>
+                        <label asp-for="NewRoomRateRange.HolidayPricing" class="form-label">Choose holiday factor</label>
+                        <input asp-for="NewRoomRateRange.HolidayPricing" class="form-control" type="number" min="0"/>
+                        <span asp-validation-for="NewRoomRateRange.HolidayPricing" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="NewRoomRateRange.note" class="form-label">Add note: </label>
-                        <textarea asp-for="NewRoomRateRange.note" class="form-control"></textarea>
-                        <span asp-validation-for="NewRoomRateRange.note" class="text-danger"></span>
+                        <label asp-for="NewRoomRateRange.Description" class="form-label">Add Description: </label>
+                        <textarea asp-for="NewRoomRateRange.Description" class="form-control"></textarea>
+                        <span asp-validation-for="NewRoomRateRange.Description" class="text-danger"></span>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -72,15 +74,17 @@
                     <input type="hidden" asp-for="EditRoomRateRange.Id" name="EditRoomRateRange.Id" />
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
-                        <label asp-for="EditRoomRateRange.rate_id" class="form-label">Edit room rate</label>
-                        <select asp-for="EditRoomRateRange.rate_id" class="form-select" required>
+                        <label asp-for="EditRoomRateRange.RoomRateId" class="form-label">Edit room rate</label>
+                        <select asp-for="EditRoomRateRange.RoomRateId" class="form-select" required>
                             <option value="">Select Room Type</option>
                             @foreach (var roomRate in Model.roomRates)
                             {
-                                <option value="@roomRate.Id">@($"{roomRate.RoomType.Emer} - {roomRate.Name}")</option>
+                                <option value="@roomRate.Id">
+                                    @(roomRate.TipDhome != null ? $"{roomRate.TipDhome.Emer} - {roomRate.Emer}" : roomRate.Emer)
+                                </option>
                             }
                         </select>
-                        <span asp-validation-for="EditRoomRateRange.rate_id" class="text-danger"></span>
+                        <span asp-validation-for="EditRoomRateRange.RoomRateId" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label asp-for="EditRoomRateRange.StartDate" class="form-label">Choose start date: </label>
@@ -93,19 +97,19 @@
                         <span asp-validation-for="EditRoomRateRange.EndDate" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="EditRoomRateRange.weekend_factor" class="form-label">Choose weekend factor</label>
-                        <input asp-for="EditRoomRateRange.weekend_factor" class="form-control" type="number" min="0" />
-                        <span asp-validation-for="EditRoomRateRange.weekend_factor" class="text-danger"></span>
+                        <label asp-for="EditRoomRateRange.WeekendPricing" class="form-label">Choose weekend factor</label>
+                        <input asp-for="EditRoomRateRange.WeekendPricing" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="EditRoomRateRange.WeekendPricing" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="EditRoomRateRange.holiday_factor" class="form-label">Choose holiday factor</label>
-                        <input asp-for="EditRoomRateRange.holiday_factor" class="form-control" type="number" min="0" />
-                        <span asp-validation-for="EditRoomRateRange.holiday_factor" class="text-danger"></span>
+                        <label asp-for="EditRoomRateRange.HolidayPricing" class="form-label">Choose holiday factor</label>
+                        <input asp-for="EditRoomRateRange.HolidayPricing" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="EditRoomRateRange.HolidayPricing" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="EditRoomRateRange.note" class="form-label">Add note: </label>
-                        <textarea asp-for="EditRoomRateRange.note" class="form-control"></textarea>
-                        <span asp-validation-for="EditRoomRateRange.note" class="text-danger"></span>
+                        <label asp-for="EditRoomRateRange.Description" class="form-label">Add Description: </label>
+                        <textarea asp-for="EditRoomRateRange.Description" class="form-control"></textarea>
+                        <span asp-validation-for="EditRoomRateRange.Description" class="text-danger"></span>
                     </div>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </form>
@@ -132,24 +136,24 @@
         {
             <tr>
                 <td>@roomRateRange.Id</td>
-                <td>@($"{roomRateRange.RoomRate?.RoomType?.Emer ?? "N/A"} - {roomRateRange.RoomRate?.Name ?? "N/A"}")</td>
+                <td>@($" {roomRateRange.RoomRate?.Name ?? "N/A"}")</td>
                 <td>@roomRateRange.StartDate</td>
                 <td>@roomRateRange.EndDate</td>
-                <td>@roomRateRange.weekend_factor</td>
-                <td>@roomRateRange.holiday_factor</td>
-                <td>@roomRateRange.note</td>
+                <td>@roomRateRange.WeekendPricing</td>
+                <td>@roomRateRange.HolidayPricing</td>
+                <td>@roomRateRange.Description</td>
                 <td>
                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                             data-bs-target="#editRoomRateRangeModal"
                             onclick="populateEditModal({
                                     id: '@roomRateRange.Id',
                                     RateId: '@(roomRateRange.RoomRate?.Id ?? 0)',
-                                    roomTypeName: '@(roomRateRange.RoomRate.RoomType?.Emer ?? "")',
+                                    roomTypeName: "",
                                     StartDate: '@roomRateRange.StartDate',
                                     EndDate: '@roomRateRange.EndDate',
-                                    Weekend: '@roomRateRange.weekend_factor',
-                                    Holiday: '@roomRateRange.holiday_factor',
-                                    Note: '@roomRateRange.note'
+                                    Weekend: '@roomRateRange.WeekendPricing',
+                                    Holiday: '@roomRateRange.HolidayPricing',
+                                    Description: '@roomRateRange.Description'
                                 })">
                         <i class="fas fa-edit"></i> Edit
                     </button>
@@ -175,24 +179,24 @@
         $('#EditRoomRateRangeModal input[name="EditRoomRateRange.Id"]').val('');
         $('#EditRoomRateRangeModal input[name="EditRoomRateRange.StartDate"]').val('');
         $('#EditRoomRateRangeModal input[name="EditRoomRateRange.EndDate"]').val('');
-        $('#EditRoomRateRangeModal input[name="EditRoomRateRange.weekend_factor"]').val('');
-        $('#EditRoomRateRangeModal input[name="EditRoomRateRange.holiday_factor"]').val('');
-        $('#EditRoomRateRangeModal textarea[name="EditRoomRateRange.note"]').val('');
+        $('#EditRoomRateRangeModal input[name="EditRoomRateRange.WeekendPricing"]').val('');
+        $('#EditRoomRateRangeModal input[name="EditRoomRateRange.HolidayPricing"]').val('');
+        $('#EditRoomRateRangeModal textarea[name="EditRoomRateRange.Description"]').val('');
 
         
         $('#EditRoomRateRangeModal input[name="EditRoomRateRange.Id"]').val(roomRateRange.id);
         $('#EditRoomRateRangeModal input[name="EditRoomRateRange.StartDate"]').val(roomRateRange.StartDate);
         $('#EditRoomRateRangeModal input[name="EditRoomRateRange.EndDate"]').val(roomRateRange.EndDate);
-        $('#EditRoomRateRangeModal input[name="EditRoomRateRange.weekend_factor"]').val(roomRateRange.Weekend);
-        $('#EditRoomRateRangeModal input[name="EditRoomRateRange.holiday_factor"]').val(roomRateRange.Holiday);
-        $('#EditRoomRateRangeModal textarea[name="EditRoomRateRange.note"]').val(roomRateRange.Note);
+        $('#EditRoomRateRangeModal input[name="EditRoomRateRange.WeekendPricing"]').val(roomRateRange.Weekend);
+        $('#EditRoomRateRangeModal input[name="EditRoomRateRange.HolidayPricing"]').val(roomRateRange.Holiday);
+        $('#EditRoomRateRangeModal textarea[name="EditRoomRateRange.Description"]').val(roomRateRange.Description);
 
 
-        $('#EditRoomRateRangeModal select[name="EditRoomRateRange.rate_id"]').val(roomRateRange.RateId);
+        $('#EditRoomRateRangeModal select[name="EditRoomRateRange.RoomRateId"]').val(roomRateRange.RateId);
 
  
-        if (!$('#EditRoomRateRangeModal select[name="EditRoomRateRange.rate_id"]').val()) {
-            $('#EditRoomRateRangeModal select[name="EditRoomRateRange.rate_id"]').val('');
+        if (!$('#EditRoomRateRangeModal select[name="EditRoomRateRange.RoomRateId"]').val()) {
+            $('#EditRoomRateRangeModal select[name="EditRoomRateRange.RoomRateId"]').val('');
         }
     }
 </script>

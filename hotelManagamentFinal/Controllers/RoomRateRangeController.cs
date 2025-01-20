@@ -2,21 +2,27 @@
 using HotelManagement.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using hotelManagement.BLL.Services;
+using HotelManagementFinal.Domain.Models;
 
 namespace HotelManagement.Controllers
 {
     public class RoomRateRangeController : Controller
     {
-        private readonly HotelManagementDbContext _context;
+        private readonly IRoomRateRangesService _service;
+        private readonly IRoomRateService _roomRateService;
 
-        public RoomRateRangeController(HotelManagementDbContext context)
+
+        public RoomRateRangeController(IRoomRateRangesService service, IRoomRateService roomRateService)
         {
-            _context = context;
+            _service = service;
+            _roomRateService = roomRateService;
         }
         public IActionResult RoomRateRangeView()
         {
-            var roomRateRanges = _context.RoomRateRanges.Include(r => r.RoomRate).ToList();
-            var roomRates = _context.RoomRates.Include(r => r.RoomType).ToList();
+            var roomRateRanges = _service.GetRoomRateRanges();
+            var roomRates = _roomRateService.GetAllRoomRates();
+            
 
 
             var model = new RoomRateRangesViewModel
@@ -36,6 +42,7 @@ namespace HotelManagement.Controllers
         public IActionResult CreateRoomRateRange([FromForm] RoomRateRangesViewModel model)
         {
             System.Diagnostics.Debug.WriteLine($"EditRoomRate action hit with model: {model.NewRoomRateRange.Id}");
+
             if (!ModelState.IsValid)
             {
                 foreach (var key in ModelState.Keys)
@@ -46,30 +53,32 @@ namespace HotelManagement.Controllers
                         System.Diagnostics.Debug.WriteLine($"Validation error on {key}: {error.ErrorMessage}");
                     }
                 }
-                model.RoomRateRanges = _context.RoomRateRanges.Include(r => r.RoomRate).ToList();
-                model.roomRates = _context.RoomRates.Include(r => r.RoomType).ToList();
+                model.RoomRateRanges = _service.GetRoomRateRanges();
+                model.roomRates = _roomRateService.GetAllRoomRates();
                 return View("RoomRateRangeView", model);
             }
             try
             {
-                var roomRateRange = new RoomRateRange
+                if (model.NewRoomRateRange != null)
                 {
-                    rate_id = model.NewRoomRateRange.rate_id,
-                    StartDate = model.NewRoomRateRange.StartDate,
-                    EndDate = model.NewRoomRateRange.EndDate,
-                    weekend_factor = model.NewRoomRateRange.weekend_factor,
-                    holiday_factor = model.NewRoomRateRange.holiday_factor,
-                    note = model.NewRoomRateRange.note,
-                };
-                _context.RoomRateRanges.Add(roomRateRange);
-                _context.SaveChanges();
+                    var roomRateRange = new RoomRateRange
+                    {
+                        RoomRateId = model.NewRoomRateRange.RoomRateId,
+                        StartDate = model.NewRoomRateRange.StartDate,
+                        EndDate = model.NewRoomRateRange.EndDate,
+                        WeekendPricing = model.NewRoomRateRange.WeekendPricing,
+                        HolidayPricing = model.NewRoomRateRange.HolidayPricing,
+                        Description = model.NewRoomRateRange.Description,
+                    };
+                    _service.CreateRoomRateRange(roomRateRange);
+                }
                 return RedirectToAction("RoomRateRangeView");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Error saving to database: " + ex.Message);
-                model.RoomRateRanges = _context.RoomRateRanges.Include(r => r.RoomRate).ToList();
-                model.roomRates = _context.RoomRates.Include(r => r.RoomType).ToList();
+                model.RoomRateRanges = _service.GetRoomRateRanges();
+                model.roomRates = _roomRateService.GetAllRoomRates();
                 return View("RoomRateRangeView", model);
             }
         }
@@ -82,38 +91,14 @@ namespace HotelManagement.Controllers
 
             if (ModelState.IsValid)
             {
-                var roomRateRange = _context.RoomRateRanges
-                    .Include(r => r.RoomRate)
-                    .FirstOrDefault(r => r.Id == editRoomRateRange.Id);
-
-                if (roomRateRange != null)
-                {
-
-                    roomRateRange.StartDate = editRoomRateRange.StartDate;
-                    roomRateRange.EndDate = editRoomRateRange.EndDate;
-                    roomRateRange.weekend_factor = editRoomRateRange.weekend_factor;
-                    roomRateRange.holiday_factor = editRoomRateRange.holiday_factor;
-                    roomRateRange.note = editRoomRateRange.note;
-
-                    var roomRate = _context.RoomRates
-                        .FirstOrDefault(rr => rr.Id == editRoomRateRange.rate_id);
-                    if (roomRate != null)
-                    {
-                        roomRateRange.RoomRate = roomRate;
-                    }
-
-                    _context.SaveChanges();
-                }
-
+                _service.UpdateRoomRateRange(editRoomRateRange);
                 return RedirectToAction("RoomRateRangeView");
             }
 
 
             var model = new RoomRateRangesViewModel
             {
-                RoomRateRanges = _context.RoomRateRanges
-                    .Include(r => r.RoomRate)
-                    .ToList(),
+                RoomRateRanges = _service.GetRoomRateRanges(),
                 EditRoomRateRange = editRoomRateRange
             };
 
@@ -121,12 +106,7 @@ namespace HotelManagement.Controllers
         }
         public IActionResult DeleteRoomRateRange(int id)
         {
-            var roomRateRange = _context.RoomRateRanges.Find(id);
-            if (roomRateRange != null)
-            {
-                _context.RoomRateRanges.Remove(roomRateRange);
-                _context.SaveChanges();
-            }
+            _service.DeleteRoomRateRange(id);
             return RedirectToAction("RoomRateRangeView");
         }
 
