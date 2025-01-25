@@ -32,7 +32,7 @@ public partial class HotelManagementContext : DbContext
 
     public virtual DbSet<Review> Reviews { get; set; }
 
-    public virtual DbSet<Rezervim> Rezervims { get; set; }
+    public virtual DbSet<Rezervim> Rezervime { get; set; }
 
     public virtual DbSet<RezervimService> RezervimServices { get; set; }
 
@@ -258,7 +258,7 @@ public partial class HotelManagementContext : DbContext
                 .HasForeignKey(d => d.RoomRate)
                 .HasConstraintName("FK__Rezervim__room_r__534D60F1");
 
-            entity.HasOne(d => d.UserNavigation).WithMany(p => p.Rezervims)
+            entity.HasOne(d => d.UserNavigation).WithMany(p => p.Rezervime)
                 .HasForeignKey(d => d.User)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Rezervim__user__5165187F");

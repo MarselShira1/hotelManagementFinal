@@ -26,6 +26,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign Up</button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#logInModal" >Log in</button>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -36,6 +42,76 @@
             @RenderBody()
         </main>
     </div>
+    <div class="modal fade" tabindex="-1" id="signUpModal" aria-labelledby="signUpModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-controller="Auth" asp-action="Register" method="post" id="signUpForm">
+                        @Html.AntiForgeryToken()
+                        <div>
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" id="name" name="emer" placeholder="Enter name" class="form-control" required />
+                        </div>
+                        <div>
+                            <label for="surname" class="form-label">Username:</label>
+                            <input type="text" id="surname" name="mbiemer" placeholder="Enter surname" class="form-control" required />
+                        </div>
+                        <div>
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" id="email" name="email" placeholder="Enter email" class="form-control" required />
+                        </div>
+                        <div>
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" id="password" name="password" placeholder="Enter password" class="form-control" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </form>
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="text-danger">@TempData["Error"]</div>
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" tabindex="-1" id="logInModal" aria-labelledby="signUpModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Log In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-controller="Auth" asp-action="Login" method="post" id="LogInForm">
+                        <div>
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" name="email" placeholder="Your username" class="form-control" required />
+                        </div>
+                        <div>
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" name="password" placeholder="Enter your password" class="form-control" required />
+                        </div>
+         
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    @if (TempData["Error"] != null)
+                    {
+                        <div>@TempData["Error"]</div>
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
 
     <footer class="border-top footer text-muted">
         <div class="container">
