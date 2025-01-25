@@ -6,6 +6,7 @@ using hotelManagement.BLL.Services;
 using hotelManagement.Domain.Models;
 using HotelManagementFinal.BLL.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Identity;
 namespace HotelManagement.Controllers
 {
     public class RoomController : Controller 
@@ -13,11 +14,12 @@ namespace HotelManagement.Controllers
 //
         private readonly HotelManagementDbContext _context;
         private readonly IRoomService roomsService;
-        private readonly IEmailSender emailSender;
-        public RoomController(HotelManagementDbContext context, IRoomService service)
+        private readonly IMailSenderService _mailSenderService;
+        public RoomController(HotelManagementDbContext context, IRoomService service, IMailSenderService mailSenderService)
         {
             _context = context;
             roomsService = service;
+            _mailSenderService = mailSenderService;
         }
         public IActionResult RoomView()
         {
@@ -42,25 +44,32 @@ namespace HotelManagement.Controllers
         [HttpPost]
         public IActionResult CreateRoomSql(NewRoomDTO model)
         {
-            SendEmail();
+            //SendEmail();
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
             roomsService.AddBrand(new CreateRoom
             {
-                RoomFloor = model.RoomFloor,
+                RoomFloor = (int)model.RoomFloor,
                 RoomNumber = model.RoomNumber.ToString(),
-                RoomTypeId = model.RoomTypeId,
+                RoomTypeId = (int)1,
             });
             return RedirectToAction(nameof(Index));
            
         }
-
+        [HttpGet]
         public async Task<IActionResult> SendEmail()
         {
-            await emailSender.SendEmailAsync("selishria2017@gmail.com", "Test Subject", "This is a test email.");
+            try { 
+            await _mailSenderService.SendEmailAsync("selishira2017@gmail.com", "Test Subject", "This is a test email.");
             return Ok("Email sent successfully!");
+            }
+            catch(Exception ex)
+            {
+                return Ok("Email sent successfully!");
+
+            }
         }
 
 

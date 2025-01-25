@@ -24,30 +24,26 @@ namespace HotelManagementFinal.BLL.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmailAsync(string to, string subject, string body)
+        public   Task SendEmailAsync(string to, string subject, string body)
         {
-            var smtpClient = new SmtpClient
+            try
             {
-                Host = _configuration["EmailSettings:SmtpHost"],
-                Port = int.Parse(_configuration["EmailSettings:SmtpPort"]),
-                Credentials = new NetworkCredential(
-                    _configuration["EmailSettings:Username"],
-                    _configuration["EmailSettings:Password"]
-                ),
-                EnableSsl = true
-            };
-
-            var mailMessage = new MailMessage
+                var mail = "m4rselsh@gmail.com";
+                var pw = "ghbk kwtr hxkj gqyt";
+                var client = new SmtpClient("smtp.gmail.com", 587)
+                {
+                    EnableSsl = true,
+                    Credentials = new NetworkCredential(mail, pw)
+                };
+                return client.SendMailAsync(
+                    new MailMessage(from: mail, to: to, subject, body));
+                return null;
+            }
+            catch(Exception ex)
             {
-                From = new MailAddress(_configuration["EmailSettings:FromEmail"]),
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = true
-            };
-
-            mailMessage.To.Add(to);
-
-            await smtpClient.SendMailAsync(mailMessage);
+                return null;
+            }
+            
         }
 
     }

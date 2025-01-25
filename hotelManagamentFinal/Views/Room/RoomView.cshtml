@@ -17,13 +17,13 @@
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
                         <label for="NewRoom_RoomTypeId" class="form-label">Choose room type</label>
-                        <select id="NewRoom_RoomTypeId" class="form-select" required>
+                       @*  <select id="NewRoom_RoomTypeId" class="form-select" required>
                             <option value="">Select Room Type</option>
                             @foreach (var roomType in Model.RoomTypes)
                             {
                                 <option value="@roomType.Id">@roomType.Emer</option>
                             }
-                        </select>
+                        </select> *@
                     </div>
                     <div class="mb-3">
                         <label for="NewRoom_room_floor" class="form-label">Room Floor:</label>
