@@ -38,25 +38,76 @@ namespace HotelManagement.Controllers
             return View(model);
         }
 
+        //Fshirja e nje dhome
+        //26/01/2025
+
+        [HttpPost]
+        public IActionResult DeleteRoom(int id)
+        {
+            try
+            {
+                // Check if the room exists
+                var room = roomsService.DeleteRoom(id);
+                if (room == false)
+                {
+                    return Json(new { success = false, message = "Delete room" });
+                }
+                return Json(new { success = true, message = "Room deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Log the error (optional)
+                return Json(new { success = false, message = "An error occurred while deleting the room." });
+            }
+        }
+
+
+
         //Marsel
         //metoda per shtimin e nje dhome
         //15/01/2024
         [HttpPost]
         public IActionResult CreateRoomSql(NewRoomDTO model)
         {
-            //SendEmail();
+            try {
+                //SendEmail();
+                var isSaved = false;
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            roomsService.AddBrand(new CreateRoom
+            if(model.RoomId != null)
             {
-                RoomFloor = (int)model.RoomFloor,
-                RoomNumber = model.RoomNumber.ToString(),
-                RoomTypeId = (int)1,
-            });
-            return RedirectToAction(nameof(Index));
-           
+                isSaved = roomsService.EditRoom(new CreateRoom
+                {
+                    RoomId = model.RoomId,
+                    RoomFloor = (int)model.RoomFloor,
+                    RoomNumber = model.RoomNumber,
+                    RoomTypeId = (int)model.RoomTypeId,
+                });
+            }
+            else {
+                isSaved = roomsService.AddBrand(new CreateRoom
+                {
+                    RoomFloor = (int)model.RoomFloor,
+                    RoomNumber = model.RoomNumber,
+                    RoomTypeId = (int)model.RoomTypeId,
+                });
+            }
+                if (isSaved)
+                {
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false, errors = new[] { "Failed to save the room. Please try again." } });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, errors = new[] { "An unexpected error occurred. Please try again later." } });
+
+            }
         }
         [HttpGet]
         public async Task<IActionResult> SendEmail()
@@ -78,7 +129,18 @@ namespace HotelManagement.Controllers
             try
             {
                 var rooms = await roomsService.GetRoomsAsync();
-                return Json(rooms);
+
+                var roomDtos = rooms.Select(room => new NewRoomDTO
+                {
+                    RoomId = room.RoomId,         
+                    RoomTypeId = room.RoomTypeId, 
+                    RoomFloor = room.RoomFloor,   
+                    RoomNumber = room.RoomNumber  ,
+                    RoomTypeName = room.RoomTypeName
+                }).ToList();
+
+
+                return Json(roomDtos);
             }
             catch (Exception ex)
             {

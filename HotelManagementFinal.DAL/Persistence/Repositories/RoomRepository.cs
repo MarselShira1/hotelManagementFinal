@@ -14,6 +14,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
     {
         Dhome? GetByName(string roomNumber);
         Task<IEnumerable<Dhome>> GetAllRoomsAsync();
+        void DeleteRoom(Dhome room);
     }
 
     internal class RoomRepository : _BaseRepository<Dhome, int>, IRoomRepository
@@ -41,5 +42,11 @@ namespace hotelManagement.DAL.Persistence.Repositories
             return  base.GetAll();
         }
 
+        public void DeleteRoom(Dhome room)
+        {
+            room.Invalidated = 0;
+            room.ModifiedOn = DateTime.Now;
+            SaveChanges();
+        }
     }
 }

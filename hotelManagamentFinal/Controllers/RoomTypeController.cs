@@ -15,6 +15,26 @@ namespace hotelManagementFinal.Controllers
             roomTypeService = service;
         }
 
+        [HttpGet]
+        public IActionResult GetAllRoomTypes()
+        {
+            try
+            {
+                var roomTypes = roomTypeService.GetAllRoomTypes(); // Assuming service method exists
+                var result = roomTypes.Select(rt => new
+                {
+                    Id = rt.Id,
+                    Name = rt.Emer
+                });
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error loading room types.", error = ex.Message });
+            }
+        }
+
         // Get all room types
         public IActionResult RoomTypeView()
         {
