@@ -33,7 +33,7 @@ namespace HotelManagementFinal.DAL.Persistence.Repositories
         public User GetByEmail(string email)
         {
 
-            return _dbSet.Where(w => w.Email == email).FirstOrDefault();
+            return _dbSet.Where(w => w.Email == email && w.Invalidated == 1).FirstOrDefault();
 
         }
 

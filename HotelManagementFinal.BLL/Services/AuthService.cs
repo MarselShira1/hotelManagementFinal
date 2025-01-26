@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using hotelManagement.DAL.Persistence.Entities;
 using HotelManagementFinal.DAL.Persistence.Repositories;
+using HotelManagementFinal.Domain.Models;
 
 namespace HotelManagementFinal.BLL.Services
 {
@@ -12,6 +14,7 @@ namespace HotelManagementFinal.BLL.Services
     {
         void Register(User user);
         User Login(string email, string password);
+        AuthModel emailExist(string email);
     }
     public class AuthService : IAuthService
     {
@@ -46,10 +49,27 @@ namespace HotelManagementFinal.BLL.Services
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
-                throw new Exception("Invalid email or password.");
+                return null;
             }
 
             return user; 
+        }
+
+        public AuthModel emailExist(string email)
+        {
+            var user = _userRepository.GetByEmail(email);
+            if (user != null)
+            {
+                return new AuthModel
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                   Password= user.Password,
+                   Role = user.Role,
+                   
+                };
+            }
+            return null;
         }
 
     }

@@ -16,7 +16,7 @@ namespace hotelManagamentFinal.Controllers
         private readonly HotelManagementDbContext _context;
         private readonly IAuthService _authService;
 
-        public AuthController(HotelManagementDbContext context ,IAuthService authService)
+        public AuthController(HotelManagementDbContext context, IAuthService authService)
         {
             _context = context;
             _authService = authService;
@@ -34,13 +34,13 @@ namespace hotelManagamentFinal.Controllers
         {
             if (!ModelState.IsValid)
             {
-                
+
                 return View("~/Views/Home/Index.cshtml", userDto);
             }
 
             try
             {
-                
+
                 var user = new User
                 {
                     Emer = userDto.emer,
@@ -59,7 +59,7 @@ namespace hotelManagamentFinal.Controllers
             }
             catch (Exception ex)
             {
-                
+
                 ViewBag.Error = ex.Message;
                 return View("~/Views/Home/Index.cshtml", userDto);
             }
@@ -73,8 +73,16 @@ namespace hotelManagamentFinal.Controllers
             return View("~/Views/Home/Index.cshtml");
         }
 
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
+
         [HttpPost]
-        public IActionResult Login(LogInDTO loginDto)
+            public IActionResult Login(LogInDTO loginDto)
         {
             if (!ModelState.IsValid)
             {
@@ -83,25 +91,50 @@ namespace hotelManagamentFinal.Controllers
 
             try
             {
-                
-                var user = _authService.Login(loginDto.Email, loginDto.Password);
-
-                if(user != null)
+                var user1 = _authService.emailExist(loginDto.Email);
+                if (user1 != null)
                 {
-                    HttpContext.Session.SetInt32("RoleId", user.Role);
-                    HttpContext.Session.SetString("UserEmail", user.Email);
+                    var user = _authService.Login(loginDto.Email, loginDto.Password);
+               
+                    if (user != null)
+                    {
+                        HttpContext.Session.SetInt32("RoleId", user.Role);
+                        HttpContext.Session.SetString("UserEmail", user.Email);
+                        HttpContext.Session.SetString("UserName", user.Emer);
+
+                    return Json(
+                       new
+                       {
+                           Success = true,
+                           ErrorMessage = "Success Login"
+                       });
+                    }
+                    return Json(
+                        new
+                        {
+                            Success = false,
+                            ErrorMessage = "Invalid login"
+                        });
                 }
-                return RedirectToAction("Login");
+                return Json(
+                       new
+                       {
+                           Success = false,
+                           ErrorMessage = "There is no user with this email"
+                       });
             }
             catch (Exception ex)
             {
-                
-                ViewBag.Error = ex.Message;
-                return View("~/Views/Home/Index.cshtml", loginDto);
+
+                return Json(
+                       new
+                       {
+                           Success = false,
+                           ErrorMessage = "An error occurred, Please try again later!"
+                       });
             }
         }
 
 
     }
-
 }
