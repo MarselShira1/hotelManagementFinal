@@ -26,11 +26,27 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Room" asp-action="SendEmail">Send Email</a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+    <div id="pageLoader" style="
+     position: fixed;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     z-index: 1000;
+     display: none; /* Initially hidden */
+     align-items: center;
+     justify-content: center;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -46,5 +62,15 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+                function showLoader() {
+            $("#pageLoader").fadeIn(); // Show the loader with a fade effect
+        }
+
+        // Function to hide the loader
+        function hideLoader() {
+            $("#pageLoader").fadeOut(); // Hide the loader with a fade effect
+        }
+    </script>
 </body>
 </html>

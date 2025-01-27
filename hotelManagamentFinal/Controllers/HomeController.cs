@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HotelManagementISE.Controllers
+namespace hotelManagamentFinal.Controllers
 {
     public class HomeController : Controller
     {
@@ -22,6 +22,6 @@ namespace HotelManagementISE.Controllers
             return View();
         }
 
-        
+
     }
 }
