@@ -16,6 +16,15 @@ namespace HotelManagementISE.Controllers
         {
             return View();
         }
-        
+
+        public IActionResult Rooms()
+        {
+            return View();
+        }
+        public IActionResult Reservations()
+        {
+            return View();
+        }
+
     }
 }

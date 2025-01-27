@@ -17,16 +17,15 @@
     <link href="//fonts.googleapis.com/css?family=Roboto+Sans:400,700|Playfair+Display:400,700" rel="stylesheet">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="@Url.Content("~/css/bootstrap.min.css")">
-    <link rel="stylesheet" href="@Url.Content("~/css/animate.css")">
-    <link rel="stylesheet" href="@Url.Content("~/css/owl.carousel.min.css")">
-    <link rel="stylesheet" href="@Url.Content("~/css/aos.css")">
-    <link rel="stylesheet" href="@Url.Content("~/css/bootstrap-datepicker.css")">
-    <link rel="stylesheet" href="@Url.Content("~/css/jquery.timepicker.css")">
-    <link rel="stylesheet" href="@Url.Content("~/css/fancybox.min.css")">
-    <link rel="stylesheet" href="@Url.Content("~/fonts/ionicons/css/ionicons.min.css")">
-    <link rel="stylesheet" href="@Url.Content("~/fonts/fontawesome/css/font-awesome.min.css")">
-    <link rel="stylesheet" href="@Url.Content("~/css/style.css")">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/animate.css">
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/aos.css">
+    <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/css/jquery.timepicker.css">
+    <link rel="stylesheet" href="/css/fancybox.min.css">
+    <link rel="stylesheet" href="/fonts/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 
     <!-- Additional styles -->
     @RenderSection("Styles", required: false)
@@ -51,8 +50,8 @@
                                     <div class="col-md-6 mx-auto">
                                         <ul class="list-unstyled menu">
                                             <li><a href="@Url.Action("Index", "LandingPage")">Home</a></li>
-                                            <li class="active"><a href="@Url.Action("Rooms", "LandingPage")">Rooms</a></li>
-                                            <li><a href="@Url.Action("Reservation", "LandingPage")">Reservation</a></li>
+                                            <li><a href="@Url.Action("Rooms", "LandingPage")">Rooms</a></li>
+                                            <li><a href="@Url.Action("Reservations", "LandingPage")">Reservation</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -70,19 +69,42 @@
     </main>
 
     <!-- Scripts -->
-    <script src="@Url.Content("~/js/jquery-3.3.1.min.js")"></script>
-    <script src="@Url.Content("~/js/jquery-migrate-3.0.1.min.js")"></script>
-    <script src="@Url.Content("~/js/popper.min.js")"></script>
-    <script src="@Url.Content("~/js/bootstrap.min.js")"></script>
-    <script src="@Url.Content("~/js/owl.carousel.min.js")"></script>
-    <script src="@Url.Content("~/js/jquery.stellar.min.js")"></script>
-    <script src="@Url.Content("~/js/jquery.fancybox.min.js")"></script>
-    <script src="@Url.Content("~/js/aos.js")"></script>
-    <script src="@Url.Content("~/js/bootstrap-datepicker.js")"></script>
-    <script src="@Url.Content("~/js/jquery.timepicker.min.js")"></script>
-    <script src="@Url.Content("~/js/main.js")"></script>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/jquery.stellar.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+    <script src="/js/aos.js"></script>
+    <script src="/js/bootstrap-datepicker.js"></script>
+    <script src="/js/jquery.timepicker.min.js"></script>
+    <script src="/js/main.js"></script>
 
     <!-- Additional Scripts -->
     @RenderSection("Scripts", required: false)
+    <footer class="section footer-section">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-3 mb-5">
+                    <ul class="list-unstyled link">
+                        <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="@Url.Action("Rooms", "LandingPage")">Rooms</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-5 pr-md-5 contact-info">
+                    <p><span class="d-block"><span class="ion-ios-location h5 mr-3 text-primary"></span>Address:</span> <span>Dhermi, Albania </span></p>
+                    <p><span class="d-block"><span class="ion-ios-telephone h5 mr-3 text-primary"></span>Phone:</span> <span>+355691010500</span></p>
+                    <p><span class="d-block"><span class="ion-ios-email h5 mr-3 text-primary"></span>Email:</span> <span>info@isehotel.com </span></p>
+                </div>
+            </div>
+            <div class="row pt-5">
+                <p class="col-md-6 text-left">
+                    Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | ISE Hotel
+                </p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
