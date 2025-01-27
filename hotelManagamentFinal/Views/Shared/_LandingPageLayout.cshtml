@@ -1,0 +1,88 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ISE Hotel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="ISE Hotel - Relax and Rejuvenate" />
+    <meta name="keywords" content="hotel, luxury, rooms, booking" />
+    <meta name="author" content="ISE Hotel" />
+
+    <!-- Fonts -->
+    <link href="//fonts.googleapis.com/css?family=Roboto+Sans:400,700|Playfair+Display:400,700" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="@Url.Content("~/css/bootstrap.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/css/animate.css")">
+    <link rel="stylesheet" href="@Url.Content("~/css/owl.carousel.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/css/aos.css")">
+    <link rel="stylesheet" href="@Url.Content("~/css/bootstrap-datepicker.css")">
+    <link rel="stylesheet" href="@Url.Content("~/css/jquery.timepicker.css")">
+    <link rel="stylesheet" href="@Url.Content("~/css/fancybox.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/fonts/ionicons/css/ionicons.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/fonts/fontawesome/css/font-awesome.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/css/style.css")">
+
+    <!-- Additional styles -->
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <header class="site-header js-site-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-6 col-lg-4 site-logo" data-aos="fade">
+                    <a href="@Url.Action("Index", "LandingPage")">ISE Hotel</a>
+                </div>
+                <div class="col-6 col-lg-8">
+                    <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="site-navbar js-site-navbar">
+                        <nav role="navigation">
+                            <div class="container">
+                                <div class="row full-height align-items-center">
+                                    <div class="col-md-6 mx-auto">
+                                        <ul class="list-unstyled menu">
+                                            <li><a href="@Url.Action("Index", "LandingPage")">Home</a></li>
+                                            <li class="active"><a href="@Url.Action("Rooms", "LandingPage")">Rooms</a></li>
+                                            <li><a href="@Url.Action("Reservation", "LandingPage")">Reservation</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <!-- Scripts -->
+    <script src="@Url.Content("~/js/jquery-3.3.1.min.js")"></script>
+    <script src="@Url.Content("~/js/jquery-migrate-3.0.1.min.js")"></script>
+    <script src="@Url.Content("~/js/popper.min.js")"></script>
+    <script src="@Url.Content("~/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/js/owl.carousel.min.js")"></script>
+    <script src="@Url.Content("~/js/jquery.stellar.min.js")"></script>
+    <script src="@Url.Content("~/js/jquery.fancybox.min.js")"></script>
+    <script src="@Url.Content("~/js/aos.js")"></script>
+    <script src="@Url.Content("~/js/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/js/jquery.timepicker.min.js")"></script>
+    <script src="@Url.Content("~/js/main.js")"></script>
+
+    <!-- Additional Scripts -->
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
