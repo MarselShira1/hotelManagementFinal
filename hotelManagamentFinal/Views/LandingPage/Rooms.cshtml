@@ -1,4 +1,6 @@
-﻿@{
+﻿@using hotelManagement.DAL.Persistence.Entities;
+@model IEnumerable<TipDhome>
+@{
     Layout = "~/Views/Shared/_LandingPageLayout.cshtml";
 }
 <section class="site-hero inner-page overlay" style="background-image: url(/css/hero_4.jpg)" data-stellar-background-ratio="0.5">
@@ -51,10 +53,10 @@
                                     <div class="field-icon-wrap">
                                         <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                         <select name="" id="adults" class="form-control">
-                                            <option value="">1</option>
-                                            <option value="">2</option>
-                                            <option value="">3</option>
-                                            <option value="">4+</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4+</option>
                                         </select>
                                     </div>
                                 </div>
@@ -63,17 +65,18 @@
                                     <div class="field-icon-wrap">
                                         <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                         <select name="" id="children" class="form-control">
-                                            <option value="">1</option>
-                                            <option value="">2</option>
-                                            <option value="">3</option>
-                                            <option value="">4+</option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4+</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-3 align-self-end">
-                            <button class="btn btn-primary btn-block text-white">Check Availabilty</button>
+                            <button class="btn btn-primary btn-block text-white" onclick="checkAvailability(event)">Check Availabilty</button>
                         </div>
                     </div>
                 </form>
@@ -86,45 +89,24 @@
 
 
 <section class="section">
-    <div class="container">
-
-        <div class="row" id="room-list">
-            <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-                <a href="#" class="room">
-                    <figure class="img-wrap">
-                        <img src="/css/img_1.jpg" class="img-fluid mb-3">
-                    </figure>
-                    <div class="p-3 text-center room-info">
-                        <h2>Single Room</h2>
-                        <span class="text-uppercase letter-spacing-1">90$ / per night</span>
-                    </div>
-                </a>
+    <div class="container" id="room_list">
+        @foreach(TipDhome el in Model)
+        {
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
+                    <a href="#" class="room">
+                        <figure class="img-wrap">
+                            <img src="/css/img_1.jpg" class="img-fluid mb-3">
+                        </figure>
+                        <div class="p-3 text-center room-info">
+                            <h2>@el.Emer</h2>
+                             <span class="text-uppercase letter-spacing-1">@el.RoomRates.LastOrDefault()??.CmimBaze $ / per night</span>
+                             <span class="text-uppercase letter-spacing-1">@el.Kapacitet persona</span>
+                        </div>
+                    </a>
+                </div>
             </div>
-
-            <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-                <a href="#" class="room">
-                    <figure class="img-wrap">
-                        <img src="/css/img_2.jpg" class="img-fluid mb-3">
-                    </figure>
-                    <div class="p-3 text-center room-info">
-                        <h2>Family Room</h2>
-                        <span class="text-uppercase letter-spacing-1">120$ / per night</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-                <a href="#" class="room">
-                    <figure class="img-wrap">
-                        <img src="/css/img_3.jpg" class="img-fluid mb-3">
-                    </figure>
-                    <div class="p-3 text-center room-info">
-                        <h2>Presidential Room</h2>
-                        <span class="text-uppercase letter-spacing-1">250$ / per night</span>
-                    </div>
-                </a>
-            </div>
-        </div>
+        }
     </div>
 </section>
 
@@ -142,3 +124,63 @@
         </div>
     </div>
 </section>
+
+<script>
+        function checkAvailability(event) {
+        event.preventDefault(); 
+
+        const checkinDate = document.getElementById("checkin_date").value;
+        const checkoutDate = document.getElementById("checkout_date").value;
+        const adults = document.getElementById("adults").value;
+        const children = document.getElementById("children").value;
+
+        const params = new URLSearchParams({
+            checkinDate,
+            checkoutDate,
+            adults,
+            children
+        }).toString();
+
+        fetch(`/LandingPage/CheckAvailability?${params}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const roomList = document.getElementById("room_list");
+            roomList.innerHTML = "";
+            data.forEach(room => {
+                const roomElement = document.createElement("div");
+                roomElement.classList.add("col-md-6", "col-lg-4", "mb-5");
+                roomElement.setAttribute("data-aos", "fade-up");
+                const roomLink = document.createElement("a");
+                roomLink.href = "#";
+                roomLink.classList.add("room");
+                const imgWrap = document.createElement("figure");
+                imgWrap.classList.add("img-wrap");
+                const img = document.createElement("img");
+                img.src = "/css/img_1.jpg";
+                img.classList.add("img-fluid", "mb-3");
+                imgWrap.appendChild(img);
+                roomLink.appendChild(imgWrap);
+                const roomInfo = document.createElement("div");
+                roomInfo.classList.add("p-3", "text-center", "room-info");
+                const roomName = document.createElement("h2");
+                roomName.innerText = room.Emer;
+                const roomRate = document.createElement("span");
+                roomRate.classList.add("text-uppercase", "letter-spacing-1");
+                roomRate.innerText = `${room.Kapacitet} person`;
+                roomInfo.appendChild(roomName);
+                roomInfo.appendChild(roomRate);
+                roomLink.appendChild(roomInfo);
+                roomElement.appendChild(roomLink);
+                roomList.appendChild(roomElement);
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching availability:", error);
+        });
+    }
+</script>

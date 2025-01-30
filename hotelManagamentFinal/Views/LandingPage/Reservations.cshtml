@@ -7,7 +7,7 @@
             <div class="col-md-10 text-center" data-aos="fade">
                 <h1 class="heading mb-3">Reservation Form</h1>
                 <ul class="custom-breadcrumbs mb-4">
-                    <li><a href="index.html">Home</a></li>
+                    <li><a href="@Url.Action("Index", "LandingPage")">Home</a></li>
                     <li>&bullet;</li>
                     <li>Reservation</li>
                 </ul>
@@ -27,7 +27,7 @@
         <div class="row">
             <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
 
-                <form action="#" method="post" class="bg-white p-md-5 p-4 mb-5 border">
+                <form action="@Url.Action("AddAccomodation", "LandingPage")" method="post" class="bg-white p-md-5 p-4 mb-5 border">
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label class="text-black font-weight-bold" for="name">Name</label>
@@ -63,10 +63,10 @@
                             <div class="field-icon-wrap">
                                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                 <select name="" id="adults" class="form-control">
-                                    <option value="">1</option>
-                                    <option value="">2</option>
-                                    <option value="">3</option>
-                                    <option value="">4+</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4+</option>
                                 </select>
                             </div>
                         </div>
@@ -75,10 +75,11 @@
                             <div class="field-icon-wrap">
                                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                 <select name="" id="children" class="form-control">
-                                    <option value="">1</option>
-                                    <option value="">2</option>
-                                    <option value="">3</option>
-                                    <option value="">4+</option>
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4+</option>
                                 </select>
                             </div>
                         </div>
