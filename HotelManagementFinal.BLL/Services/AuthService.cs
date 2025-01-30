@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using hotelManagement.DAL.Persistence.Entities;
+using hotelManagement.DAL.Persistence.Repositories;
 using HotelManagementFinal.DAL.Persistence.Repositories;
 using HotelManagementFinal.Domain.Models;
 

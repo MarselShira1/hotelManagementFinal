@@ -20,7 +20,7 @@ namespace hotelManagementFinal.Controllers
         {
             try
             {
-                var roomTypes = roomTypeService.GetAllRoomTypes(); // Assuming service method exists
+                var roomTypes = _roomTypeService.GetAllRoomTypes(); // Assuming service method exists
                 var result = roomTypes.Select(rt => new
                 {
                     Id = rt.Id,

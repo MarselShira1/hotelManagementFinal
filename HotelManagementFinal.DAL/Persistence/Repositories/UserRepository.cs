@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using hotelManagement.DAL.Persistence;
 using hotelManagement.DAL.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
-
-namespace HotelManagementFinal.DAL.Persistence.Repositories
+namespace hotelManagement.DAL.Persistence.Repositories
 {
     public interface IUserRepository : _IBaseRepository<User , int>
     {
