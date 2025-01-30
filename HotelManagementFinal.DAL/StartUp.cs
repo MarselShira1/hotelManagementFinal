@@ -25,6 +25,7 @@ namespace hotelManagement.DAL
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddDistributedMemoryCache();
             services.AddSession();
+            services.AddScoped<IRoomRateRangesRepository, RoomRateRangesRepository>();
         }
 
          
