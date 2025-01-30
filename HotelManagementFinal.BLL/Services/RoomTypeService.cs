@@ -3,7 +3,6 @@ using hotelManagement.DAL.Persistence;
 using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence.Repositories;
 using hotelManagement.Common.Exceptions;
-using HotelManagementFinal.DAL.Persistence.Repositories;
 using HotelManagementFinal.Domain.Models;
 
 namespace hotelManagement.BLL.Services
@@ -15,6 +14,7 @@ namespace hotelManagement.BLL.Services
         void RemoveRoomType(int id);
         TipDhome? GetRoomTypeById(int id);
         IEnumerable<TipDhome> GetAllRoomTypes();
+        void UpdateRoomType(int id, CreateRoomType createRoomType);
     }
 
     internal class RoomTypeService : IRoomTypeService
@@ -26,7 +26,7 @@ namespace hotelManagement.BLL.Services
             roomTypeRepository = repository;
         }
 
-        // Add a new RoomType
+
         public void AddRoomType(CreateRoomType createRoomType)
         {
             var existingRoomType = roomTypeRepository.GetByName(createRoomType.Emer);
@@ -38,7 +38,6 @@ namespace hotelManagement.BLL.Services
             var newRoomType = new TipDhome
             {
                 Emer = createRoomType.Emer,
-                //Cmim = createRoomType.Cmim,
                 Siperfaqe = createRoomType.Siperfaqe,
                 Pershkrim = createRoomType.Pershkrim,
                 Kapacitet = createRoomType.Kapacitet
@@ -48,7 +47,8 @@ namespace hotelManagement.BLL.Services
             roomTypeRepository.SaveChanges();
         }
 
-        // Edit an existing RoomType
+
+
         public void EditRoomType(int id, CreateRoomType createRoomType)
         {
             var roomType = roomTypeRepository.GetById(id);
@@ -59,7 +59,7 @@ namespace hotelManagement.BLL.Services
             }
 
             roomType.Emer = createRoomType.Emer;
-            //roomType.Cmim = createRoomType.Cmim;
+     
             roomType.Siperfaqe = createRoomType.Siperfaqe;
             roomType.Pershkrim = createRoomType.Pershkrim;
             roomType.Kapacitet = createRoomType.Kapacitet;
@@ -67,7 +67,7 @@ namespace hotelManagement.BLL.Services
             roomTypeRepository.SaveChanges();
         }
 
-        // Remove a RoomType
+
         public void RemoveRoomType(int id)
         {
             var roomType = roomTypeRepository.GetById(id);
@@ -77,20 +77,28 @@ namespace hotelManagement.BLL.Services
                 throw new Exception("Room type not found.");
             }
 
-            roomTypeRepository.Delete(roomType);
+            roomTypeRepository.DeleteById(id);
             roomTypeRepository.SaveChanges();
         }
 
-        // Get a RoomType by ID
+
+
+
         public TipDhome? GetRoomTypeById(int id)
         {
             return roomTypeRepository.GetById(id);
         }
+      
 
         // Get all RoomTypes
         public IEnumerable<TipDhome> GetAllRoomTypes()
         {
-            return roomTypeRepository.GetAll().ToList();
+            return roomTypeRepository.GetAll().ToList(); 
+        }
+
+        public void UpdateRoomType(int id, CreateRoomType createRoomType)
+        {
+            throw new NotImplementedException();
         }
     }
 }

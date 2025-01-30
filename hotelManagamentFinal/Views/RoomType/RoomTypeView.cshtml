@@ -1,10 +1,17 @@
-﻿@model HotelManagement.Models.RoomTypeViewModel
+﻿@{
+    ViewData["Title"] = "Room Types";
+}
+
+@model HotelManagement.Models.RoomTypeViewModel
 
 <div class="text-center">
     <h1 class="display-4">Room Types</h1>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomTypeModal">+</button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomTypeModal">
+        + Add Room Type
+    </button>
 </div>
 
+<!-- Modal për Shtim të RoomType -->
 <div class="modal fade" id="addRoomTypeModal" tabindex="-1" aria-labelledby="addRoomTypeLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -13,43 +20,83 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="roomTypeForm">
+                <!-- Forma për shtim -->
+                <form method="post" action="/RoomType/CreateRoomType">
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
-                        <label for="NewRoomType_Emer" class="form-label">Room Type Name</label>
-                        <input id="NewRoomType_Emer" class="form-control" />
+                        <label class="form-label" for="Emer">Name</label>
+                        <input class="form-control" type="text" id="Emer" name="Emer" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Emer" data-valmsg-replace="true"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="NewRoomType_Cmim_baze" class="form-label">Base Price</label>
-                        <input id="NewRoomType_Cmim_baze" class="form-control" />
+                        <label class="form-label" for="Siperfaqe">Area</label>
+                        <input class="form-control" type="text" id="Siperfaqe" name="Siperfaqe" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Siperfaqe" data-valmsg-replace="true"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="NewRoomType_Siperfaqe" class="form-label">Area</label>
-                        <input id="NewRoomType_Siperfaqe" class="form-control" />
+                        <label class="form-label" for="Kapacitet">Capacity</label>
+                        <input class="form-control" type="number" id="Kapacitet" name="Kapacitet" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Kapacitet" data-valmsg-replace="true"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="NewRoomType_Kapacitet" class="form-label">Capacity</label>
-                        <input id="NewRoomType_Kapacitet" class="form-control" />
+                        <label class="form-label" for="Pershkrim">Description</label>
+                        <textarea class="form-control" id="Pershkrim" name="Pershkrim"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="NewRoomType_Pershkrim" class="form-label">Description</label>
-                        <textarea id="NewRoomType_Pershkrim" class="form-control"></textarea>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
-                    <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<br />
+@foreach (var roomType in Model.RoomTypes)
+{
+    <div class="modal fade" id="editRoomTypeModal-@roomType.Id" tabindex="-1" aria-labelledby="editRoomTypeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Room Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/RoomType/EditRoomType">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Id" value="@roomType.Id" />
+                        <div class="mb-3">
+                            <label class="form-label" for="Emer">Name</label>
+                            <input class="form-control" type="text" id="Emer" name="Emer" value="@roomType.Emer" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="Siperfaqe">Area</label>
+                            <input class="form-control" type="text" id="Siperfaqe" name="Siperfaqe" value="@roomType.Siperfaqe" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="Kapacitet">Capacity</label>
+                            <input class="form-control" type="number" id="Kapacitet" name="Kapacitet" value="@roomType.Kapacitet" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="Pershkrim">Description</label>
+                            <textarea class="form-control" id="Pershkrim" name="Pershkrim">@roomType.Pershkrim</textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <table class="table">
     <thead>
         <tr>
             <th>Id</th>
-            <th>Type Name</th>
-            <th>Base Price</th>
+            <th>Name</th>
             <th>Area</th>
             <th>Capacity</th>
             <th>Description</th>
@@ -62,85 +109,18 @@
             <tr>
                 <td>@roomType.Id</td>
                 <td>@roomType.Emer</td>
-                <td>@roomType.Cmimi</td>
                 <td>@roomType.Siperfaqe</td>
                 <td>@roomType.Kapacitet</td>
                 <td>@roomType.Pershkrim</td>
                 <td>
-                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#editRoomTypeModal"
-                            onclick="populateEditModal({
-                                    id: '@roomType.Id',
-                                    emer: '@roomType.Emer',
-                                    cmimiBaze: '@roomType.Cmimi',
-                                    siperfaqe: '@roomType.Siperfaqe',
-                                    kapacitet: '@roomType.Kapacitet',
-                                    pershkrim: '@roomType.Pershkrim'
-                                })">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-
-                    <form method="post" asp-action="DeleteRoomType" asp-controller="RoomType"
-                          style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this room type?');">
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRoomTypeModal-@roomType.Id">Edit</button>
+                    <form method="post" asp-action="DeleteRoomType" asp-controller="RoomType" style="display:inline;">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@roomType.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-<script>
-    function populateEditModal(roomType) {
-        console.log("RoomType:", roomType);
-
-        document.getElementById('editRoomTypeId').value = roomType.id;
-        document.getElementById('editRoomTypeEmer').value = roomType.emer;
-        document.getElementById('editRoomTypeCmim_baze').value = roomType.cmimiBaze;
-        document.getElementById('editRoomTypeSiperfaqe').value = roomType.siperfaqe;
-        document.getElementById('editRoomTypeKapacitet').value = roomType.kapacitet;
-        document.getElementById('editRoomTypePershkrim').value = roomType.pershkrim;
-    }
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function () {
-        $('#submitButton').click(function (event) {
-            event.preventDefault();
-
-            var emer = $('#NewRoomType_Emer').val();
-            var cmimiBaze = $('#NewRoomType_Cmim_baze').val();
-            var siperfaqe = $('#NewRoomType_Siperfaqe').val();
-            var kapacitet = $('#NewRoomType_Kapacitet').val();
-            var pershkrim = $('#NewRoomType_Pershkrim').val();
-
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("CreateRoomType", "RoomType")',
-                data: {
-                    Emer: emer,
-                    Cmim_baze: cmimiBaze,
-                    Siperfaqe: siperfaqe,
-                    Kapacitet: kapacitet,
-                    Pershkrim: pershkrim
-                },
-                success: function (response) {
-                    if (response.success) {
-                        alert('Room type created successfully.');
-                        // Optional: reload the page or update the UI
-                    } else {
-                        alert('Failed to create room type: ' + response.errors.join(', '));
-                    }
-                },
-                error: function () {
-                    alert('An error occurred.');
-                }
-            });
-        });
-    });
-</script>
