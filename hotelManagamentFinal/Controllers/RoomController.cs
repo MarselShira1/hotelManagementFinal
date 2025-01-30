@@ -87,7 +87,7 @@ namespace HotelManagement.Controllers
                 });
             }
             else {
-                isSaved = roomsService.AddBrand(new CreateRoom
+                isSaved = roomsService.AddRoom(new CreateRoom
                 {
                     RoomFloor = (int)model.RoomFloor,
                     RoomNumber = model.RoomNumber,

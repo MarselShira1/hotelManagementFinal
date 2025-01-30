@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace hotelManagement.Common.Exceptions
 {
-    public class CarRentalException(string message) : Exception(message)
+    public class RoomException(string message) : Exception(message)
     {
     }
 }
