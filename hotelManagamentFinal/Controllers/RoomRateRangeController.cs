@@ -33,12 +33,13 @@ namespace HotelManagement.Controllers
                 EditRoomRateRange = new RoomRateRange()
             };
 
-//            return View(model);
-//        }
+            return View(model);
+        }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        
         public IActionResult CreateRoomRateRange([FromForm] RoomRateRangesViewModel model)
         {
             System.Diagnostics.Debug.WriteLine($"EditRoomRate action hit with model: {model.NewRoomRateRange.Id}");
@@ -83,26 +84,26 @@ namespace HotelManagement.Controllers
             }
         }
 
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public IActionResult EditRoomRateRange(RoomRateRange editRoomRateRange)
-//        {
-//            System.Diagnostics.Debug.WriteLine($"EditRoomRate action hit with id: {editRoomRateRange.Id}");
-
-            if (ModelState.IsValid)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult EditRoomRateRange(RoomRateRange editRoomRateRange)
             {
-                _service.UpdateRoomRateRange(editRoomRateRange);
-                return RedirectToAction("RoomRateRangeView");
-            }
+                System.Diagnostics.Debug.WriteLine($"EditRoomRate action hit with id: {editRoomRateRange.Id}");
+
+                if (ModelState.IsValid)
+                {
+                    _service.UpdateRoomRateRange(editRoomRateRange);
+                    return RedirectToAction("RoomRateRangeView");
+                }
 
 
-            var model = new RoomRateRangesViewModel
-            {
-                RoomRateRanges = _service.GetRoomRateRanges(),
-                EditRoomRateRange = editRoomRateRange
-            };
+                var model = new RoomRateRangesViewModel
+                {
+                    RoomRateRanges = _service.GetRoomRateRanges(),
+                    EditRoomRateRange = editRoomRateRange
+                };
 
-            return View("RoomRateRangesView", model);
+                return View("RoomRateRangesView", model);
         }
         public IActionResult DeleteRoomRateRange(int id)
         {
@@ -110,6 +111,6 @@ namespace HotelManagement.Controllers
             return RedirectToAction("RoomRateRangeView");
         }
 
-//    }
+    }
 
-//}
+}

@@ -16,14 +16,14 @@ public partial class HotelManagementContext : DbContext
         _configuration = configuration;
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            var connectionString = _configuration.GetConnectionString("DefaultConnection");
-            optionsBuilder.UseSqlServer(connectionString);
-        }
-    }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    if (!optionsBuilder.IsConfigured)
+    //    {
+    //        var connectionString = _configuration.GetConnectionString("DefaultConnection");
+    //        optionsBuilder.UseSqlServer(connectionString);
+    //    }
+    //}
 
     public virtual DbSet<Action> Actions { get; set; }
 
