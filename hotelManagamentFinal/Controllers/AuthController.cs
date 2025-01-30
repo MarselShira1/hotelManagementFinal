@@ -34,12 +34,24 @@ namespace hotelManagamentFinal.Controllers
         {
             if (!ModelState.IsValid)
             {
-
-                return View("~/Views/Home/Index.cshtml", userDto);
+                return Json(new
+                {
+                    success = false,
+                    errorMessage = "Invalid form data"
+                });
             }
 
             try
             {
+                var existingUser = _authService.emailExist(userDto.email);
+                if (existingUser != null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        errorMessage = "Email already exists"
+                    });
+                }
 
                 var user = new User
                 {
@@ -50,18 +62,23 @@ namespace hotelManagamentFinal.Controllers
                     Role = 1,
                     CreatedOn = DateTime.Now,
                     Invalidated = 1
-
                 };
 
                 _authService.Register(user);
 
-                return RedirectToAction("Login");
+                return Json(new
+                {
+                    success = true,
+                    errorMessage = ""
+                });
             }
             catch (Exception ex)
             {
-
-                ViewBag.Error = ex.Message;
-                return View("~/Views/Home/Index.cshtml", userDto);
+                return Json(new
+                {
+                    success = false,
+                    errorMessage = ex.Message
+                });
             }
         }
 

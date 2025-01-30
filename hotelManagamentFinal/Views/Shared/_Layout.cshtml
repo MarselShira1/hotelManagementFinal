@@ -106,9 +106,9 @@
         }
 
         .modal-content {
-        background-color: #f2c94c; /* Gold */
+        background-color: #f2c94c; 
         border-radius: 8px;
-        color: #002a5c; /* Navy blue */
+        color: #002a5c; 
         }
 
         .modal-header, .modal-footer {
@@ -120,22 +120,22 @@
         }
 
         .form-label {
-        color: #002a5c; /* Navy blue */
+        color: #002a5c; 
         }
 
         .form-control {
-        border: 1px solid #f2c94c; /* Gold */
+        border: 1px solid #f2c94c; 
         background-color: #fff;
         color: #002a5c;
         }
 
         .form-control:focus {
-        border-color: #e0b63d; /* Lighter gold on focus */
+        border-color: #e0b63d; 
         }
 
         .btn-modal {
-        background-color: #002a5c; /* Navy blue */
-        color: #f2c94c; /* Gold */
+        background-color: #002a5c; 
+        color: #f2c94c; 
         border: none;
         }
 
@@ -235,24 +235,29 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form asp-controller="Auth" asp-action="Register" method="post">
+                    <form id="signUpForm" asp-controller="Auth" asp-action="Register" method="post">
                         @Html.AntiForgeryToken()
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name" name="emer" required />
+                            <div id="nameError" class="error-message" style="display: none; color: red;">Name must be at least 2 characters long and contain only letters.</div>
                         </div>
                         <div class="mb-3">
                             <label for="surname" class="form-label">Surname</label>
                             <input type="text" class="form-control" id="surname" name="mbiemer" required />
+                            <div id="surnameError" class="error-message" style="display: none; color: red;">Surname must be at least 2 characters long and contain only letters.</div>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="emailSignUp" class="form-label">Email</label>
                             <input type="email" class="form-control" id="emailSignUp" name="email" required />
+                            <div id="emailSignUpError" class="error-message" style="display: none; color: red;">Please enter a valid email address.</div>
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="passwordSignUp" class="form-label">Password</label>
                             <input type="password" class="form-control" id="passwordSignUp" name="password" required />
+                            <div id="passwordSignUpError" class="error-message" style="display: none; color: red;">Password must be at least 8 characters long and include uppercase, lowercase, and numbers.</div>
                         </div>
+                        <div id="generalSignUpError" class="error-message" style="display: none; color: red;"></div>
                         <button type="submit" class="btn btn-modal">Sign Up</button>
                     </form>
                 </div>
@@ -288,11 +293,15 @@
         </div>
     </div>
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); 
+            event.preventDefault();
             debugger
-            
+
             document.getElementById('emailError').style.display = 'none';
             document.getElementById('passwordError').style.display = 'none';
 
@@ -303,11 +312,11 @@
             if (!emailRegex.test(email)) {
                 document.getElementById('emailError').style.display = 'block';
                 alert("wrong!");
-                return; 
+                return;
             }
 
             $.ajax({
-                url: '/Auth/Login', 
+                url: '/Auth/Login',
                 type: 'POST',
                 data: {
                     email: email,
@@ -315,10 +324,10 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                       
+
                         window.location.href = '/Home/Index';
                     } else {
-                        // alert(response.errorMessage);
+
                         document.getElementById('passwordError').style.display = 'block';
                     }
                 },
@@ -328,11 +337,68 @@
             });
          });
 
-    </script>
+        document.getElementById('signUpForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+    
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(el => el.style.display = 'none');
+    
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const email = document.getElementById('emailSignUp').value;
+            const password = document.getElementById('passwordSignUp').value;
+    
+            let isValid = true;
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+            if (!/^[A-Za-z]{2,}$/.test(name)) {
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            }
+    
+            if (!/^[A-Za-z]{2,}$/.test(surname)) {
+                document.getElementById('surnameError').style.display = 'block';
+                isValid = false;
+            }
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailSignUpError').style.display = 'block';
+                isValid = false;
+            }
+    
+            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password)) {
+                document.getElementById('passwordSignUpError').style.display = 'block';
+                isValid = false;
+            }
+    
+            if (isValid) {
+        
+                $.ajax({
+                    url: '/Auth/Register',
+                    type: 'POST',
+                    data: {
+                        emer: name,
+                        mbiemer: surname,
+                        email: email,
+                        password: password
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = '/Auth/Login';
+                        } else {
+                    
+                            document.getElementById('generalSignUpError').style.display = 'block';
+                            document.getElementById('generalSignUpError').textContent = response.errorMessage;
+                        }
+                    },
+                    error: function() {
+                        alert('Error occurred while processing the registration.');
+                    }
+                });
+            }
+        });
+    </script>
     <script>
         const sidebar = document.getElementById('sidebar');
         const toggleButton = document.getElementById('sidebarToggle');
