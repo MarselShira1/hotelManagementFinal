@@ -66,6 +66,14 @@ namespace hotelManagamentFinal.Controllers
 
                 _authService.Register(user);
 
+                var loginDto = new LogInDTO
+                {
+                    Email = userDto.email,
+                    Password = userDto.password
+                };
+
+                return Login(loginDto);
+
                 return Json(new
                 {
                     success = true,
