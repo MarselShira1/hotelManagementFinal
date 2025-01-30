@@ -1,4 +1,4 @@
-﻿\namespace hotelManagamentFinal.Models.DTO.ExtraService
+﻿namespace hotelManagamentFinal.Models.DTO.ExtraService
 {
     public class newExtraService
     {
