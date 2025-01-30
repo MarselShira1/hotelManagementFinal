@@ -5,62 +5,424 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HotelManagementISE</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HotelManagementISE.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="@Url.Content("~/css/site.css")" />
+
+    <style>
+        body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+        padding-top: 4.5rem; 
+        }
+
+        .wrapper {
+        display: flex;
+        flex-grow: 1;
+        }
+
+        .sidebar {
+        flex-shrink: 0;
+        width: 250px;
+        height: 100vh;
+        background-color: #002a5c; 
+        padding-top: 20px;
+        transition: transform 0.3s ease-in-out;
+        }
+
+        .sidebar.hidden {
+        transform: translateX(-100%);
+        }
+
+        .sidebar a {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        }
+
+        .sidebar a:hover {
+        background-color: #f2c94c; 
+        color: #002a5c;
+        }
+
+        .main-content {
+        flex-grow: 1;
+        padding: 20px;
+        }
+
+        .navbar {
+        background-color: #002a5c; 
+        color: white;
+        }
+
+        .navbar-brand {
+        color: #f2c94c; 
+        font-weight: bold;
+        }
+
+        .navbar-brand:hover {
+        color: #e0b63d;
+        }
+
+        .nav-link {
+        color: white;
+        transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+        color: #f2c94c; 
+        }
+
+        .btn-dark {
+        background-color: #f2c94c; 
+        border: none;
+        color: #002a5c;
+        }
+
+        .btn-dark:hover {
+        background-color: #e0b63d;
+        color: #002a5c;
+        }
+
+        .auth-section {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        }
+
+        .welcome-message {
+        color: white;
+        margin: 0;
+        font-weight: bold;
+        }
+
+        footer {
+        background-color: #002a5c; 
+        color: white;
+        text-align: center;
+        padding: 1rem 0;
+        }
+
+        .modal-content {
+        background-color: #f2c94c; 
+        border-radius: 8px;
+        color: #002a5c; 
+        }
+
+        .modal-header, .modal-footer {
+        border: none;
+        }
+
+        .modal-body {
+        padding: 20px;
+        }
+
+        .form-label {
+        color: #002a5c; 
+        }
+
+        .form-control {
+        border: 1px solid #f2c94c; 
+        background-color: #fff;
+        color: #002a5c;
+        }
+
+        .form-control:focus {
+        border-color: #e0b63d; 
+        }
+
+        .btn-modal {
+        background-color: #002a5c; 
+        color: #f2c94c; 
+        border: none;
+        }
+
+        .btn-modal:hover {
+        background-color: #f2c94c; 
+        color: #002a5c; 
+        }
+    </style>
 </head>
 <body>
-
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HotelManagementISE</a>
+                <button class="btn btn-dark d-md-none" id="sidebarToggle">
+                    ☰
+                </button>
+                <a class="navbar-brand ms-2" asp-area="" asp-controller="Home" asp-action="Index">HotelManagementISE</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Room" asp-action="SendEmail">Send Email</a>
                         </li>
                     </ul>
+                    <div class="auth-section">
+                        @{
+                            var userEmail = Context.Session.GetString("UserEmail");
+                            var userName = Context.Session.GetString("UserName");
+                        }
+                        @if (!string.IsNullOrEmpty(userEmail))
+                        {
+                            <p class="welcome-message">Welcome, @userName!</p>
+                            <a href="@Url.Action("Logout", "Auth")" class="btn btn-dark">Logout</a>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#logInModal">Log In</button>
+                            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign Up</button>
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div id="pageLoader" style="
-     position: fixed;
-     top: 50%;
-     left: 50%;
-     transform: translate(-50%, -50%);
-     z-index: 1000;
-     display: none; /* Initially hidden */
-     align-items: center;
-     justify-content: center;">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+    <div class="wrapper">
+        <div class="sidebar" id="sidebar">
+            <div class="d-flex flex-column p-3">
+                <h4 class="text-white">Navigation</h4>
+                <hr class="text-white" />
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index", "Home")" class="nav-link text-white">
+                            <i class="bi bi-house-door"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("RoomTypeView", "RoomType")" class="nav-link text-white">
+                            <i class="bi bi-building"></i> Room Types
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("RoomView", "Room")" class="nav-link text-white">
+                            <i class="bi bi-door-closed"></i> Rooms
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("RateView", "RoomRate")" class="nav-link text-white">
+                            <i class="bi bi-currency-dollar"></i> Room Rates
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="pageLoader" style="
+ position: fixed;
+ top: 50%;
+ left: 50%;
+ transform: translate(-50%, -50%);
+ z-index: 1000;
+ display: none; /* Initially hidden */
+ align-items: center;
+ justify-content: center;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+        <div class="main-content">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
     </div>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer">
         <div class="container">
-            &copy; 2025 - HotelManagementISE - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - HotelManagementISE - <a class="text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signUpModalLabel">Create Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signUpForm" asp-controller="Auth" asp-action="Register" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="emer" required />
+                            <div id="nameError" class="error-message" style="display: none; color: red;">Name must be at least 2 characters long and contain only letters.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="surname" class="form-label">Surname</label>
+                            <input type="text" class="form-control" id="surname" name="mbiemer" required />
+                            <div id="surnameError" class="error-message" style="display: none; color: red;">Surname must be at least 2 characters long and contain only letters.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="emailSignUp" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="emailSignUp" name="email" required />
+                            <div id="emailSignUpError" class="error-message" style="display: none; color: red;">Please enter a valid email address.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordSignUp" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="passwordSignUp" name="password" required />
+                            <div id="passwordSignUpError" class="error-message" style="display: none; color: red;">Password must be at least 8 characters long and include uppercase, lowercase, and numbers.</div>
+                        </div>
+                        <div id="generalSignUpError" class="error-message" style="display: none; color: red;"></div>
+                        <button type="submit" class="btn btn-modal">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal fade" id="logInModal" tabindex="-1" aria-labelledby="logInModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logInModalLabel">Log In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-controller="Auth" asp-action="Login" method="post" id="loginForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="email" name="email" required />
+                            <div id="emailError" class="error-message" style="display: none;">Please enter a valid email address.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required />
+                            <div id="passwordError" class="error-message" style="display: none; color:red">Incorrect email or password.</div>
+                        </div>
+                        <button type="submit" class="btn btn-modal">Log In</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            debugger
+
+            document.getElementById('emailError').style.display = 'none';
+            document.getElementById('passwordError').style.display = 'none';
+
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            var emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailError').style.display = 'block';
+                alert("wrong!");
+                return;
+            }
+
+            $.ajax({
+                url: '/Auth/Login',
+                type: 'POST',
+                data: {
+                    email: email,
+                    password: password
+                },
+                success: function(response) {
+                    if (response.success) {
+
+                        window.location.href = '/Home/Index';
+                    } else {
+
+                        document.getElementById('passwordError').style.display = 'block';
+                    }
+                },
+                error: function() {
+                    alert('Error occurred while processing the login.');
+                }
+            });
+         });
+
+        document.getElementById('signUpForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+    
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(el => el.style.display = 'none');
+    
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const email = document.getElementById('emailSignUp').value;
+            const password = document.getElementById('passwordSignUp').value;
+    
+            let isValid = true;
+
+            if (!/^[A-Za-z]{2,}$/.test(name)) {
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            }
+    
+            if (!/^[A-Za-z]{2,}$/.test(surname)) {
+                document.getElementById('surnameError').style.display = 'block';
+                isValid = false;
+            }
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailSignUpError').style.display = 'block';
+                isValid = false;
+            }
+    
+            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password)) {
+                document.getElementById('passwordSignUpError').style.display = 'block';
+                isValid = false;
+            }
+    
+            if (isValid) {
+        
+                $.ajax({
+                    url: '/Auth/Register',
+                    type: 'POST',
+                    data: {
+                        emer: name,
+                        mbiemer: surname,
+                        email: email,
+                        password: password
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = '/Auth/Login';
+                        } else {
+                    
+                            document.getElementById('generalSignUpError').style.display = 'block';
+                            document.getElementById('generalSignUpError').textContent = response.errorMessage;
+                        }
+                    },
+                    error: function() {
+                        alert('Error occurred while processing the registration.');
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleButton = document.getElementById('sidebarToggle');
+
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
     <script>
                 function showLoader() {

@@ -25,5 +25,5 @@ public partial class User : BaseEntity<int>
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
-    public virtual ICollection<Rezervim> Rezervims { get; set; } = new List<Rezervim>();
+    public virtual ICollection<Rezervim> Rezervime { get; set; } = new List<Rezervim>();
 }
