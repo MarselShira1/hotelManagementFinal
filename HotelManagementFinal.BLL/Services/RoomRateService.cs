@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using hotelManagement.Domain.Models;
 using hotelManagement.DAL.Persistence;
 using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence.Repositories;
 using hotelManagement.Common.Exceptions;
+using HotelManagementFinal.Domain.Models;
 namespace hotelManagement.BLL.Services
 {
-    //
-
+   
     public interface IRoomRateService
     {
-        void AddRoomRate(hotelManagement.Domain.Models.CreateRoomRate roomRate);
+        void AddRoomRate(CreateRoomRate roomRate);
         IEnumerable<RoomRate> GetAllRoomRates(); // Change return type to match implementation
         RoomRate GetRoomRateById(int id);
         void DeleteRoomRate(int id);
@@ -30,7 +29,7 @@ namespace hotelManagement.BLL.Services
         }
 
 
-        public void AddRoomRate(hotelManagement.Domain.Models.CreateRoomRate roomRate)
+        public void AddRoomRate(CreateRoomRate roomRate)
         {
             var roomRateToAdd = new hotelManagement.DAL.Persistence.Entities.RoomRate
             {
@@ -79,7 +78,7 @@ namespace hotelManagement.BLL.Services
             }
         }
 
-        public void UpdateRoomRate(hotelManagement.Domain.Models.CreateRoomRate roomRate)
+        public void UpdateRoomRate(CreateRoomRate roomRate)
         {
             var rateToUpdate = RoomRateRepository.GetById(roomRate.Id);
             if (rateToUpdate == null)

@@ -3,8 +3,9 @@ using HotelManagement.Models;
 using System.Linq;
 using hotelManagamentFinal.Models.DTO.RoomRate;
 using hotelManagement.BLL.Services;
+using HotelManagementFinal.Domain.Models;
 
-namespace HotelManagement.Controllers
+namespace hotelManagementFinal.Controllers
 {
     public class RoomRateController : Controller
     {
@@ -43,7 +44,7 @@ namespace HotelManagement.Controllers
                 Console.WriteLine("Validation Errors: " + string.Join(", ", errors));
 
                 //shtim i room rate
-                _roomRateService.AddRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
+                _roomRateService.AddRoomRate(new CreateRoomRate
                 {
                     Name = model.Emer,
                     base_price = model.CmimBaze.ToString()
@@ -65,7 +66,7 @@ namespace HotelManagement.Controllers
                 return View("RateView", viewModel);
             }
 
-          
+
             return RedirectToAction("RateView");
         }
 
@@ -92,7 +93,7 @@ namespace HotelManagement.Controllers
             if (ModelState.IsValid)
             {
 
-                _roomRateService.UpdateRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
+                _roomRateService.UpdateRoomRate(new CreateRoomRate
                 {
                     Name = model.Emer,
                     base_price = model.CmimBaze.ToString(),

@@ -3,3 +3,110 @@
 *@
 @{
 }
+@model HotelManagement.Models.ExtraServiceViewModel
+
+<div class="text-center">
+    <h1 class="display-4">Extra Services</h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+        + Add Service
+    </button>
+</div>
+
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Extra Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Forma për shtim -->
+
+                <form method="post" action="/ExtraService/CreateService">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label" for="Emer">Name</label>
+                        <input class="form-control" type="text" id="Emer" Name="Emer" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Emer" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="Pershkrim">Pershkrim</label>
+						<textarea class="form-control" id="Pershkrim" Name="Pershkrim" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Pershkrim" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@foreach (var service in Model.Services)
+{
+    <div class="modal fade" id="editServiceModal-@service.Id" tabindex="-1" aria-labelledby="editServiceLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Extra Service</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/ExtraService/EditService">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Id" value="@service.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label" for="Emer">Service Name</label>
+                            <input class="form-control" type="text" id="Emer" name="Emer" value="@service.Emer" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="Pershkrim">Description</label>
+                            <textarea class="form-control" id="Pershkrim" name="Pershkrim">@service.Pershkrim</textarea>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var service in Model.Services)
+        {
+            <tr>
+                <td>@service.Id</td>
+                <td>@service.Emer</td>
+                <td>@service.Pershkrim</td>
+                <td>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editServiceModal-@service.Id">Edit</button>
+                    <form method="post" asp-action="DeleteService" asp-controller="ExtraService" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" Name="id" value="@service.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

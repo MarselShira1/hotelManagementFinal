@@ -9,7 +9,7 @@ public partial class ExtraService : BaseEntity<int>
 
     public string Emer { get; set; } = null!;
 
-    public string? Pershkrim { get; set; }
+    public string Pershkrim { get; set; } = null!;
 
     public DateTime? CreatedOn { get; set; }
 

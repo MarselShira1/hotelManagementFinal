@@ -13,11 +13,12 @@ public static class Startup
 {
     public static void RegisterBLLServices(this IServiceCollection services, IConfiguration config)
     {
-        services.RegisterDALServices(config);   
+        services.RegisterDALServices(config);
         services.AddScoped<IRoomService, RoomService>();
         services.AddScoped<IRoomTypeService, RoomTypeService>();
         services.AddTransient<IMailSenderService, MailSenderService>();
         services.AddScoped<IRoomRateService, RoomRateService>();
+        services.AddScoped<IExtraServiceService, ExtraServiceService>(); // Fixed the type name
     }
 }
 

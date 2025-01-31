@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace hotelManagement.Domain.Models
+namespace HotelManagementFinal.Domain.Models
 {
     public class CreateRoomRate
     {
