@@ -15,7 +15,7 @@ namespace hotelManagement.BLL.Services
 
     public interface IRoomService
     {
-        bool AddBrand(hotelManagement.Domain.Models.CreateRoom room);
+        bool AddRoom(hotelManagement.Domain.Models.CreateRoom room);
         Task<IEnumerable<CreateRoom>> GetRoomsAsync();
         bool EditRoom(hotelManagement.Domain.Models.CreateRoom roomModel);
 
@@ -100,24 +100,24 @@ namespace hotelManagement.BLL.Services
             }
         }
 
-        public bool AddBrand(hotelManagement.Domain.Models.CreateRoom carBrand)
+        public bool AddRoom(hotelManagement.Domain.Models.CreateRoom createRoom)
         {
             try { 
-                var existingBrand = roomRepository.GetByName(carBrand.RoomNumber);
+                var existingBrand = roomRepository.GetByName(createRoom.RoomNumber);
                 if (existingBrand != null)
                 {
-                    throw new CarRentalException("Room already exists");
+                    throw new RoomException("Room already exists");
                 }
-                var carBrandToAdd = new hotelManagement.DAL.Persistence.Entities.Dhome
+                var createRoomToAdd = new hotelManagement.DAL.Persistence.Entities.Dhome
                 {
-                    Kat = carBrand.RoomFloor,
-                    NumerDhome = carBrand.RoomNumber,
-                    TipDhome = (int)carBrand.RoomTypeId,
+                    Kat = createRoom.RoomFloor,
+                    NumerDhome = createRoom.RoomNumber,
+                    TipDhome = (int)createRoom.RoomTypeId,
                     CreatedOn = DateTime.Now,
                     Invalidated = 1
 
                 };
-                roomRepository.Add(carBrandToAdd);
+                roomRepository.Add(createRoomToAdd);
                 roomRepository.SaveChanges();
 
                 return true;
@@ -128,46 +128,5 @@ namespace hotelManagement.BLL.Services
             }
         }
 
-        //public IEnumerable<Dhome> GetCarBrands()
-        //{
-        //    var carBrands = roomRepository.GetAll()
-        //                                       .ToList();
-        //    return carBrands.Select(brand => new Dhome
-        //    {
-        //        Id = brand.Id,
-        //        Name = brand.Name,
-        //        LogoPath = brand.Logo
-        //    }).ToList();
-        //}
-
-        //public Dhome GetById(int id)
-        //{
-        //    var carBrand = roomRepository.GetById(id);
-        //    return
-        //        new Dhome
-        //        {
-        //            Id = carBrand.Id,
-        //            Name = carBrand.Name,
-        //            LogoPath = carBrand.Logo
-        //        };
-        //}
-
-        //public void EditBrand(Dhome carBrand)
-        //{
-        //    var existingBrand = roomRepository.GetById(carBrand.Id);
-
-        //    if (existingBrand == null)
-        //    {
-        //        throw new CarRentalException("Brand does not exist");
-        //    }
-
-        //    existingBrand.Name = carBrand.Name;
-        //    roomRepository.SaveChanges();
-        //}
-
-        //public void RemoveBrand(int id)
-        //{
-
-        //}
     }
 }

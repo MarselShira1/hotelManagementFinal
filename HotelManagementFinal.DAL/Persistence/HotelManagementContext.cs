@@ -3,18 +3,27 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using hotelManagement.DAL.Persistence.Entities;
 using Action = hotelManagement.DAL.Persistence.Entities.Action;
+using Microsoft.Extensions.Configuration;
 namespace hotelManagement.DAL.Persistence;
 
 public partial class HotelManagementContext : DbContext
 {
-    public HotelManagementContext()
-    {
-    }
+    private readonly IConfiguration _configuration;
 
-    public HotelManagementContext(DbContextOptions<HotelManagementContext> options)
+    public HotelManagementContext(DbContextOptions<HotelManagementContext> options, IConfiguration configuration)
         : base(options)
     {
+        _configuration = configuration;
     }
+
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    if (!optionsBuilder.IsConfigured)
+    //    {
+    //        var connectionString = _configuration.GetConnectionString("DefaultConnection");
+    //        optionsBuilder.UseSqlServer(connectionString);
+    //    }
+    //}
 
     public virtual DbSet<Action> Actions { get; set; }
 
@@ -32,7 +41,7 @@ public partial class HotelManagementContext : DbContext
 
     public virtual DbSet<Review> Reviews { get; set; }
 
-    public virtual DbSet<Rezervim> Rezervims { get; set; }
+    public virtual DbSet<Rezervim> Rezervime { get; set; }
 
     public virtual DbSet<RezervimService> RezervimServices { get; set; }
 
@@ -40,7 +49,7 @@ public partial class HotelManagementContext : DbContext
 
     public virtual DbSet<RoomRate> RoomRates { get; set; }
 
-    public virtual DbSet<RoomRateRange> RoomRateRanges { get; set; }
+    public virtual DbSet<RoomRateRangeDataAccess> RoomRateRanges { get; set; }
 
     public virtual DbSet<TipDhome> TipDhomes { get; set; }
 
@@ -48,7 +57,7 @@ public partial class HotelManagementContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-K6CTF30;Database=HotelManagement;User ID=sa;Password=kleaklea2003;Trusted_Connection=False;TrustServerCertificate=Yes");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-F8EDG2P;Database=HotelManagement;User ID=sa;Password=Ester123;Trusted_Connection=False;TrustServerCertificate=Yes");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -258,7 +267,7 @@ public partial class HotelManagementContext : DbContext
                 .HasForeignKey(d => d.RoomRate)
                 .HasConstraintName("FK__Rezervim__room_r__534D60F1");
 
-            entity.HasOne(d => d.UserNavigation).WithMany(p => p.Rezervims)
+            entity.HasOne(d => d.UserNavigation).WithMany(p => p.Rezervime)
                 .HasForeignKey(d => d.User)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Rezervim__user__5165187F");
@@ -320,7 +329,7 @@ public partial class HotelManagementContext : DbContext
                 .HasConstraintName("FK_Room_Rate_Tip_dhome");
         });
 
-        modelBuilder.Entity<RoomRateRange>(entity =>
+        modelBuilder.Entity<RoomRateRangeDataAccess>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Room_Rat__3213E83F9269A2A3");
 
