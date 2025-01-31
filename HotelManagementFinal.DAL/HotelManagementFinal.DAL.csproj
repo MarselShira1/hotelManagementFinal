@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HotelManagementFinal.Domain\HotelManagementFinal.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

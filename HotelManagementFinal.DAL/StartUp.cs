@@ -1,6 +1,5 @@
 ﻿using hotelManagement.DAL.Persistence;
 using hotelManagement.DAL.Persistence.Repositories;
-using HotelManagementFinal.DAL.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +25,7 @@ namespace hotelManagement.DAL
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddDistributedMemoryCache();
             services.AddSession();
+            services.AddScoped<IRoomRateRangesRepository, RoomRateRangesRepository>();
         }
 
          

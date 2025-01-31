@@ -2,8 +2,50 @@
     
 <div class="text-center">
     <h1 class="display-4">Rooms</h1>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">+</button>
+    <button type="button" id="addNew" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">+</button>
 </div>
+<div class="modal fade" id="editRoomModal" tabindex="-1" aria-labelledby="editRoomLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editRoomForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editRoomId" name="Id" />
+                    @* <div class="mb-3">
+                        <label for="editRoomType" class="form-label">Room Type</label>
+                        <select id="editRoomType" class="form-select" name="RoomTypeId" required>
+                            <option value="">Select Room Type</option>
+                            @foreach (var roomType in Model.RoomTypes)
+                            {   
+                                <option value="@roomType.Id">@roomType.Emer</option>
+                            }
+                        </select>
+                    </div> *@
+                    <div class="mb-3">
+                        <label for="EditRoom_RoomTypeId" class="form-label">Choose room type</label>
+                        <select id="EditRoom_RoomTypeId" class="form-select" required>
+                            <option value="">Select Room Type</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editRoomFloor" class="form-label">Room Floor</label>
+                        <input type="number" id="editRoomFloor" name="RoomFloor" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editRoomNumber" class="form-label">Room Number</label>
+                        <input type="text" id="editRoomNumber" name="RoomNumber" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="addRoomModal" tabindex="-1" aria-labelledby="addRoomLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -19,10 +61,6 @@
                         <label for="NewRoom_RoomTypeId" class="form-label">Choose room type</label>
                         <select id="NewRoom_RoomTypeId" class="form-select" required>
                             <option value="">Select Room Type</option>
-                            @foreach (var roomType in Model.RoomTypes)
-                            {
-                                <option value="@roomType.Id">@roomType.Emer</option>
-                            }
                         </select>
                     </div>
                     <div class="mb-3">
@@ -46,66 +84,93 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Id</th>
-            <th>Type</th>
+            <th>Room Type</th>
             <th>Floor</th>
             <th>Room Number</th>
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var room in Model.Room)
-        {
-            <tr>
-                <td>@room.Id</td>
-                <td>@(room.RoomType?.Emer ?? "N/A")</td>
-                <td>@room.room_number</td>
-                <td>@room.room_floor</td>
-                <td>
-                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#editRoomModal"
-                            onclick="populateEditModal({
-                                    id: '@room.Id',
-                                    roomTypeId: '@(room.RoomType?.Id ?? 0)',
-                                    roomTypeName: '@(room.RoomType?.Emer ?? "")',
-                                    roomNumber: '@room.room_number',
-                                    roomFloor: '@room.room_floor'
-                                })">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-
-                    <form method="post" asp-action="DeleteRoom" asp-controller="Room"
-                          style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this room?');">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@room.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
+   <tbody>
+       
+    </tbody> 
 </table>
 
-<script>
-        function populateEditModal(room) {
-        console.log("Room:", room);
-
-        document.getElementById('editRoomId').value = room.id;
-        document.getElementById('editRoomType').value = room.roomTypeId;
-        document.getElementById('editRoomTypeName').textContent = room.roomTypeName;
-        document.getElementById('editRoomNumber').value = room.roomNumber;
-        document.getElementById('editRoomFloor').value = room.roomFloor;
-    }
-
-</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+       var RoomTypes = [];
+        $('#editRoomForm').submit(function (event) {
+        event.preventDefault();
 
+        var roomId = $('#editRoomId').val();
+            var roomTypeId = $('#EditRoom_RoomTypeId').val();
+
+        var roomFloor = $('#editRoomFloor').val();
+        var roomNumber = $('#editRoomNumber').val();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateRoomSql", "Room")',
+                data: {
+                    RoomId: roomId,
+                    RoomTypeId: roomTypeId,
+                    RoomFloor: roomFloor,
+                    RoomNumber: roomNumber
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert('Room updated successfully.');
+                        $('#editRoomModal').modal('hide');
+                        loadRoomData(); // Reload the table data
+                    } else {
+                        alert('Failed to update room: ' + (response.errors ? response.errors.join(', ') : 'Unknown error'));
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+    });
+            $('#addNew').on('click', function () {
+            populateRoomTypeDropdown("NewRoom_RoomTypeId");
+    });
+        //        $('#editButton').on('click', function () {
+        //            debugger;
+        // });
+
+
+        function populateEditModal(room) {
+            debugger
+        console.log("Room:", room);
+                    populateRoomTypeDropdown("EditRoom_RoomTypeId");
+
+
+        document.getElementById('editRoomId').value = room.id;
+        // document.getElementById('editRoomType').value = room.roomTypeId;
+        // document.getElementById('editRoomTypeName').textContent = room.roomTypeName;
+        document.getElementById('editRoomNumber').value = room.roomNumber;
+        document.getElementById('editRoomFloor').value = room.roomFloor;
+                 const dropdown = $('#EditRoom_RoomTypeId');
+                dropdown.val(room.roomTypeId);
+    }
+
+        function populateRoomTypeDropdown(roomActionId) {
+        debugger;
+                var dropdown = $(`#${roomActionId}`);
+        dropdown.empty(); // Clear any existing options
+
+        // Add the default "Select Room Type" option
+        dropdown.append('<option value="">Select Room Type1</option>');
+
+        debugger
+        // Populate the dropdown with room types from the RoomTypes array
+        RoomTypes.forEach(function (roomType) {
+            dropdown.append(`<option value="${roomType.id}">${roomType.name}</option>`);
+        });
+    }
 
             function loadRoomData() {
+                    showLoader();
                 $.ajax({
                     type: "GET",
                     url: '@Url.Action("GetRoomList", "Room")', // Controller action URL
@@ -117,45 +182,42 @@
                             debugger
                             var row = `
                                 <tr>
-                                    <td>${room.id}</td>
-                                            <td>${room.tipDhome ? room.tipDhome: "N/A"}</td>
-                                        <td>${room.kat}</td>
-                                        <td>${room.numerDhome}</td>
+                                            <td>${room.roomTypeName}</td>
+                                            <td>${room.roomFloor}</td>
+                                            <td>${room.roomNumber}</td>
                                     <td>
-                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                        <button id="editButton" type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#editRoomModal"
                                                 onclick="populateEditModal({
-                                                    id: '${room.id}',
-                                                    roomTypeId: '${room.roomType ? room.roomType.id : 0}',
-                                                        roomTypeName: '${room.tipDhome ? room.tipDhome : ""}',
-                                                    roomNumber: '${room.numerDhome}',
-                                                    roomFloor: '${room.kat}'
+                                                        id: '${room.roomId}',
+                                                        roomTypeId: '${room.roomTypeId ? room.roomTypeId : 0}',
+                                                        roomNumber: '${room.roomNumber}',
+                                                        roomFloor: '${room.roomFloor}'
                                                 })">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
 
-                                        <form method="post" asp-action="DeleteRoom" asp-controller="Room"
-                                              style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this room?');">
-                                            <input type="hidden" name="id" value="${room.id}" />
-                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <button type="button" class="btn btn-danger btn-sm delete-button" data-room-id="${room.roomId}">
                                                 <i class="fas fa-trash"></i> Delete
                                             </button>
-                                        </form>
                                     </td>
                                 </tr>`;
                             tbody.append(row);
                         });
+                            hideLoader();
                     },
                     error: function () {
+                            hideLoader();
                         alert('Failed to load room data.');
                     }
                 });
             }
 
     $(document).ready(function () {
-             loadRoomData();
-
-
+        //ngarkimi i listes me dhoma
+        loadRoomData();
+        //ngarkimi i listes me room types
+        loadRoomTypes();
         $('#submitButton').click(function (event) {
             event.preventDefault();
 debugger;
@@ -171,19 +233,67 @@ debugger;
                     RoomFloor: roomFloor,
                     RoomNumber: roomNumber
                 },
-                success: function (response) {
-                    if (response.success) {
-                        alert('Room created successfully.');
-                        // Optional: reload the page or update the UI
-                    } else {
-                        alert('Failed to create room: ' + response.errors.join(', '));
-                    }
-                },
-                error: function () {
-                    alert('An error occurred.');
-                }
+                    success: function (response) {
+            if (response.success) {
+                alert('Room saved successfully.');
+                    $('#addRoomModal').modal('hide');
+                loadRoomData(); 
+            } else {
+                alert('Failed to save room: ' + (response.errors ? response.errors.join(', ') : 'Unknown error'));
+            }
+        },
+            
+            error: function () {
+                alert('An error occurred.');
+            }
             });
         });
     });
+
+
+        $(document).on('click', '.delete-button', function () {
+        const roomId = $(this).data('room-id'); // Get room ID from data attribute
+
+        // Open confirmation modal
+        if (confirm('Are you sure you want to delete this room?')) {
+            // If user confirms, make an AJAX call to delete the room
+            $.ajax({
+                type: 'POST',
+                url: '/Room/DeleteRoom', // Adjust the controller/action URL if needed
+                data: { id: roomId },
+                success: function (response) {
+                    if (response.success) {
+                        alert('Room deleted successfully.');
+                        // Optionally, refresh the table or remove the row dynamically
+                        $(`button[data-room-id="${roomId}"]`).closest('tr').remove();
+                    } else {
+                        alert('Failed to delete room: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while trying to delete the room.');
+                }
+            });
+        }
+    });
+
+
+    //funksion i cili kthen listen me roomtypes
+        function loadRoomTypes() {
+        $.ajax({
+            type: "GET",
+                url: '/RoomType/GetAllRoomTypes', // Update URL if the controller name or route differs
+            success: function (roomTypes) {
+                debugger
+                RoomTypes = roomTypes;
+                console.log("RoomTypes = "+RoomTypes);
+            },
+            error: function () {
+                alert('Failed to load room types.');
+            }
+        });
+    }
+
+
 </script>
 
