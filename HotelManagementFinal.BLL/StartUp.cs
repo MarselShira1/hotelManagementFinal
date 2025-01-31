@@ -16,8 +16,10 @@ public static class Startup
         services.RegisterDALServices(config);   
         services.AddScoped<IRoomService, RoomService>();
         services.AddScoped<IRoomTypeService, RoomTypeService>();
+        services.AddScoped<IAuthService, AuthService>();
         services.AddTransient<IMailSenderService, MailSenderService>();
         services.AddScoped<IRoomRateService, RoomRateService>();
+        services.AddScoped<IRoomRateRangesService, RoomRateRangesService>();
     }
 }
 
