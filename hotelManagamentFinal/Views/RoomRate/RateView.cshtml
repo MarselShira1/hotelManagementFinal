@@ -1,8 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿
 @model HotelManagement.Models.RoomRateViewModel
 
 
@@ -23,10 +19,19 @@
             </div>
             <div class="modal-body">
                 <!-- Forma për shtim -->
-                
+
 
                 <form method="post" action="/RoomRate/CreateRate">
                     @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label" for="TipDhomeId">Room Type</label>
+                        <select class="form-control" id="TipDhomeId" name="TipDhomeId" asp-for="NewRate.TipDhomeId" asp-items="Model.RoomTypes">
+                            <option value="">Select Room Type</option>
+                        </select>
+
+                        <span class="text-danger field-validation-valid" data-valmsg-for="TipDhomeId" data-valmsg-replace="true"></span>
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label" for="Emer">Name</label>
                         <input class="form-control" type="text" id="Emer" name="Emer" />
@@ -65,11 +70,21 @@
                 <div class="modal-body">
                     <form method="post" action="/RoomRate/EditRate">
                         @Html.AntiForgeryToken()
+
+
                         <input type="hidden" name="Id" value="@rate.Id" />
                         <div class="mb-3">
                             <label class="form-label" for="Emer">Name</label>
                             <input class="form-control" type="text" id="Emer" name="Emer" value="@rate.Emer" />
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="TipDhomeId">Room Type</label>
+                            <select class="form-control" id="TipDhomeId" name="TipDhomeId" asp-for="@rate.TipDhomeId" asp-items="Model.RoomTypes">
+                                <option value="">Select Room Type</option>
+                            </select>
+
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label" for="CmimBaze">Base Price</label>
                             <input class="form-control" type="text" id="CmimBaze" name="CmimBaze" value="@rate.CmimBaze" />
@@ -90,17 +105,17 @@
 <table class="table">
     <thead>
         <tr>
-			<!-- <th>Id</th>-->
+            <th>Id</th>
             <th>Name</th>
             <th>Base Price</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var rate in Model.Rates)
+        @foreach (var rate in Model.Rates.Where(r => r.Invalidated != 0))
         {
             <tr>
-              
+                <td>@rate.Id</td>
                 <td>@rate.Emer</td>
                 <td>@rate.CmimBaze</td>
                 <td>
@@ -115,38 +130,3 @@
         }
     </tbody>
 </table>
-
-
-<!--
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-
-        $(document).ready(function () {
-            $('#submitButton').click(function (event) {
-                event.preventDefault();
-    debugger;
-                var Emer = $('#Name').val();
-                var CmimBaze = $('#basePrice').val();
-                $.ajax({
-                    type: "POST",
-                        url: '@Url.Action("CreateRate", "RoomRate")',
-                    data: {
-                        Emer: Emer,
-                        CmimBaze: CmimBaze,
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            alert('Room created successfully.');
-                            // Optional: reload the page or update the UI
-                        } else {
-                            alert('Failed to create room: ' + response.errors.join(', '));
-                        }
-                    },
-                    error: function () {
-                        alert('An error occurred.');
-                    }
-                });
-            });
-        });
-		</script>-->

@@ -4,6 +4,7 @@ using System.Linq;
 using hotelManagamentFinal.Models.DTO.RoomRate;
 using hotelManagement.BLL.Services;
 using HotelManagementFinal.Domain.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace hotelManagementFinal.Controllers
 {
@@ -19,14 +20,23 @@ namespace hotelManagementFinal.Controllers
         public IActionResult RateView()
         {
             var rates = _roomRateService.GetAllRoomRates();
+            //populate room types
+            var roomTypes = _roomRateService.GetAllRoomTypes()
+                                     .Select(rt => new SelectListItem
+                                     {
+                                         Value = rt.Id.ToString(),
+                                         Text = rt.Emer
+                                     }).ToList();
             var model = new RoomRateViewModel
             {
                 Rates = rates.Select(r => new RoomRateDTO
                 {
                     Id = r.Id,
                     Emer = r.Emer,
-                    CmimBaze = r.CmimBaze
+                    CmimBaze = r.CmimBaze,
+                    TipDhomeId = r.TipDhomeId //shtojme tipin e dhomes
                 }).ToList(),
+                RoomTypes = roomTypes,
                 NewRate = new RoomRateDTO()
             };
             return View(model);
@@ -77,11 +87,11 @@ namespace hotelManagementFinal.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteRate(int id)
         {
-            var rate = _roomRateService.GetRoomRateById(id);
-            if (rate != null)
-            {
-                _roomRateService.DeleteRoomRate(id);
-            }
+            //var rate = _roomRateService.GetRoomRateById(id);
+            //if (rate != null)
+            //{
+            _roomRateService.DeleteRoomRate(id);
+            // }
             return RedirectToAction("RateView");
         }
 
@@ -118,5 +128,4 @@ namespace hotelManagementFinal.Controllers
             return RedirectToAction("RateView");
         }
     }
-}
-
+} 

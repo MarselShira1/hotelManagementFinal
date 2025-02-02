@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HotelManagementFinal.Domain.Models;
 
 namespace hotelManagement.DAL.Persistence.Entities;
 
@@ -21,7 +22,7 @@ public partial class RoomRate : BaseEntity<int>
 
     public virtual ICollection<Rezervim> Rezervims { get; set; } = new List<Rezervim>();
 
-    public virtual IEnumerable<RoomRateRangeDataAccess> RoomRateRanges { get; set; } = new List<RoomRateRangeDataAccess>();
+    public virtual ICollection<RoomRateRange> RoomRateRanges { get; set; } = new List<RoomRateRange>();
 
     public virtual TipDhome TipDhome { get; set; } = null!;
 }
