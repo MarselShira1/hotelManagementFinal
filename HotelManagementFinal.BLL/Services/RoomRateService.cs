@@ -18,6 +18,7 @@ namespace hotelManagement.BLL.Services
         RoomRate GetRoomRateById(int id);
         void DeleteRoomRate(int id);
         void UpdateRoomRate(CreateRoomRate roomRate);
+        IEnumerable<object> GetAllRoomTypes();
     }
     
     internal class RoomRateService : IRoomRateService
