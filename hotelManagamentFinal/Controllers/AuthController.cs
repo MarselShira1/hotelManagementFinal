@@ -120,14 +120,17 @@ namespace hotelManagamentFinal.Controllers
                 if (user1 != null)
                 {
                     var user = _authService.Login(loginDto.Email, loginDto.Password);
-               
+
                     if (user != null)
                     {
+                        HttpContext.Session.SetInt32("UserId", user.Id);
                         HttpContext.Session.SetInt32("RoleId", user.Role);
                         HttpContext.Session.SetString("UserEmail", user.Email);
                         HttpContext.Session.SetString("UserName", user.Emer);
 
-                    return Json(
+                        //Console.WriteLine($"Session Set - UserName: {HttpContext.Session.GetString("UserName")}");
+                        //Console.WriteLine($"Session Set - UserEmail: {HttpContext.Session.GetString("UserEmail")}");
+                        return Json(
                        new
                        {
                            Success = true,

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\DTO\NewBookindDTO.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />

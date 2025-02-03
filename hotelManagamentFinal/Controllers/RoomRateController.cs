@@ -30,7 +30,19 @@ namespace HotelManagement.Controllers
             };
             return View(model);
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetAllRoomRates()
+        {
+            try
+            {
+                var roomRates =  _roomRateService.GetAllRoomRates().ToList();
+                return Json(roomRates); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Failed to load room rates.", error = ex.Message });
+            }
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateRate(RoomRateDTO model)
