@@ -8,6 +8,7 @@ using hotelManagement.DAL.Persistence;
 using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence.Repositories;
 using hotelManagement.Common.Exceptions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace hotelManagement.BLL.Services
 {
   
@@ -103,6 +104,8 @@ namespace hotelManagement.BLL.Services
             rateToUpdate.Emer = roomRate.Name;
             rateToUpdate.CmimBaze = roomRate.base_price;
             rateToUpdate.TipDhomeId = roomRate.TipDhomeId;
+
+            rateToUpdate.ModifiedOn = DateTime.Now;
 
             RoomRateRepository.Update(rateToUpdate);
             RoomRateRepository.SaveChanges();

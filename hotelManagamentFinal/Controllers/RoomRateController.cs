@@ -10,6 +10,7 @@ namespace HotelManagement.Controllers
     public class RoomRateController : Controller
     {
         private readonly IRoomRateService _roomRateService;
+        private List<SelectListItem> roomTypes;
 
         public RoomRateController(IRoomRateService roomRateService)
         {
@@ -35,7 +36,7 @@ namespace HotelManagement.Controllers
                     TipDhomeId = r.TipDhomeId
 
                 }).ToList(),
-                RoomTypes = roomTypes,
+                RoomTypes = roomTypes, // per te shtuar select list me tipet e dhomave
                 NewRate = new RoomRateDTO()
             };
             return View(model);
@@ -47,10 +48,7 @@ namespace HotelManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                              .Select(e => e.ErrorMessage)
-                                              .ToList();
-                Console.WriteLine("Validation Errors: " + string.Join(", ", errors));
+                Console.WriteLine($"Selected Room Type ID: {model.TipDhomeId}");
 
                 //shtim i room rate
                 _roomRateService.AddRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
@@ -63,15 +61,23 @@ namespace HotelManagement.Controllers
 
                 //marrja listes me room rate
                 var rates = _roomRateService.GetAllRoomRates();
+                var roomTypes = _roomRateService.GetAllRoomTypes()
+                                        .Select(rt => new SelectListItem
+                                        {
+                                            Value = rt.Id.ToString(),
+                                            Text = rt.Emer
+                                        }).ToList();
                 var viewModel = new RoomRateViewModel
                 {
                     Rates = rates.Select(rate => new RoomRateDTO
                     {
                         Id = rate.Id,
                         Emer = rate.Emer,
-                        CmimBaze = rate.CmimBaze
+                        CmimBaze = rate.CmimBaze,
+                        TipDhomeId = rate.TipDhomeId
                     }).ToList(),
-                    NewRate = model
+                    RoomTypes = roomTypes,
+                    NewRate = new RoomRateDTO()
                 };
                 return View("RateView", viewModel);
             }
@@ -98,6 +104,7 @@ namespace HotelManagement.Controllers
         {
             if (ModelState.IsValid)
             {
+                Console.WriteLine($"Editing RoomRate: {model.Id}, Selected Room Type: {model.TipDhomeId}");
 
                 _roomRateService.UpdateRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
                 {
@@ -109,6 +116,12 @@ namespace HotelManagement.Controllers
 
 
                 var rates = _roomRateService.GetAllRoomRates();
+                var roomTypes = _roomRateService.GetAllRoomTypes()
+                                .Select(rt => new SelectListItem
+                                {
+                                    Value = rt.Id.ToString(),
+                                    Text = rt.Emer
+                                }).ToList();
                 var viewModel = new RoomRateViewModel
                 {
                     Rates = rates.Select(rate => new RoomRateDTO
@@ -117,6 +130,7 @@ namespace HotelManagement.Controllers
                         Emer = rate.Emer,
                         CmimBaze = rate.CmimBaze
                     }).ToList(),
+                    RoomTypes = roomTypes, // per te shtuar select list me tipet e dhomave
                     NewRate = new RoomRateDTO()
                 };
                 return View("RateView", viewModel);

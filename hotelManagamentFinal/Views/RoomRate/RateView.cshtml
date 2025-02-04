@@ -108,6 +108,7 @@
             
             <th>Name</th>
             <th>Base Price</th>
+            <th>Room Type</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -115,9 +116,11 @@
         @foreach (var rate in Model.Rates.Where(r => r.Invalidated != 0))
         {
             <tr>
-                <td>@rate.Id</td>
+                
                 <td>@rate.Emer</td>
                 <td>@rate.CmimBaze</td>
+                <td> @Model.RoomTypes.FirstOrDefault(rt => rt.Value == rate.TipDhomeId.ToString())?.Text</td>
+
                 <td>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRateModal-@rate.Id">  Edit</button>
                     <form method="post" asp-action="DeleteRate" asp-controller="RoomRate">
