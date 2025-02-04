@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using hotelManagement.DAL.Persistence.Entities;
 
-namespace hotelManagement.DAL.Persistence.Entities;
+namespace hotelManagament.DAL.Persistence.Entities;
 
 public partial class Action : BaseEntity<int>
 {

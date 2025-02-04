@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace hotelManagament.DAL.Persistence;
+namespace hotelManagamentFinal.Data2;
 
 public partial class HotelManagementContext : DbContext
 {

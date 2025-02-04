@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using hotelManagement.DAL.Persistence.Entities;
+namespace hotelManagamentFinal.Data2;
 
-namespace hotelManagament.DAL.Persistence.Entities;
-
-public partial class Role : BaseEntity<int>
+public partial class Action
 {
     public int Id { get; set; }
 
-    public string EmerRoli { get; set; } = null!;
+    public string Action1 { get; set; } = null!;
+
+    public string? Pershkrim { get; set; }
 
     public DateTime? CreatedOn { get; set; }
 

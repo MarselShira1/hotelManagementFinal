@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using hotelManagement.DAL.Persistence.Entities;
+namespace hotelManagamentFinal.Data2;
 
-namespace hotelManagament.DAL.Persistence.Entities;
-
-public partial class User : BaseEntity<int>
+public partial class User
 {
     public int Id { get; set; }
 

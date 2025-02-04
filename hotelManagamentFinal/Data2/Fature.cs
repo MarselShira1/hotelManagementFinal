@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using hotelManagement.DAL.Persistence.Entities;
+namespace hotelManagamentFinal.Data2;
 
-namespace hotelManagament.DAL.Persistence.Entities;
-
-public partial class Fature : BaseEntity<int>
+public partial class Fature
 {
     public int Id { get; set; }
 

@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using hotelManagement.DAL.Persistence.Entities;
+namespace hotelManagamentFinal.Data2;
 
-namespace hotelManagament.DAL.Persistence.Entities;
-
-public partial class ExtraService : BaseEntity<int>
+public partial class Review
 {
     public int Id { get; set; }
 
-    public string Emer { get; set; } = null!;
+    public int User { get; set; }
+
+    public int? Rating { get; set; }
 
     public string? Pershkrim { get; set; }
+
+    public DateOnly Date { get; set; }
 
     public DateTime? CreatedOn { get; set; }
 
     public DateTime? ModifiedOn { get; set; }
 
     public byte? Invalidated { get; set; }
+
+    public virtual User UserNavigation { get; set; } = null!;
 }

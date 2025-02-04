@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using hotelManagement.DAL.Persistence.Entities;
 
-namespace hotelManagament.DAL.Persistence.Entities;
+namespace hotelManagamentFinal.Data2;
 
-public partial class Pagese : BaseEntity<int>
+public partial class Pagese
 {
     public int Id { get; set; }
 

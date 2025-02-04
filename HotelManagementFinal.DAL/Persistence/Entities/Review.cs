@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace hotelManagement.DAL.Persistence.Entities;
+using hotelManagement.DAL.Persistence.Entities;
+
+namespace hotelManagament.DAL.Persistence.Entities;
 
 public partial class Review : BaseEntity<int>
 {

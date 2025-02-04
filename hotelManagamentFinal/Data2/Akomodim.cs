@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using hotelManagement.DAL.Persistence.Entities;
 
-namespace hotelManagament.DAL.Persistence.Entities;
+namespace hotelManagamentFinal.Data2;
 
-public partial class Akomodim : BaseEntity<int>
-
+public partial class Akomodim
 {
     public int Id { get; set; }
 
