@@ -3,6 +3,7 @@ using HotelManagement.Models;
 using System.Linq;
 using hotelManagamentFinal.Models.DTO.RoomRate;
 using hotelManagement.BLL.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HotelManagement.Controllers
 {
@@ -18,14 +19,23 @@ namespace HotelManagement.Controllers
         public IActionResult RateView()
         {
             var rates = _roomRateService.GetAllRoomRates();
+            var roomTypes = _roomRateService.GetAllRoomTypes()
+                                     .Select(rt => new SelectListItem
+                                     {
+                                         Value = rt.Id.ToString(),
+                                         Text = rt.Emer
+                                     }).ToList();
             var model = new RoomRateViewModel
             {
                 Rates = rates.Select(r => new RoomRateDTO
                 {
                     Id = r.Id,
                     Emer = r.Emer,
-                    CmimBaze = r.CmimBaze
+                    CmimBaze = r.CmimBaze,
+                    TipDhomeId = r.TipDhomeId
+
                 }).ToList(),
+                RoomTypes = roomTypes,
                 NewRate = new RoomRateDTO()
             };
             return View(model);
@@ -46,7 +56,8 @@ namespace HotelManagement.Controllers
                 _roomRateService.AddRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
                 {
                     Name = model.Emer,
-                    base_price = model.CmimBaze.ToString()
+                    base_price = model.CmimBaze,
+                    TipDhomeId = model.TipDhomeId
                 });
 
 
@@ -76,11 +87,7 @@ namespace HotelManagement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteRate(int id)
         {
-            var rate = _roomRateService.GetRoomRateById(id);
-            if (rate != null)
-            {
-                _roomRateService.DeleteRoomRate(id);
-            }
+            _roomRateService.SoftDeleteRoomRate(id);
             return RedirectToAction("RateView");
         }
 
@@ -95,8 +102,9 @@ namespace HotelManagement.Controllers
                 _roomRateService.UpdateRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
                 {
                     Name = model.Emer,
-                    base_price = model.CmimBaze.ToString(),
-                    Id = model.Id // Ensure ID is passed for updating the correct record
+                    base_price = model.CmimBaze,
+                    TipDhomeId = model.TipDhomeId,
+                    Id = model.Id 
                 });
 
 

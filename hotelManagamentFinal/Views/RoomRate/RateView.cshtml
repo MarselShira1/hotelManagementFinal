@@ -25,8 +25,16 @@
                 <!-- Forma për shtim -->
                 
 
-                <form method="post" action="/RoomRate/CreateRate">
+                <form method="post" asp-action="CreateRate" asp-controller="RoomRate">
+
                     @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label" for="TipDhomeId">Room Type</label>
+                        <select class="form-control" id="TipDhomeId" name="TipDhomeId" asp-for="NewRate.TipDhomeId" asp-items="Model.RoomTypes">
+                            <option value="">Select Room Type</option>
+                        </select>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="TipDhomeId" data-valmsg-replace="true"></span>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label" for="Emer">Name</label>
                         <input class="form-control" type="text" id="Emer" name="Emer" />
@@ -63,8 +71,15 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="/RoomRate/EditRate">
+                    <form method="post" asp-action="EditRate" asp-controller="RoomRate">
+
                         @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label class="form-label" for="TipDhomeId">Room Type</label>
+                            <select class="form-control" id="TipDhomeId" name="TipDhomeId" asp-for="@rate.TipDhomeId" asp-items="Model.RoomTypes">
+                                <option value="">Select Room Type</option>
+                            </select>
+                        </div>
                         <input type="hidden" name="Id" value="@rate.Id" />
                         <div class="mb-3">
                             <label class="form-label" for="Emer">Name</label>
@@ -90,14 +105,14 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Id</th>
+            
             <th>Name</th>
             <th>Base Price</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var rate in Model.Rates)
+        @foreach (var rate in Model.Rates.Where(r => r.Invalidated != 0))
         {
             <tr>
                 <td>@rate.Id</td>
@@ -105,7 +120,8 @@
                 <td>@rate.CmimBaze</td>
                 <td>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRateModal-@rate.Id">  Edit</button>
-                    <form method="post" asp-action="DeleteRate" asp-controller="RoomRate" style="display:inline;">
+                    <form method="post" asp-action="DeleteRate" asp-controller="RoomRate">
+
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@rate.Id" />
                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -117,36 +133,3 @@
 </table>
 
 
-<!--
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-
-        $(document).ready(function () {
-            $('#submitButton').click(function (event) {
-                event.preventDefault();
-    debugger;
-                var Emer = $('#Name').val();
-                var CmimBaze = $('#basePrice').val();
-                $.ajax({
-                    type: "POST",
-                        url: '@Url.Action("CreateRate", "RoomRate")',
-                    data: {
-                        Emer: Emer,
-                        CmimBaze: CmimBaze,
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            alert('Room created successfully.');
-                            // Optional: reload the page or update the UI
-                        } else {
-                            alert('Failed to create room: ' + response.errors.join(', '));
-                        }
-                    },
-                    error: function () {
-                        alert('An error occurred.');
-                    }
-                });
-            });
-        });
-		</script>-->
