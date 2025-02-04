@@ -16,5 +16,6 @@
         public decimal CmimBaze { get; set; }
 
         public int TipDhomeId { get; set; }
+        public byte? Invalidated { get; set; }
     }
 }

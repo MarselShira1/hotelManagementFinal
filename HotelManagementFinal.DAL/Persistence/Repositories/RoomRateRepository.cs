@@ -13,7 +13,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
     public interface IRoomRateRepository : _IBaseRepository<RoomRate, int>
     {
         void Update(RoomRate roomRate);
-        IEnumerable<RoomType> GetAllRoomTypes();
+        IEnumerable<TipDhome> GetAllRoomTypes();
     }
 
     public class RoomType
@@ -29,7 +29,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
         }
         public IEnumerable<RoomRate> GetAll()
         {
-            return _dbSet.ToList();
+           
             return _dbSet.Include(r => r.TipDhome).ToList();
         }
         public new RoomRate GetById(int id)
@@ -37,16 +37,19 @@ namespace hotelManagement.DAL.Persistence.Repositories
             return base.GetById(id);
         }
 
+
         public void Update(RoomRate roomRate)
         {
-            _dbSet.Update(roomRate);
-            //  _dbContext.SaveChanges(); // Fix: Use the instance of DbContext
+            _dbSet.Update(roomRate);  
+            _dbContext.SaveChanges();
         }
 
-        //  public IEnumerable<RoomType> GetAllRoomTypes()
-        //  {
-        //     return DbContext.RoomTypes.ToList(); // Ensure RoomTypes is in your DbContext
-        // }
+
+
+        public IEnumerable<TipDhome> GetAllRoomTypes()
+        {
+            return _dbContext.TipDhomes.ToList(); // Ensure RoomTypes exists in DbContext
+        }
 
 
     }

@@ -16,9 +16,9 @@ namespace hotelManagement.BLL.Services
         void AddRoomRate(CreateRoomRate roomRate);
         IEnumerable<RoomRate> GetAllRoomRates(); // Change return type to match implementation
         RoomRate GetRoomRateById(int id);
-        void DeleteRoomRate(int id);
+        void SoftDeleteRoomRate(int id);
         void UpdateRoomRate(CreateRoomRate roomRate);
-        IEnumerable<RoomType> GetAllRoomTypes();
+        IEnumerable<TipDhome> GetAllRoomTypes();
     }
 
     internal class RoomRateService : IRoomRateService
@@ -35,7 +35,7 @@ namespace hotelManagement.BLL.Services
             var roomRateToAdd = new hotelManagement.DAL.Persistence.Entities.RoomRate
             {
                 Emer = roomRate.Name,
-                CmimBaze = decimal.Parse(roomRate.base_price),
+                CmimBaze = roomRate.base_price,
                 TipDhomeId = roomRate.TipDhomeId,//statike sa per test,
                 CreatedOn = DateTime.Now,
                 Invalidated = 1
@@ -49,15 +49,16 @@ namespace hotelManagement.BLL.Services
         public IEnumerable<RoomRate> GetAllRoomRates()
         {
             var rates = RoomRateRepository.GetAll()
-         .Where(r => r.Invalidated != 0)  // 
-         .ToList();
+            .Where(r => r.Invalidated != 0)
+            .ToList();
 
             return rates.Select(rate => new RoomRate
             {
                 Id = rate.Id,
                 Emer = rate.Emer,
                 CmimBaze = rate.CmimBaze,
-                TipDhomeId = rate.TipDhomeId
+                TipDhomeId = rate.TipDhomeId,
+                Invalidated = rate.Invalidated 
             }).ToList();
         }
 
@@ -73,7 +74,7 @@ namespace hotelManagement.BLL.Services
             };
         }
 
-        public void DeleteRoomRate(int id)
+        public void SoftDeleteRoomRate(int id)
         {
             var rate = RoomRateRepository.GetById(id);
             if (rate != null)
@@ -83,8 +84,18 @@ namespace hotelManagement.BLL.Services
 
                 RoomRateRepository.Update(rate);
                 RoomRateRepository.SaveChanges();
+
+                Console.WriteLine($"RoomRate {id} marked as deleted. Invalidated: {rate.Invalidated}, ModifiedOn: {rate.ModifiedOn}");
+            }
+            else
+            {
+                Console.WriteLine($"RoomRate {id} not found.");
             }
         }
+
+
+
+
 
 
         public void UpdateRoomRate(CreateRoomRate roomRate)
@@ -95,14 +106,14 @@ namespace hotelManagement.BLL.Services
 
 
             rateToUpdate.Emer = roomRate.Name;
-            rateToUpdate.CmimBaze = decimal.Parse(roomRate.base_price);
+            rateToUpdate.CmimBaze = roomRate.base_price;
             rateToUpdate.TipDhomeId = roomRate.TipDhomeId;
 
             RoomRateRepository.Update(rateToUpdate);
             RoomRateRepository.SaveChanges();
         }
 
-        public IEnumerable<RoomType> GetAllRoomTypes()
+        public IEnumerable<TipDhome> GetAllRoomTypes()
         {
             return RoomRateRepository.GetAllRoomTypes();
         }

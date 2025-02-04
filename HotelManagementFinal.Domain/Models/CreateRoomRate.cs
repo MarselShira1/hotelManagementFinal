@@ -10,7 +10,8 @@ namespace HotelManagementFinal.Domain.Models
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public string? base_price { get; set; }
+        public decimal base_price { get; set; }
         public int TipDhomeId { get; set; }
+        public byte Invalidated { get; set; } = 1;
     }
 }

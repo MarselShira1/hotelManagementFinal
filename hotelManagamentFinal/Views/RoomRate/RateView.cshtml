@@ -21,7 +21,8 @@
                 <!-- Forma për shtim -->
 
 
-                <form method="post" action="/RoomRate/CreateRate">
+                <form method="post" asp-action="CreateRate" asp-controller="RoomRate">
+
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
                         <label class="form-label" for="TipDhomeId">Room Type</label>
@@ -68,7 +69,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="/RoomRate/EditRate">
+                    <form method="post" asp-action="EditRate" asp-controller="RoomRate">
+
                         @Html.AntiForgeryToken()
 
 
@@ -113,6 +115,7 @@
     </thead>
     <tbody>
         @foreach (var rate in Model.Rates.Where(r => r.Invalidated != 0))
+
         {
             <tr>
                 <td>@rate.Id</td>
@@ -120,7 +123,7 @@
                 <td>@rate.CmimBaze</td>
                 <td>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRateModal-@rate.Id">  Edit</button>
-                    <form method="post" asp-action="DeleteRate" asp-controller="RoomRate" style="display:inline;">
+                    <form method="post" asp-action="DeleteRate" asp-controller="RoomRate">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@rate.Id" />
                         <button type="submit" class="btn btn-danger">Delete</button>

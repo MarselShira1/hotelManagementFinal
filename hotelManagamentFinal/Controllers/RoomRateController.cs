@@ -57,7 +57,8 @@ namespace hotelManagementFinal.Controllers
                 _roomRateService.AddRoomRate(new CreateRoomRate
                 {
                     Name = model.Emer,
-                    base_price = model.CmimBaze.ToString()
+                    base_price = model.CmimBaze,
+                    TipDhomeId = model.TipDhomeId
                 });
 
 
@@ -69,7 +70,8 @@ namespace hotelManagementFinal.Controllers
                     {
                         Id = rate.Id,
                         Emer = rate.Emer,
-                        CmimBaze = rate.CmimBaze
+                        CmimBaze = rate.CmimBaze,
+                       // TipDhomeId = model.TipDhomeId
                     }).ToList(),
                     NewRate = model
                 };
@@ -87,13 +89,11 @@ namespace hotelManagementFinal.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteRate(int id)
         {
-            //var rate = _roomRateService.GetRoomRateById(id);
-            //if (rate != null)
-            //{
-            _roomRateService.DeleteRoomRate(id);
-            // }
+            _roomRateService.SoftDeleteRoomRate(id); // Changed SoftDeleteRoomRate to DeleteRoomRate
             return RedirectToAction("RateView");
         }
+
+
 
 
         [HttpPost]
@@ -106,7 +106,8 @@ namespace hotelManagementFinal.Controllers
                 _roomRateService.UpdateRoomRate(new CreateRoomRate
                 {
                     Name = model.Emer,
-                    base_price = model.CmimBaze.ToString(),
+                    base_price = model.CmimBaze,
+                    TipDhomeId = model.TipDhomeId,
                     Id = model.Id // Ensure ID is passed for updating the correct record
                 });
 
