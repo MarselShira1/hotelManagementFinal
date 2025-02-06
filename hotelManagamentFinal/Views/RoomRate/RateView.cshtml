@@ -121,7 +121,7 @@
 
 
 
-<table class="table">
+<table class="table table-striped table-hover text-center">
     <thead>
         <tr>
             
@@ -142,7 +142,8 @@
 
                 <td>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRateModal-@rate.Id">  Edit</button>
-                    <form method="post" asp-action="DeleteRate" asp-controller="RoomRate">
+
+					<form method="post" asp-action="DeleteRate" asp-controller="RoomRate" style="display:inline;">
 
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@rate.Id" />
