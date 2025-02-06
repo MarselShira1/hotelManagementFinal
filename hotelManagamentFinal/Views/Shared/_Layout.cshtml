@@ -215,6 +215,11 @@
                             <i class="bi bi-currency-dollar"></i> Room Rates
                         </a>
                     </li>
+                    <li>
+                        <a href="@Url.Action("CalendarView", "Calendar")" class="nav-link text-white">
+                            <i class="bi bi-calendar "></i> Calendar
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -426,12 +431,11 @@
     @await RenderSectionAsync("Scripts", required: false)
     <script>
                 function showLoader() {
-            $("#pageLoader").fadeIn(); // Show the loader with a fade effect
+            $("#pageLoader").fadeIn();
         }
 
-        // Function to hide the loader
         function hideLoader() {
-            $("#pageLoader").fadeOut(); // Hide the loader with a fade effect
+            $("#pageLoader").fadeOut(); 
         }
     </script>
 </body>

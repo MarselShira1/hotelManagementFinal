@@ -1,0 +1,72 @@
+﻿@model hotelManagementFinal.Models1.CalendarViewModel
+
+<div class="container-fluid">
+    <div class="row">
+        <main class="col-md-12 ms-sm-auto px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Hotel Bookings Calendar</h1>
+            </div>
+
+            <div id='calendar'></div>
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Checking FullCalendar:", typeof FullCalendar);
+
+            if (typeof FullCalendar === "undefined") {
+                console.error("FullCalendar did NOT load. Check your network.");
+                return;
+            }
+
+            var calendarEl = document.getElementById('calendar');
+
+            if (!calendarEl) {
+                console.error("Error: Calendar element not found!");
+                return;
+            }
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+                initialView: 'dayGridMonth',
+                resourceAreaWidth: '20%',
+                height: 'auto',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                resources: async function (fetchInfo, successCallback, failureCallback) {
+                    try {
+                        let response = await fetch(`/Calendar/GetRooms`);
+                        let data = await response.json();
+                        successCallback(data);
+                    } catch (error) {
+                        console.error("Error fetching rooms:", error);
+                        failureCallback(error);
+                    }
+                },
+                events: async function (fetchInfo, successCallback, failureCallback) {
+                    try {
+                        let response = await fetch(`/Calendar/GetBookings?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}`);
+                        let data = await response.json();
+                        successCallback(data);
+                    } catch (error) {
+                        console.error("Error fetching bookings:", error);
+                        failureCallback(error);
+                    }
+                },
+                eventClick: function (info) {
+                    alert("Booking Details:\n" + info.event.title);
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+}

@@ -11,7 +11,8 @@ namespace hotelManagement.DAL.Persistence.Repositories
     {
         TipDhome? GetByName(string name);
         void DeleteById(int id);
-       
+        Task<IEnumerable<TipDhome>> GetAllAsync();
+
     }
 
     internal class RoomTypeRepository : _BaseRepository<TipDhome, int>, IRoomTypeRepository
@@ -39,6 +40,17 @@ namespace hotelManagement.DAL.Persistence.Repositories
                 throw new Exception("Room type not found");
             }
         }
+        public async Task<IEnumerable<TipDhome>> GetAllAsync()
+        {
+            var rooms = await _dbSet
+                .AsNoTracking()
+                .ToListAsync();
+
+            Console.WriteLine($" Repository: Found {rooms.Count} room types.");
+            return rooms;
+        
+        }
+
 
     }
 }

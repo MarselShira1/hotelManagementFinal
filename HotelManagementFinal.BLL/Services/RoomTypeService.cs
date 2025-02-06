@@ -4,6 +4,7 @@ using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence.Repositories;
 using hotelManagement.Common.Exceptions;
 using HotelManagementFinal.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace hotelManagement.BLL.Services
 {
@@ -14,6 +15,7 @@ namespace hotelManagement.BLL.Services
         void RemoveRoomType(int id);
         TipDhome? GetRoomTypeById(int id);
         IEnumerable<TipDhome> GetAllRoomTypes();
+        Task<IEnumerable<TipDhome>> GetAllRoomTypesAsync();
         void UpdateRoomType(int id, CreateRoomType createRoomType);
     }
 
@@ -99,6 +101,12 @@ namespace hotelManagement.BLL.Services
         public void UpdateRoomType(int id, CreateRoomType createRoomType)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<TipDhome>> GetAllRoomTypesAsync()
+        {
+
+            return await roomTypeRepository.GetAllAsync();
         }
     }
 }

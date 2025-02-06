@@ -12,95 +12,83 @@ namespace hotelManagement.Controllers
     public class BookingController : Controller
     {
         private readonly IBookingService _bookingService;
+        private readonly IMailSenderService _mailSenderService;
 
-        public BookingController(IBookingService bookingService)
+        public BookingController(IBookingService bookingService, IMailSenderService mailSenderService)
         {
             _bookingService = bookingService;
+            _mailSenderService = mailSenderService;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            
-            var userName = HttpContext.Session.GetString("UserName");
-            var userEmail = HttpContext.Session.GetString("UserEmail");
-
-            Console.WriteLine($"Booking Controller - Session UserName: {userName ?? "NULL"}");
-            Console.WriteLine($"Booking Controller - Session UserEmail: {userEmail ?? "NULL"}");
-
-            
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userEmail))
-            {
-                Console.WriteLine("No session data found. Redirecting to login.");
-                //return RedirectToAction("Login", "Account");
-            }
-
-            ViewBag.UserName = userName;
-            ViewBag.UserEmail = userEmail;
-
-            var roomRates = await _bookingService.GetAllRoomRatesAsync();
-            ViewBag.RoomRates = roomRates;
-            return View();
-        }
+       
 
 
         [HttpPost]
-        public async Task<IActionResult> AddBooking([FromBody] NewBookingDTO bookingDto)
+       public async Task<IActionResult> AddBooking([FromBody] NewBookingDTO bookingDto)
+    {
+        if (!ModelState.IsValid)
         {
-            if (!ModelState.IsValid)
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            Console.WriteLine("Validation Errors:");
+            errors.ForEach(Console.WriteLine);
+
+            return BadRequest(new
             {
-                var errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                Console.WriteLine("Validation Errors:");
-                foreach (var error in errors)
-                {
-                    Console.WriteLine(error);
-                }
-
-                return BadRequest(new
-                {
-                    success = false,
-                    errorMessage = "Invalid form data",
-                    details = errors
-                });
-            }
-
-            try
-            {
-                DateOnly checkInDate = DateOnly.Parse(bookingDto.CheckIn.ToString());
-                DateOnly checkOutDate = DateOnly.Parse(bookingDto.CheckOut.ToString());
-                var booking = new Rezervim
-                {
-                    Dhome = bookingDto.RoomId,
-                    RoomRate = bookingDto.RoomRateId,
-                    User = bookingDto.UserId,
-                    CheckIn = checkInDate, 
-                    CheckOut = checkOutDate,
-                    Cmim = bookingDto.Price,
-                    CreatedOn = DateTime.Now,
-                    Invalidated = 1
-                };
-
-                await _bookingService.AddBookingAsync(booking);
-
-                return Json(new
-                {
-                    success = true,
-                    errorMessage = ""
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    errorMessage = ex.Message,
-                    innerException = ex.InnerException?.Message
-                });
-            }
+                success = false,
+                errorMessage = "Invalid form data",
+                details = errors
+            });
         }
+
+        try
+        {
+            DateOnly checkInDate = DateOnly.Parse(bookingDto.CheckIn.ToString());
+            DateOnly checkOutDate = DateOnly.Parse(bookingDto.CheckOut.ToString());
+            var booking = new Rezervim
+            {
+                Dhome = bookingDto.RoomId,
+                RoomRate = bookingDto.RoomRateId,
+                User = bookingDto.UserId,
+                CheckIn = checkInDate,
+                CheckOut = checkOutDate,
+                Cmim = bookingDto.Price,
+                CreatedOn = DateTime.Now,
+                Invalidated = 1
+            };
+
+            await _bookingService.AddBookingAsync(booking);
+
+     
+                // **Send Confirmation Email**
+                var emailSubject = "Booking Confirmation";
+                var emailBody = $@"
+                    <h2>Booking Confirmation</h2>
+                    <p>Dear Customer,</p>
+                    <p>Your booking has been successfully confirmed.</p>
+                    <p><strong>Check-in:</strong> {checkInDate}</p>
+                    <p><strong>Check-out:</strong> {checkOutDate}</p>
+                    <p><strong>Total Price:</strong> ${bookingDto.Price}</p>
+                    <p>Thank you for choosing our hotel!</p>";
+
+                await _mailSenderService.SendEmailAsync("ester123molla@gmail.com", emailSubject, emailBody);
+            
+
+            return Json(new { success = true, errorMessage = "" });
+        }
+        catch (Exception ex)
+        {
+            return Json(new
+            {
+                success = false,
+                errorMessage = ex.Message,
+                innerException = ex.InnerException?.Message
+            });
+        }
+    }
 
         [HttpPost]
         public async Task<IActionResult> CalculatePrice([FromBody] NewBookingDTO bookingDto)
@@ -116,5 +104,7 @@ namespace hotelManagement.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+
     }
 }

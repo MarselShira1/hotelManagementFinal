@@ -14,6 +14,7 @@ namespace hotelManagement.BLL.Services
         Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync();
         Task AddBookingAsync(Rezervim booking);
         Task<decimal> CalculatePriceAsync(int roomRateId, DateOnly checkIn, DateOnly checkOut);
+        Task<IEnumerable<Rezervim>> GetAllBookingsAsync();
     }
 
     public class BookingService : IBookingService
@@ -51,6 +52,11 @@ namespace hotelManagement.BLL.Services
 
             int nights = checkOut.DayNumber - checkIn.DayNumber;
             return nights * roomRate.CmimBaze;
+        }
+
+        public async Task<IEnumerable<Rezervim>> GetAllBookingsAsync()
+        {
+            return await _bookingRepository.GetAllBookingsAsync();
         }
     }
 }

@@ -36,7 +36,10 @@ namespace HotelManagementFinal.BLL.Services
                     Credentials = new NetworkCredential(mail, pw)
                 };
                 return client.SendMailAsync(
-                    new MailMessage(from: mail, to: to, subject, body));
+                    new MailMessage(mail, to, subject, body)
+                    {
+                        IsBodyHtml = true
+                    });
                 return null;
             }
             catch(Exception ex)

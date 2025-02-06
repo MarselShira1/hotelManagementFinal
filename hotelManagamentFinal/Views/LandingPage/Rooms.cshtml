@@ -8,7 +8,6 @@
 @*     // Use Razor to set a JS flag based on whether the user is authenticated. *@
 @*     var isLoggedIn = '@User.Identity.IsAuthenticated'.toLowerCase() === 'true'; *@
 @* </script> *@
-
 <section class="site-hero inner-page overlay" style="background-image: url(/css/hero_4.jpg)" data-stellar-background-ratio="0.5">
     <div class="container">
         <div class="row site-hero-inner justify-content-center align-items-center">
@@ -90,6 +89,8 @@
 
 <section class="section">
     <div class="container" id="room_list">
+        @if (Model != null && Model.Any())
+  {
         @foreach (TipDhome el in Model)
         {
             <div class="row">
@@ -114,6 +115,9 @@
                 </div>
             </div>
         }
+    }else{
+        <p>Model Null</p>
+    }
     </div>
 </section>
 
@@ -174,25 +178,20 @@
                         <div class="form-group">
                             <label for="roomRate">Select Room Rate</label>
                             @{
-                                var roomRates = ViewBag.RoomRates;
-                                if (roomRates != null)
-                                {
-                                    Console.WriteLine($"Room rates count: {roomRates.Count()}");
-                                }else{
-                                    Console.WriteLine("Null");
-                                }
+                                var roomRates = ViewBag.RoomRates as List<RoomRate> ?? new List<RoomRate>();
                             }
+
                             <select class="form-control" id="roomRate" name="RoomRateId" required>
-                                @if (ViewBag.RoomRates != null && ViewBag.RoomRates.Any())
+                                @if (roomRates.Count > 0) 
                                 {
-                                    foreach (var rate in ViewBag.RoomRates)
+                                    @foreach (var rate in roomRates)
                                     {
                                         <option value="@rate.Id">@rate.Emer</option>
                                     }
                                 }
                                 else
                                 {
-                                    <option value="">No room rates available</option>
+                                    <option disabled>No room rates available</option>
                                 }
                             </select>
                         </div>
@@ -218,6 +217,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function () {
+    const userId = @ViewBag.UserId;
     let selectedRoomId = null;
 
     // Open Booking Modal
@@ -257,7 +257,6 @@ $(document).ready(function () {
         prevStep.removeClass('d-none');
     });
 
-    // Calculate price when dates or rate change
     $('#checkin, #checkout, #roomRate').on('change', calculatePrice);
 
     function loadRoomRates() {
@@ -265,7 +264,7 @@ $(document).ready(function () {
             type: "GET",
             url: '/RoomRate/GetAllRoomRates',
             success: function (roomRates) {
-                console.log("Room rates received:", roomRates);
+                //console.log("Room rates received:", roomRates);
 
                 const roomRateSelect = $('#roomRate');
                 roomRateSelect.empty();
@@ -300,7 +299,7 @@ $(document).ready(function () {
                     checkIn: checkIn,
                     checkOut: checkOut,
                     roomId: selectedRoomId,
-                    userId: 1
+                    userId: userId
                 })
             });
 
@@ -332,8 +331,8 @@ $(document).ready(function () {
         const bookingData = {
             roomId: selectedRoomId,
             roomRateId: parseInt($('#roomRate').val()),
-            userId: 1, // Placeholder user ID
-            //email: $('#email').val(),
+            userId: userId,
+                //email: $('#email').val(),
             checkIn: $('#checkin').val(),
             checkOut: $('#checkout').val(),
             price: parseFloat($('#totalPrice').text().replace('$', ''))
@@ -350,7 +349,7 @@ $(document).ready(function () {
 
             if (result.success) {
                 $('#bookingModal').modal('hide');
-                alert('Booking successful!');
+                alert('Confirmation email sent!');
 
                 // Reset form
                 $('#bookingForm')[0].reset();

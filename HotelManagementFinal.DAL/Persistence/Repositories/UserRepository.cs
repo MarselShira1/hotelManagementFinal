@@ -15,6 +15,9 @@ namespace hotelManagement.DAL.Persistence.Repositories
         //IEnumerable<Role> GetRoles();
         User GetByEmail(string email);
         Task<IEnumerable<User>> GetAllUsersAsync();
+        public string GetEmailById(int userId);
+
+
     }
 
     internal class UserRepository : _BaseRepository<User , int> , IUserRepository
@@ -41,6 +44,14 @@ namespace hotelManagement.DAL.Persistence.Repositories
         {
             return base.GetAll();
         }
+        public string GetEmailById(int userId)
+        {
+            return _dbSet
+                .Where(u => u.Id == userId)
+                .Select(u => u.Email)
+                .FirstOrDefault(); 
+        }
+
     }
 
 

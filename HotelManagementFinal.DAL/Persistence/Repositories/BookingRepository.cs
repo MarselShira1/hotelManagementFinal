@@ -30,15 +30,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Rezervim>> GetAllBookingsAsync()
-        {
-            return await _dbContext.Rezervime
-                .Include(r => r.Dhome)
-                .Include(r => r.RoomRate)
-                .ToListAsync();
-        }
-
-        
+       
 
         public async Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync()
         {
@@ -51,6 +43,13 @@ namespace hotelManagement.DAL.Persistence.Repositories
         {
             return _dbContext.RoomRates.FirstOrDefault(r => r.Id == roomRateId && r.Invalidated == 1);
         }
-
+        public async Task<IEnumerable<Rezervim>> GetAllBookingsAsync()
+        {
+            return await _dbContext.Rezervime
+                .Include(r => r.DhomeNavigation)
+                .Include(r => r.RoomRateNavigation)
+                .Where(b => b.Invalidated == 1)
+                .ToListAsync();
+        }
     }
 }
