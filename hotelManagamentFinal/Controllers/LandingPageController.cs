@@ -9,12 +9,12 @@ namespace HotelManagementISE.Controllers
     public class LandingPageController : Controller
     {
         private readonly ILogger<LandingPageController> _logger;
-        private readonly IRoomTypeService _roomType;
+        private readonly IRoomService _room;
 
-        public LandingPageController(ILogger<LandingPageController> logger, IRoomTypeService roomType)
+        public LandingPageController(ILogger<LandingPageController> logger, IRoomService room)
         {
             _logger = logger;
-            _roomType = roomType;
+            _room = room;
         }
 
         public IActionResult Index()
@@ -22,9 +22,9 @@ namespace HotelManagementISE.Controllers
             return View();
         }
 
-        public IActionResult Rooms()
+        public async Task<IActionResult> Rooms()
         {
-            var rooms = _roomType.GetAllRoomTypes();
+            var rooms =await _room.GetRoomsAsync();
             return View(rooms);
         }
         public IActionResult Reservations()
@@ -38,9 +38,13 @@ namespace HotelManagementISE.Controllers
             return View("Index");
         }
 
-        public JsonResult CheckAvailability(DateTime checkinDate, DateTime checkoutDate, int adults, int children)
+        public async Task<JsonResult> CheckAvailability(DateTime checkinDate, DateTime checkoutDate, int adults, int children)
         {
-            var rooms = _roomType.GetAllRoomTypes();
+            var rooms = await _room.GetRoomsAsync();
+            if(rooms.Count()>0)
+            {
+                rooms = rooms.Where(r=>r.Capacity>=adults+children);
+            }
             return Json(rooms);
         }
     }
