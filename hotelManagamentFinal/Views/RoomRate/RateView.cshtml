@@ -5,14 +5,12 @@
 }
 @model HotelManagement.Models.RoomRateViewModel
 
-
 <div class="text-center">
     <h1 class="display-4">Room Rates</h1>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRateModal">
         + Add Rate
     </button>
 </div>
-
 
 <div class="modal fade" id="addRateModal" tabindex="-1" aria-labelledby="addRateLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -21,10 +19,8 @@
                 <h5 class="modal-title">Add Room Rate</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <!-- Forma për shtim -->
-                
 
+            <div class="modal-body">
                 <form method="post" asp-action="CreateRate" asp-controller="RoomRate">
 
                     @Html.AntiForgeryToken()
@@ -37,18 +33,21 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="Emer">Name</label>
-                        <input class="form-control" type="text" id="Emer" name="Emer" />
-                        <span class="text-danger field-validation-valid" data-valmsg-for="Emer" data-valmsg-replace="true"></span>
+                        <input class="form-control" type="text" id="Emer" name="Emer" asp-for="NewRate.Emer" />
+                        <span class="text-danger" asp-validation-for="NewRate.Emer"></span>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label" for="CmimBaze">Base Price</label>
-                        <input class="form-control" type="text" id="CmimBaze" name="CmimBaze" />
-                        <span class="text-danger field-validation-valid" data-valmsg-for="CmimBaze" data-valmsg-replace="true"></span>
+                        <input class="form-control" type="text" id="CmimBaze" name="CmimBaze" asp-for="NewRate.CmimBaze" />
+                        <span class="text-danger" asp-validation-for="NewRate.CmimBaze"></span>
                     </div>
+
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
+
 
 
 
@@ -80,15 +79,19 @@
                                 <option value="">Select Room Type</option>
                             </select>
                         </div>
-                        <input type="hidden" name="Id" value="@rate.Id" />
                         <div class="mb-3">
                             <label class="form-label" for="Emer">Name</label>
-                            <input class="form-control" type="text" id="Emer" name="Emer" value="@rate.Emer" />
+                            <input class="form-control" type="text" id="Emer" name="Emer" asp-for="NewRate.Emer" />
+                            <span class="text-danger" asp-validation-for="NewRate.Emer"></span>
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label" for="CmimBaze">Base Price</label>
-                            <input class="form-control" type="text" id="CmimBaze" name="CmimBaze" value="@rate.CmimBaze" />
+                            <input class="form-control" type="text" id="CmimBaze" name="CmimBaze" asp-for="NewRate.CmimBaze" />
+                            <span class="text-danger" asp-validation-for="NewRate.CmimBaze"></span>
                         </div>
+
+                        
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
