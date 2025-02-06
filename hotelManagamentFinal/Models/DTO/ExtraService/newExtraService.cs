@@ -13,8 +13,8 @@ namespace hotelManagamentFinal.Models.DTO.ExtraService
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Service Name is required")]
-        [StringLength(100, ErrorMessage = "Name must be between 3 and 100 characters", MinimumLength = 3)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Name must contain only letters and spaces.")]
+        [StringLength(100, ErrorMessage = "Service name must be between 3 and 100 characters", MinimumLength = 3)]
+        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Service name must contain only letters and spaces.")]
         public string Emer { get; set; } = null!;
 
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]

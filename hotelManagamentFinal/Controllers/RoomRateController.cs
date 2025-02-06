@@ -4,6 +4,7 @@ using System.Linq;
 using hotelManagamentFinal.Models.DTO.RoomRate;
 using hotelManagement.BLL.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using HotelManagementFinal.BLL.Services;
 
 namespace HotelManagement.Controllers
 {
@@ -48,15 +49,9 @@ namespace HotelManagement.Controllers
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("Validation Failed! Errors:");
+                TempData["ErrorMessage"] = "There were errors in your submission. Please check the fields.";
 
-                foreach (var key in ModelState.Keys)
-                {
-                    foreach (var error in ModelState[key].Errors)
-                    {
-                        Console.WriteLine($"Field: {key}, Error: {error.ErrorMessage}");
-                    }
-                }
+               
                 var rates = _roomRateService.GetAllRoomRates();
                 var roomTypes = _roomRateService.GetAllRoomTypes()
                                                 .Select(rt => new SelectListItem
@@ -88,6 +83,7 @@ namespace HotelManagement.Controllers
                 TipDhomeId = model.TipDhomeId
             });
 
+            TempData["SuccessMessage"] = "Room Rate added successfully!";
             return RedirectToAction("RateView");
         }
 
@@ -99,7 +95,15 @@ namespace HotelManagement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteRate(int id)
         {
+            var service = _roomRateService.GetRoomRateById(id);
+            if (service == null)
+            {
+                TempData["ErrorMessage"] = "RoomRate not found!";
+                return RedirectToAction("RateView");
+            }
+
             _roomRateService.SoftDeleteRoomRate(id);
+            TempData["SuccessMessage"] = "Room Rate deleted successfully!";
             return RedirectToAction("RateView");
         }
 
@@ -110,15 +114,8 @@ namespace HotelManagement.Controllers
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("Validation Failed! Errors:");
+                TempData["ErrorMessage"] = "Failed to update the room. Please check the fields.";
 
-                foreach (var key in ModelState.Keys)
-                {
-                    foreach (var error in ModelState[key].Errors)
-                    {
-                        Console.WriteLine($"Field: {key}, Error: {error.ErrorMessage}");
-                    }
-                }
                 var rates = _roomRateService.GetAllRoomRates();
                 var roomTypes = _roomRateService.GetAllRoomTypes()
                                                 .Select(rt => new SelectListItem
@@ -151,6 +148,7 @@ namespace HotelManagement.Controllers
                 Id = model.Id
             });
 
+            TempData["SuccessMessage"] = "Room Rate updated successfully!";
             return RedirectToAction("RateView");
         }
 

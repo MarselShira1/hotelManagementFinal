@@ -41,6 +41,8 @@ namespace hotelManagamentFinal.Controllers
         {
             if (!ModelState.IsValid)
             {
+                TempData["ErrorMessage"] = "There were errors in your submission. Please check the fields.";
+
                 return View("ExtraServiceView", new ExtraServiceViewModel
                 {
                     Services = _extraServiceService.GetAllExtraServices().Select(s => new ExtraServiceDTO
@@ -59,6 +61,8 @@ namespace hotelManagamentFinal.Controllers
                 Description = model.Pershkrim
             });
 
+            TempData["SuccessMessage"] = "Extra Service added successfully!";
+
             return RedirectToAction("ExtraServiceView");
         }
 
@@ -66,7 +70,17 @@ namespace hotelManagamentFinal.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteService(int id)
         {
+
+            var service = _extraServiceService.GetExtraServiceById(id);
+            if (service == null)
+            {
+                TempData["ErrorMessage"] = "Service not found!";
+                return RedirectToAction("ExtraServiceView");
+            }
             _extraServiceService.SoftDeleteExtraService(id);
+
+            TempData["SuccessMessage"] = "Extra Service deleted successfully!";
+
             return RedirectToAction("ExtraServiceView");
         }
 
@@ -75,7 +89,11 @@ namespace hotelManagamentFinal.Controllers
         public IActionResult EditService(ExtraServiceDTO model)
         {
             if (!ModelState.IsValid)
+
             {
+                TempData["ErrorMessage"] = "Failed to update the service. Please check the fields.";
+
+
                 return View("ExtraServiceView", new ExtraServiceViewModel
                 {
                     Services = _extraServiceService.GetAllExtraServices().Select(s => new ExtraServiceDTO
@@ -94,7 +112,7 @@ namespace hotelManagamentFinal.Controllers
                 Name = model.Emer,
                 Description = model.Pershkrim
             });
-
+            TempData["SuccessMessage"] = "Extra Service updated successfully!";
             return RedirectToAction("ExtraServiceView");
         }
     }
