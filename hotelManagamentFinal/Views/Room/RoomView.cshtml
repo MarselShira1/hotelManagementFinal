@@ -1,9 +1,11 @@
 ﻿@model HotelManagement.Models.RoomViewModel
-    
+
 <div class="text-center">
     <h1 class="display-4">Rooms</h1>
+    <input type="text" id="roomSearch" class="form-control mb-3" placeholder="Search rooms...">
     <button type="button" id="addNew" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">+</button>
 </div>
+
 <div class="modal fade" id="editRoomModal" tabindex="-1" aria-labelledby="editRoomLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -15,16 +17,6 @@
                 <form id="editRoomForm">
                     @Html.AntiForgeryToken()
                     <input type="hidden" id="editRoomId" name="Id" />
-                    @* <div class="mb-3">
-                        <label for="editRoomType" class="form-label">Room Type</label>
-                        <select id="editRoomType" class="form-select" name="RoomTypeId" required>
-                            <option value="">Select Room Type</option>
-                            @foreach (var roomType in Model.RoomTypes)
-                            {   
-                                <option value="@roomType.Id">@roomType.Emer</option>
-                            }
-                        </select>
-                    </div> *@
                     <div class="mb-3">
                         <label for="EditRoom_RoomTypeId" class="form-label">Choose room type</label>
                         <select id="EditRoom_RoomTypeId" class="form-select" required>
@@ -45,7 +37,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="addRoomModal" tabindex="-1" aria-labelledby="addRoomLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -78,8 +69,15 @@
     </div>
 </div>
 
-
 <br />
+
+<div class="d-flex justify-content-between">
+    <div class="pagination">
+        <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
+        <span id="pageNumber">Page 1</span>
+        <button id="nextPage" class="btn btn-secondary">Next</button>
+    </div>
+</div>
 
 <table class="table">
     <thead>
@@ -90,181 +88,161 @@
             <th>Actions</th>
         </tr>
     </thead>
-   <tbody>
-       
-    </tbody> 
+    <tbody>
+        <!-- Rows will be populated here -->
+    </tbody>
 </table>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-       var RoomTypes = [];
-        $('#editRoomForm').submit(function (event) {
-        event.preventDefault();
+    let currentPage = 1;
+    let rowsPerPage = 5; // Number of rows per page
+    let filteredRooms = [];
+    let allRooms = [];
+    let RoomTypes = [];
 
-        var roomId = $('#editRoomId').val();
-            var roomTypeId = $('#EditRoom_RoomTypeId').val();
+    $(document).ready(function () {
+        loadRoomData();
+        loadRoomTypes();
 
-        var roomFloor = $('#editRoomFloor').val();
-        var roomNumber = $('#editRoomNumber').val();
+        $('#submitButton').click(function (event) {
+            event.preventDefault();
+            var roomTypeId = $('#NewRoom_RoomTypeId').val();
+            var roomFloor = $('#NewRoom_room_floor').val();
+            var roomNumber = $('#NewRoom_room_number').val();
 
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("CreateRoomSql", "Room")',
                 data: {
-                    RoomId: roomId,
                     RoomTypeId: roomTypeId,
                     RoomFloor: roomFloor,
                     RoomNumber: roomNumber
                 },
                 success: function (response) {
                     if (response.success) {
-                        alert('Room updated successfully.');
-                        $('#editRoomModal').modal('hide');
-                        loadRoomData(); // Reload the table data
+                        alert('Room saved successfully.');
+                        $('#addRoomModal').modal('hide');
+                        loadRoomData();
                     } else {
-                        alert('Failed to update room: ' + (response.errors ? response.errors.join(', ') : 'Unknown error'));
+                        alert('Failed to save room: ' + (response.errors ? response.errors.join(', ') : 'Unknown error'));
                     }
                 },
                 error: function () {
-                    alert('An error occurred while processing your request.');
+                    alert('An error occurred.');
                 }
             });
-    });
-            $('#addNew').on('click', function () {
-            populateRoomTypeDropdown("NewRoom_RoomTypeId");
-    });
-        //        $('#editButton').on('click', function () {
-        //            debugger;
-        // });
-
-
-        function populateEditModal(room) {
-            debugger
-        console.log("Room:", room);
-                    populateRoomTypeDropdown("EditRoom_RoomTypeId");
-
-
-        document.getElementById('editRoomId').value = room.id;
-        // document.getElementById('editRoomType').value = room.roomTypeId;
-        // document.getElementById('editRoomTypeName').textContent = room.roomTypeName;
-        document.getElementById('editRoomNumber').value = room.roomNumber;
-        document.getElementById('editRoomFloor').value = room.roomFloor;
-                 const dropdown = $('#EditRoom_RoomTypeId');
-                dropdown.val(room.roomTypeId);
-    }
-
-        function populateRoomTypeDropdown(roomActionId) {
-        debugger;
-                var dropdown = $(`#${roomActionId}`);
-        dropdown.empty(); // Clear any existing options
-
-        // Add the default "Select Room Type" option
-        dropdown.append('<option value="">Select Room Type1</option>');
-
-        debugger
-        // Populate the dropdown with room types from the RoomTypes array
-        RoomTypes.forEach(function (roomType) {
-            dropdown.append(`<option value="${roomType.id}">${roomType.name}</option>`);
         });
-    }
 
-            function loadRoomData() {
-                    showLoader();
-                $.ajax({
-                    type: "GET",
-                    url: '@Url.Action("GetRoomList", "Room")', // Controller action URL
-                    success: function (rooms) {
-                        var tbody = $("table tbody");
-                        tbody.empty(); // Clear the table body before appending new rows
-
-                        rooms.forEach(function (room) {
-                            debugger
-                            var row = `
-                                <tr>
-                                            <td>${room.roomTypeName}</td>
-                                            <td>${room.roomFloor}</td>
-                                            <td>${room.roomNumber}</td>
-                                    <td>
-                                        <button id="editButton" type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#editRoomModal"
-                                                onclick="populateEditModal({
-                                                        id: '${room.roomId}',
-                                                        roomTypeId: '${room.roomTypeId ? room.roomTypeId : 0}',
-                                                        roomNumber: '${room.roomNumber}',
-                                                        roomFloor: '${room.roomFloor}'
-                                                })">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-
-                                                <button type="button" class="btn btn-danger btn-sm delete-button" data-room-id="${room.roomId}">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </button>
-                                    </td>
-                                </tr>`;
-                            tbody.append(row);
-                        });
-                            hideLoader();
-                    },
-                    error: function () {
-                            hideLoader();
-                        alert('Failed to load room data.');
-                    }
-                });
-            }
-
-    $(document).ready(function () {
-        //ngarkimi i listes me dhoma
-        loadRoomData();
-        //ngarkimi i listes me room types
-        loadRoomTypes();
-        $('#submitButton').click(function (event) {
-            event.preventDefault();
-debugger;
-            var roomTypeId = $('#NewRoom_RoomTypeId').val();
-            var roomFloor = $('#NewRoom_room_floor').val();
-            var roomNumber = $('#NewRoom_room_number').val();
-            //un e kam bo shtimin me ajax po mund e me epershtat si kjo do i them chatit se sdi vete lot
-            $.ajax({
-                type: "POST",
-                    url: '@Url.Action("CreateRoomSql", "Room")',
-                data: {
-                    RoomTypeId: roomTypeId,
-                    RoomFloor: roomFloor,
-                    RoomNumber: roomNumber
-                },
-                    success: function (response) {
-            if (response.success) {
-                alert('Room saved successfully.');
-                    $('#addRoomModal').modal('hide');
-                loadRoomData(); 
-            } else {
-                alert('Failed to save room: ' + (response.errors ? response.errors.join(', ') : 'Unknown error'));
-            }
-        },
-            
-            error: function () {
-                alert('An error occurred.');
-            }
+        $('#roomSearch').keyup(function () {
+            const query = $(this).val().toLowerCase();
+            filteredRooms = allRooms.filter(function (room) {
+                return room.roomTypeName.toLowerCase().includes(query) ||
+                    room.roomFloor.toString().includes(query) ||
+                    room.roomNumber.toLowerCase().includes(query);
             });
+            currentPage = 1; // Reset to first page when filter is applied
+            renderTable();
+        });
+
+        $('#nextPage').click(function () {
+            if (currentPage * rowsPerPage < filteredRooms.length) {
+                currentPage++;
+                renderTable();
+            }
+        });
+
+        $('#prevPage').click(function () {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
         });
     });
 
+    function loadRoomData() {
+        showLoader();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetRoomList", "Room")',
+            success: function (rooms) {
+                allRooms = rooms;
+                filteredRooms = rooms; // Initially, no filter is applied
+                renderTable();
+                hideLoader();
+            },
+            error: function () {
+                hideLoader();
+                alert('Failed to load room data.');
+            }
+        });
+    }
 
-        $(document).on('click', '.delete-button', function () {
-        const roomId = $(this).data('room-id'); // Get room ID from data attribute
+    function loadRoomTypes() {
+        $.ajax({
+            type: "GET",
+            url: '/RoomType/GetAllRoomTypes', // Update URL if the controller name or route differs
+            success: function (roomTypes) {
+                RoomTypes = roomTypes;
+                console.log("RoomTypes = ", RoomTypes);
+                populateRoomTypeDropdown("NewRoom_RoomTypeId");
+            },
+            error: function () {
+                alert('Failed to load room types.');
+            }
+        });
+    }
 
-        // Open confirmation modal
+    function renderTable() {
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const pageRooms = filteredRooms.slice(startIndex, endIndex);
+
+        var tbody = $("table tbody");
+        tbody.empty(); // Clear the table body before appending new rows
+
+        pageRooms.forEach(function (room) {
+            var row = `
+                <tr>
+                    <td>${room.roomTypeName}</td>
+                    <td>${room.roomFloor}</td>
+                    <td>${room.roomNumber}</td>
+                    <td>
+                        <button id="editButton" type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#editRoomModal"
+                                onclick="populateEditModal({
+                                        id: '${room.roomId}',
+                                        roomTypeId: '${room.roomTypeId ? room.roomTypeId : 0}',
+                                        roomNumber: '${room.roomNumber}',
+                                        roomFloor: '${room.roomFloor}'
+                                })">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm delete-button" data-room-id="${room.roomId}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>`;
+            tbody.append(row);
+        });
+
+        // Update pagination controls
+        $('#pageNumber').text(`Page ${currentPage}`);
+        $('#prevPage').prop('disabled', currentPage === 1);
+        $('#nextPage').prop('disabled', currentPage * rowsPerPage >= filteredRooms.length);
+    }
+
+    $(document).on('click', '.delete-button', function () {
+        const roomId = $(this).data('room-id');
         if (confirm('Are you sure you want to delete this room?')) {
-            // If user confirms, make an AJAX call to delete the room
             $.ajax({
                 type: 'POST',
-                url: '/Room/DeleteRoom', // Adjust the controller/action URL if needed
+                url: '/Room/DeleteRoom',
                 data: { id: roomId },
                 success: function (response) {
                     if (response.success) {
                         alert('Room deleted successfully.');
-                        // Optionally, refresh the table or remove the row dynamically
                         $(`button[data-room-id="${roomId}"]`).closest('tr').remove();
                     } else {
                         alert('Failed to delete room: ' + response.message);
@@ -277,23 +255,20 @@ debugger;
         }
     });
 
-
-    //funksion i cili kthen listen me roomtypes
-        function loadRoomTypes() {
-        $.ajax({
-            type: "GET",
-                url: '/RoomType/GetAllRoomTypes', // Update URL if the controller name or route differs
-            success: function (roomTypes) {
-                debugger
-                RoomTypes = roomTypes;
-                console.log("RoomTypes = "+RoomTypes);
-            },
-            error: function () {
-                alert('Failed to load room types.');
-            }
+    function populateRoomTypeDropdown(roomActionId) {
+        var dropdown = $(`#${roomActionId}`);
+        dropdown.empty(); // Clear any existing options
+        dropdown.append('<option value="">Select Room Type</option>');
+        RoomTypes.forEach(function (roomType) {
+            dropdown.append(`<option value="${roomType.id}">${roomType.name}</option>`);
         });
     }
 
+    function showLoader() {
+        // Add your loader code here
+    }
 
+    function hideLoader() {
+        // Add your loader code here
+    }
 </script>
-

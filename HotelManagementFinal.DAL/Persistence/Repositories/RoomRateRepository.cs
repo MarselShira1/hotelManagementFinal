@@ -20,10 +20,10 @@ namespace hotelManagement.DAL.Persistence.Repositories
         public RoomRateRepository(HotelManagementContext dbContext) : base(dbContext)
         {
         }
-        public IEnumerable<RoomRate> GetAll()
-        {
-            return _dbSet.ToList();
-        }
+        //public IEnumerable<RoomRate> GetAll()
+        //{
+        //    return _dbSet.ToList();
+        //}
         public new RoomRate GetById(int id)
         {
             return base.GetById(id);
