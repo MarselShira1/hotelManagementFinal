@@ -8,14 +8,14 @@ using hotelManagement.DAL.Persistence;
 using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence.Repositories;
 using hotelManagement.Common.Exceptions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace hotelManagement.BLL.Services
 {
   
     public interface IRoomRateService
     {
         void AddRoomRate(hotelManagement.Domain.Models.CreateRoomRate roomRate);
-        IEnumerable<RoomRate> GetAllRoomRates(); // Change return type to match implementation
+        IEnumerable<RoomRate> GetAllRoomRates(); 
         RoomRate GetRoomRateById(int id);
         void SoftDeleteRoomRate(int id);
         void UpdateRoomRate(CreateRoomRate roomRate);

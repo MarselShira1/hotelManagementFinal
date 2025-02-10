@@ -70,7 +70,7 @@ namespace HotelManagement.Controllers
                         TipDhomeId = rate.TipDhomeId
                     }).ToList(),
                     RoomTypes = roomTypes,
-                    NewRate = model // Keep user input in the form
+                    NewRate = model 
                 };
 
                 return View("RateView", viewModel);

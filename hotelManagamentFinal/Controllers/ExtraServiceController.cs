@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using hotelManagement.BLL.Services;
-using hotelManagamentFinal.Models.DTO.ExtraService;
-using HotelManagement.Models;
-using System.Linq;
+﻿using hotelManagamentFinal.Models.DTO.ExtraService;
 using hotelManagamentFinal.Models1;
 using HotelManagementFinal.BLL.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace hotelManagamentFinal.Controllers
 {

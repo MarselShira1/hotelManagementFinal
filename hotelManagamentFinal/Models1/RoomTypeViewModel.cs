@@ -1,9 +1,9 @@
-﻿namespace HotelManagement.Models
+﻿using hotelManagamentFinal.Models.DTO.RoomType;
+namespace HotelManagement.Models
 {
     public class RoomTypeViewModel
-    {
-        public RoomType NewRoomType { get; set; } 
-        public RoomType EditRoomType { get; set; } 
-        public List<RoomType> RoomTypes { get; set; } 
+        {
+            public List<RoomTypeDTO> RoomTypes { get; set; } = new List<RoomTypeDTO>();
+            public RoomTypeDTO NewType { get; set; } = new RoomTypeDTO();
+        }
     }
-}
