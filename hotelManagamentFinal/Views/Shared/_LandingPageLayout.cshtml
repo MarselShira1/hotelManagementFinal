@@ -13,7 +13,6 @@
     <meta name="keywords" content="hotel, luxury, rooms, booking" />
     <meta name="author" content="ISE Hotel" />
 
-    <!-- Fonts -->
     <link href="//fonts.googleapis.com/css?family=Roboto+Sans:400,700|Playfair+Display:400,700" rel="stylesheet">
 
     <!-- Stylesheets -->
@@ -27,48 +26,32 @@
     <link rel="stylesheet" href="/fonts/ionicons/css/ionicons.min.css">
     <link rel="stylesheet" href="/css/style.css">
 
-    <!-- Additional styles -->
     @RenderSection("Styles", required: false)
 </head>
-<body>
-    <header class="site-header js-site-header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-6 col-lg-4 site-logo" data-aos="fade">
-                    <a href="@Url.Action("Index", "LandingPage")">ISE Hotel</a>
-                </div>
-                <div class="col-6 col-lg-8">
-                    <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+    <body class="landing-page">
+        <header class="site-header" style="background: transparent;">
+            <div class="container-fluid">
+                <div class="row navbar-container align-items-center">
+                    <div class="col-12 col-md-4 site-logo" data-aos="fade">
+                        <a href="@Url.Action("Index", "LandingPage")" style="color: #fff; font-size: 30px;">ISE Hotel</a>
                     </div>
-                    <div class="site-navbar js-site-navbar">
+                    <div class="col-12 col-md-8">
                         <nav role="navigation">
-                            <div class="container">
-                                <div class="row full-height align-items-center">
-                                    <div class="col-md-6 mx-auto">
-                                        <ul class="list-unstyled menu">
-                                            <li><a href="@Url.Action("Index", "LandingPage")">Home</a></li>
-                                            <li><a href="@Url.Action("Rooms", "LandingPage")">Rooms</a></li>
-                                            <li><a href="@Url.Action("Reservations", "LandingPage")">Reservation</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+                            <ul class="list-unstyled menu d-flex justify-content-end align-items-center mb-0">
+                                <li class="mx-2"><a href="@Url.Action("Index", "LandingPage")" style="color: #fff;">Home</a></li>
+                                <li class="mx-2"><a href="@Url.Action("Rooms", "LandingPage")" style="color: #fff;">Rooms</a></li>
+                                <li class="mx-2"><a href="@Url.Action("Reservations", "LandingPage")" style="color: #fff;">Reservation</a></li>
+                            </ul>
                         </nav>
                     </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Content -->
     <main role="main">
         @RenderBody()
     </main>
 
-    <!-- Scripts -->
     <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/jquery-migrate-3.0.1.min.js"></script>
     <script src="/js/popper.min.js"></script>
@@ -81,7 +64,24 @@
     <script src="/js/jquery.timepicker.min.js"></script>
     <script src="/js/main.js"></script>
 
-    <!-- Additional Scripts -->
+
+
+    <script>
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function() {
+          let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+          let header = document.querySelector('.site-header');
+          if (currentScroll > lastScrollTop) {
+            header.style.transform = 'translateY(-100%)';
+          } else {
+            header.style.transform = 'translateY(0)';
+          }
+          lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        }, false);
+    </script>
+
+
+
     @RenderSection("Scripts", required: false)
     <footer class="section footer-section">
         <div class="container">
