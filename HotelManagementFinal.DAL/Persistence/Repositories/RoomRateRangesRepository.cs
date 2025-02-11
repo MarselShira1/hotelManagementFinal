@@ -46,10 +46,15 @@ namespace hotelManagement.DAL.Persistence.Repositories
 
         public void CreateRoomRateRange(RoomRateRangeDataAccess roomRateRange)
         {
-            roomRateRange.CreatedOn = DateTime.UtcNow;
-            roomRateRange.Invalidated = 0;
+            try { 
+            roomRateRange.CreatedOn = DateTime.Now;
+            roomRateRange.Invalidated = 1;
             _dbSet.Add(roomRateRange);
             _dbSet.SaveChanges();
+            }catch(Exception ex)
+            {
+
+            }
         }
 
         public void DeleteRoomRateRange(int id)
