@@ -13,11 +13,13 @@ namespace hotelManagement.Controllers
     {
         private readonly IBookingService _bookingService;
         private readonly IMailSenderService _mailSenderService;
+        private readonly IUserService _userService;
 
-        public BookingController(IBookingService bookingService, IMailSenderService mailSenderService)
+        public BookingController(IBookingService bookingService, IMailSenderService mailSenderService,IUserService userService)
         {
             _bookingService = bookingService;
             _mailSenderService = mailSenderService;
+            _userService = userService;
         }
 
        
@@ -62,8 +64,8 @@ namespace hotelManagement.Controllers
 
             await _bookingService.AddBookingAsync(booking);
 
-     
-                // **Send Confirmation Email**
+
+                var userEmail = _userService.GetUserEmailById(bookingDto.UserId);                      
                 var emailSubject = "Booking Confirmation";
                 var emailBody = $@"
                     <h2>Booking Confirmation</h2>
@@ -74,7 +76,7 @@ namespace hotelManagement.Controllers
                     <p><strong>Total Price:</strong> ${bookingDto.Price}</p>
                     <p>Thank you for choosing our hotel!</p>";
 
-                await _mailSenderService.SendEmailAsync("ester123molla@gmail.com", emailSubject, emailBody);
+                await _mailSenderService.SendEmailAsync(userEmail, emailSubject, emailBody);
             
 
             return Json(new { success = true, errorMessage = "" });

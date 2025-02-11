@@ -218,6 +218,8 @@
 <script>
 $(document).ready(function () {
     const userId = @ViewBag.UserId;
+
+    console.log("User id = "+ userId);
     let selectedRoomId = null;
 
     // Open Booking Modal
@@ -245,6 +247,7 @@ $(document).ready(function () {
         nextStep.removeClass('d-none');
 
         if (nextStep.attr('id') === 'step-3') {
+                calculatePrice();
             updateBookingSummary();
         }
     });
@@ -257,7 +260,7 @@ $(document).ready(function () {
         prevStep.removeClass('d-none');
     });
 
-    $('#checkin, #checkout, #roomRate').on('change', calculatePrice);
+    // $('#checkin, #checkout, #roomRate').on('change', calculatePrice);
 
     function loadRoomRates() {
         $.ajax({
@@ -284,11 +287,23 @@ $(document).ready(function () {
     }
 
     async function calculatePrice() {
+        debugger
         const roomRateId = $('#roomRate').val();
         const checkIn = $('#checkin').val();
         const checkOut = $('#checkout').val();
 
-        if (!roomRateId || !checkIn || !checkOut) return;
+    if (!roomRateId || !checkIn || !checkOut) return;
+    debugger
+    const requestData = {
+        roomRateId: parseInt(roomRateId),
+        checkIn: checkIn,
+        checkOut: checkOut,
+        //roomId: selectedRoomId,
+        userId: userId
+    };
+
+    // Log the request data before sending it
+    console.log("Request Data:", requestData);
 
         try {
             const response = await fetch('/Booking/CalculatePrice', {
@@ -339,7 +354,7 @@ $(document).ready(function () {
         };
 
         try {
-            const response = await fetch('/Booking/AddBooking', {
+            const response = await fetch('/Booking/AddBooking' , {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(bookingData)
