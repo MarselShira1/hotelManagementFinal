@@ -29,24 +29,25 @@
     @RenderSection("Styles", required: false)
 </head>
     <body class="landing-page">
-        <header class="site-header" style="background: transparent;">
-            <div class="container-fluid">
-                <div class="row navbar-container align-items-center">
-                    <div class="col-12 col-md-4 site-logo" data-aos="fade">
-                        <a href="@Url.Action("Index", "LandingPage")" style="color: #fff; font-size: 30px;">ISE Hotel</a>
-                    </div>
-                    <div class="col-12 col-md-8">
-                        <nav role="navigation">
-                            <ul class="list-unstyled menu d-flex justify-content-end align-items-center mb-0">
-                                <li class="mx-2"><a href="@Url.Action("Index", "LandingPage")" style="color: #fff;">Home</a></li>
-                                <li class="mx-2"><a href="@Url.Action("Rooms", "LandingPage")" style="color: #fff;">Rooms</a></li>
-                                <li class="mx-2"><a href="@Url.Action("Reservations", "LandingPage")" style="color: #fff;">Reservation</a></li>
-                            </ul>
-                        </nav>
-                    </div>
+    <header class="site-header" style="background: transparent;">
+        <div class="container-fluid">
+            <div class="row navbar-container align-items-center">
+                <div class="col-6 col-md-4 site-logo" data-aos="fade">
+                    <a href="@Url.Action("Index", "LandingPage")" style="color: #fff; font-size: 30px;">ISE Hotel</a>
+                </div>
+                <div class="col-6 col-md-8">
+                    <nav role="navigation">
+                        <ul class="list-unstyled menu d-flex justify-content-end align-items-center mb-0">
+                            <li class="mx-2"><a href="@Url.Action("Index", "LandingPage")" style="color: #fff;">Home</a></li>
+                            <li class="mx-2"><a href="@Url.Action("Rooms", "LandingPage")" style="color: #fff;">Rooms</a></li>
+                            <li class="mx-2"><a href="@Url.Action("Reservations", "LandingPage")" style="color: #fff;">Reservation</a></li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
-        </header>
+        </div>
+    </header>
+
 
     <main role="main">
         @RenderBody()
