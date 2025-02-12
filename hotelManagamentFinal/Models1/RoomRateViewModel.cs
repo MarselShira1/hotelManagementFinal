@@ -3,6 +3,7 @@ using hotelManagamentFinal.Models.DTO.RoomRate;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HotelManagement.Models
+
 {
     public class RoomRateViewModel
     {

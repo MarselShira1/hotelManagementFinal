@@ -24,6 +24,7 @@ namespace hotelManagement.DAL
             services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
             services.AddScoped<IRoomRateRepository, RoomRateRepository>();
             services.AddScoped<IExtraServiceRepository, ExtraServiceRepository>();
+          
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddDistributedMemoryCache();

@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using HotelManagement.Models;
-using System.Linq;
-using hotelManagamentFinal.Models.DTO.RoomRate;
+﻿using hotelManagamentFinal.Models.DTO.RoomRate;
 using hotelManagement.BLL.Services;
+using HotelManagement.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using HotelManagementFinal.BLL.Services;
 
 namespace HotelManagement.Controllers
 {

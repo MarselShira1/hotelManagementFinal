@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace hotelManagamentFinal.Models.DTO.RoomRate
+
 {
     public class newRoomRate
     {
