@@ -1,5 +1,5 @@
-﻿@using hotelManagement.DAL.Persistence.Entities;
-@model IEnumerable<TipDhome>
+﻿@using hotelManagement.Domain.Models;
+@model IEnumerable<CreateRoom>
 @{
     Layout = "~/Views/Shared/_LandingPageLayout.cshtml";
 }
@@ -89,9 +89,7 @@
 
 <section class="section">
     <div class="container" id="room_list">
-        @if (Model != null && Model.Any())
-  {
-        @foreach (TipDhome el in Model)
+        @foreach(CreateRoom el in Model)
         {
             <div class="row">
                 <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">

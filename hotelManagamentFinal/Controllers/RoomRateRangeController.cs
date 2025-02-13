@@ -21,6 +21,9 @@ namespace HotelManagement.Controllers
         public IActionResult RoomRateRangeView()
         {
             var roomRateRanges = _service.GetRoomRateRanges();
+
+            if (roomRateRanges.Count() > 0)
+                roomRateRanges = roomRateRanges.Where(r => r.Invalidated == 1).ToList();
             var roomRates = _roomRateService.GetAllRoomRates();
             
 
@@ -106,7 +109,7 @@ namespace HotelManagement.Controllers
                 return View("RoomRateRangesView", model);
         }
         public IActionResult DeleteRoomRateRange(int id)
-        {
+        { 
             _service.DeleteRoomRateRange(id);
             return RedirectToAction("RoomRateRangeView");
         }

@@ -14,5 +14,7 @@ namespace hotelManagement.Domain.Models
         public string? RoomTypeName { get; set; }
         public int? RoomFloor { get; set; }
         public string? RoomNumber { get; set; }
+        public int Capacity { get; set; }
+        public decimal Price { get; set; }  
     }
 }
