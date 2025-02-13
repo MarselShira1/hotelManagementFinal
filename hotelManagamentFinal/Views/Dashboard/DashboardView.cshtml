@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Analytics Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .time-range {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .key-metrics {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+            .key-metrics .card {
+                background: #fff;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                width: 23%;
+                text-align: center;
+            }
+
+        .charts {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        canvas {
+            width: 48%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hotel Analytics Dashboard</h1>
+
+        <div class="time-range">
+            <label for="timeRange">Select Time Range:</label>
+            <select id="timeRange">
+                <option value="month">Past Month</option>
+                <option value="3months">Past 3 Months</option>
+                <option value="6months">Past 6 Months</option>
+                <option value="year">Past Year</option>
+            </select>
+        </div>
+
+        <div class="key-metrics">
+            <div class="card">
+                <h3>Total Bookings</h3>
+                <p id="totalBookings">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>Revenue</h3>
+                <p id="revenue">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>Occupancy Rate</h3>
+                <p id="occupancyRate">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>Average Stay Duration</h3>
+                <p id="avgStayDuration">Loading...</p>
+            </div>
+        </div>
+
+        <div class="charts">
+            <canvas id="monthlyBookingsChart"></canvas>
+            <canvas id="roomTypeChart"></canvas>
+            <canvas id="topClientsChart"></canvas>
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
