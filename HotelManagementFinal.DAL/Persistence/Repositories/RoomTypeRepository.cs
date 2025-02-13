@@ -6,11 +6,10 @@ namespace hotelManagement.DAL.Persistence.Repositories
     public interface IRoomTypeRepository : _IBaseRepository<TipDhome, int>
     {
         TipDhome? GetByName(string name);
-        void DeleteById(int id);
-        Task<IEnumerable<TipDhome>> GetAllAsync();
-
         void Update(TipDhome roomType);
         IEnumerable<TipDhome> GetAllRoomTypes();
+        Task<IEnumerable<TipDhome>> GetAllAsync();
+
     }
 
     internal class RoomTypeRepository : _BaseRepository<TipDhome, int>, IRoomTypeRepository
@@ -32,6 +31,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
             _dbSet.Update(roomType);
             _dbContext.SaveChanges();
         }
+
         public async Task<IEnumerable<TipDhome>> GetAllAsync()
         {
             var rooms = await _dbSet
@@ -40,9 +40,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
 
             Console.WriteLine($" Repository: Found {rooms.Count} room types.");
             return rooms;
-        
+
         }
-
-
     }
 }

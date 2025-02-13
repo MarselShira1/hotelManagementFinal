@@ -51,7 +51,6 @@ namespace HotelManagementFinal.BLL.Services
             return await _userRepository.GetAllUsersAsync();
         }
 
-    }
 
         public string GetUserEmailById(int userId)
         {
