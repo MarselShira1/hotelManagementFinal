@@ -15,7 +15,7 @@ namespace hotelManagement.BLL.Services
     public interface IRoomRateService
     {
         void AddRoomRate(hotelManagement.Domain.Models.CreateRoomRate roomRate);
-        IEnumerable<RoomRate> GetAllRoomRates(); // Change return type to match implementation
+        IEnumerable<RoomRate> GetAllRoomRates(); 
         RoomRate GetRoomRateById(int id);
         void DeleteRoomRate(int id);
         void UpdateRoomRate(CreateRoomRate roomRate);

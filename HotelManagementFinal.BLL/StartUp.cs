@@ -20,6 +20,8 @@ public static class Startup
         services.AddTransient<IMailSenderService, MailSenderService>();
         services.AddScoped<IRoomRateService, RoomRateService>();
         services.AddScoped<IRoomRateRangesService, RoomRateRangesService>();
+        services.AddScoped<IBookingService, BookingService>();
+        services.AddScoped<IUserService, UserService>();
     }
 }
 

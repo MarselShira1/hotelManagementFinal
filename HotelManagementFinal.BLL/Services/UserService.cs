@@ -14,6 +14,8 @@ namespace HotelManagementFinal.BLL.Services
         //void RegisterUser(string username, string email, string password, int roleId);
         //User Authenticate(string email, string password);
         IEnumerable<User> GetAllUsers();
+        public string GetUserEmailById(int userId);
+
         //void UpdateUserRole(int userId, int roleId);
     }
 
@@ -35,6 +37,10 @@ namespace HotelManagementFinal.BLL.Services
         public IEnumerable<User> GetAllUsers()
         {
             return _userRepository.GetAll();
+        }
+        public string GetUserEmailById(int userId)
+        {
+            return _userRepository.GetEmailById(userId);
         }
     }
 

@@ -54,23 +54,14 @@ namespace hotelManagement.BLL.Services
 
         public async Task<IEnumerable<CreateRoom>> GetRoomsAsync()
         {
-            var rooms =  await roomRepository.GetAllRoomsAsync();
-            var createRooms = new List<CreateRoom>();
-
-            foreach (var room in rooms)
+            var rooms = await roomRepository.GetAllRoomsAsync();
+            return rooms.Select(room => new CreateRoom
             {
-                var roomType =   _roomTypeRepository.GetById(room.TipDhome); 
-                createRooms.Add(new CreateRoom
-                {
-                    RoomId = room.Id,
-                    RoomFloor = room.Kat,
-                    RoomNumber = room.NumerDhome,
-                    RoomTypeId = room.TipDhome,
-                    RoomTypeName = roomType?.Emer
-                });
-            }
-            return createRooms;
-
+                RoomId = room.Id,
+                RoomFloor = room.Kat,
+                RoomNumber = room.NumerDhome,
+                RoomTypeId = room.TipDhome
+            });
         }
 
 
@@ -80,7 +71,8 @@ namespace hotelManagement.BLL.Services
         {
             try
             {
-                var room = roomRepository.GetById(roomModel.RoomId ?? 0);
+                //esteri ndryshoi (roomModel.RoomId ?? 0)
+                var room = roomRepository.GetById(roomModel.RoomId);
 
                 if (room != null)
                 {
