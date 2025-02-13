@@ -8,5 +8,7 @@
         public int? RoomFloor { get; set; }
         public string? RoomNumber { get; set; }
         public string? RoomTypeName { get; set; }
+        public double? AverageRating { get; set; } // Holds the average rating (0-5)
+        public int? ReviewCount { get; set; }
     }
 }

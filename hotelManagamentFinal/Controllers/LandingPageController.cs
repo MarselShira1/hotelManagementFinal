@@ -10,13 +10,14 @@ namespace HotelManagementISE.Controllers
     public class LandingPageController : Controller
     {
         private readonly ILogger<LandingPageController> _logger;
-        private readonly IRoomTypeService _roomType;
+        private readonly IRoomService _room;
+        //private readonly IRoomTypeService _roomType;
         private readonly IBookingService _bookingService;
 
-        public LandingPageController(ILogger<LandingPageController> logger, IRoomTypeService roomType , IBookingService bookingService)
+        public LandingPageController(ILogger<LandingPageController> logger, IRoomService room, IBookingService bookingService)
         {
             _logger = logger;
-            _roomType = roomType;
+            _room = room;
             _bookingService = bookingService;
         }
 
@@ -26,21 +27,12 @@ namespace HotelManagementISE.Controllers
             return View();
         }
 
-        public async  Task<IActionResult> Rooms()
+        public async Task<IActionResult> Rooms()
         {
+
             var userName = HttpContext.Session.GetString("UserName");
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var userId = HttpContext.Session.GetInt32("UserId");
-
-            //Console.WriteLine($"Booking Controller - Session UserName: {userName ?? "NULL"}");
-            //Console.WriteLine($"Booking Controller - Session UserEmail: {userEmail ?? "NULL"}");
-
-
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userEmail))
-            {
-                //Console.WriteLine("No session data found. Redirecting to login.");
-                //return RedirectToAction("Login", "Account");
-            }
 
             ViewBag.UserName = userName;
             ViewBag.UserEmail = userEmail;
@@ -48,12 +40,9 @@ namespace HotelManagementISE.Controllers
             var roomRates = await _bookingService.GetAllRoomRatesAsync();
             ViewBag.RoomRates = roomRates;
 
-            //Console.WriteLine($"DEBUG: Retrieved {roomRates.Count()} room rates.");
-
-
             try
             {
-                var rooms = await _roomType.GetAllRoomTypesAsync();
+                var rooms = await _room.GetRoomsAsync();
                 //Console.WriteLine($" SUCCESS: Retrieved {rooms.Count()} rooms.");
 
                 return View(rooms);
@@ -76,9 +65,13 @@ namespace HotelManagementISE.Controllers
             return View("Index");
         }
 
-        public JsonResult CheckAvailability(DateTime checkinDate, DateTime checkoutDate, int adults, int children)
+        public async Task<JsonResult> CheckAvailability(DateTime checkinDate, DateTime checkoutDate, int adults, int children)
         {
-            var rooms = _roomType.GetAllRoomTypes();
+            var rooms = await _room.GetRoomsAsync();
+            if(rooms.Count()>0)
+            {
+                rooms = rooms.Where(r=>r.Capacity>=adults+children);
+            }
             return Json(rooms);
         }
     }

@@ -1,5 +1,6 @@
-﻿@using hotelManagement.DAL.Persistence.Entities;
-@model IEnumerable<TipDhome>
+﻿@using hotelManagement.Domain.Models;
+@using hotelManagement.DAL.Persistence.Entities;
+@model IEnumerable<CreateRoom>
 @{
     Layout = "~/Views/Shared/_LandingPageLayout.cshtml";
 }
@@ -89,9 +90,7 @@
 
 <section class="section">
     <div class="container" id="room_list">
-        @if (Model != null && Model.Any())
-  {
-        @foreach (TipDhome el in Model)
+        @foreach(CreateRoom el in Model)
         {
             <div class="row">
                 <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
@@ -100,14 +99,14 @@
                             <img src="/css/img_1.jpg" class="img-fluid mb-3">
                         </figure>
                         <div class="p-3 text-center room-info">
-                            <h2>@el.Emer</h2>
+                            <h2>@el.RoomNumber</h2>
                             <span class="text-uppercase letter-spacing-1">
-                                @el.RoomRates.LastOrDefault()??.CmimBaze $ / per night
+                                @* @el.RoomRates.LastOrDefault()??.CmimBaze *@$0 / per night 
                             </span>
-                            <span class="text-uppercase letter-spacing-1">@el.Kapacitet persona</span>
+                            <span class="text-uppercase letter-spacing-1">@el.Capacity persona</span>
                             <button class="btn btn-primary book-room-btn"
-                            data-room-id="@el.Id"
-                            data-room-name="@el.Emer">
+                            data-room-id="@el.RoomId"
+                            data-room-name="@el.RoomNumber">
                                 Book Now
                             </button>
                         </div>

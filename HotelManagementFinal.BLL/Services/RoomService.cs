@@ -26,10 +26,12 @@ namespace hotelManagement.BLL.Services
     {
         private readonly IRoomRepository roomRepository;
         private readonly IRoomTypeRepository _roomTypeRepository;
-        public RoomService(IRoomRepository repository , IRoomTypeRepository roomTypeRepository)
+        private readonly IRoomRateRepository _roomRateRepository;
+        public RoomService(IRoomRepository repository , IRoomTypeRepository roomTypeRepository, IRoomRateRepository roomRate)
         {
             roomRepository = repository;
             _roomTypeRepository = roomTypeRepository;
+            _roomRateRepository = roomRate;
         }
 
         public bool DeleteRoom(int id)

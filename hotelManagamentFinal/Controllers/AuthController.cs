@@ -107,7 +107,7 @@ namespace hotelManagamentFinal.Controllers
 
 
         [HttpPost]
-            public IActionResult Login(LogInDTO loginDto)
+        public IActionResult Login(LogInDTO loginDto)
         {
             if (!ModelState.IsValid)
             {
@@ -128,14 +128,12 @@ namespace hotelManagamentFinal.Controllers
                         HttpContext.Session.SetString("UserEmail", user.Email);
                         HttpContext.Session.SetString("UserName", user.Emer);
 
-                        //Console.WriteLine($"Session Set - UserName: {HttpContext.Session.GetString("UserName")}");
-                        //Console.WriteLine($"Session Set - UserEmail: {HttpContext.Session.GetString("UserEmail")}");
                         return Json(
-                       new
-                       {
-                           Success = true,
-                           ErrorMessage = "Success Login"
-                       });
+                           new
+                           {
+                               Success = true,
+                               ErrorMessage = "Success Login"
+                           });
                     }
                     return Json(
                         new
