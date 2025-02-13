@@ -348,10 +348,10 @@ public partial class HotelManagementContext : DbContext
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("weekend_pricing");
 
-            entity.HasOne(d => d.RoomRate).WithMany(p => p.RoomRateRanges)
-                .HasForeignKey(d => d.RoomRateId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Room_Rate__room___4E88ABD4");
+            //entity.HasOne(d => d.RoomRate).WithMany(p => p.RoomRateRanges)
+            //    .HasForeignKey(d => d.RoomRateId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK__Room_Rate__room___4E88ABD4");
         });
 
         modelBuilder.Entity<TipDhome>(entity =>

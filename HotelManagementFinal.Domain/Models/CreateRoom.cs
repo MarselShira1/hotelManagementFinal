@@ -8,8 +8,7 @@ namespace hotelManagement.Domain.Models
 {
     public class CreateRoom
     {
-        //esteri hoqi nullable nga RoomId :)
-        public int RoomId { get; set; }
+         public int RoomId { get; set; }
         public int? RoomTypeId { get; set; }
         public string? RoomTypeName { get; set; }
         public int? RoomFloor { get; set; }

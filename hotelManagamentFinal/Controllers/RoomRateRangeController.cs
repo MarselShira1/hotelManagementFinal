@@ -32,7 +32,7 @@ namespace HotelManagement.Controllers
             {
                 RoomRateRanges = roomRateRanges,
                 NewRoomRateRange = new RoomRateRange(),
-                roomRates = roomRates,
+                roomRates = roomRates.ToList(),
                 EditRoomRateRange = new RoomRateRange()
             };
 
@@ -58,12 +58,12 @@ namespace HotelManagement.Controllers
                     }
                 }
                 model.RoomRateRanges = _service.GetRoomRateRanges();
-                model.roomRates = _roomRateService.GetAllRoomRates();
+                model.roomRates = _roomRateService.GetAllRoomRates().ToList();
                 return View("RoomRateRangeView", model);
             }
             try
             {
-                if (model.NewRoomRateRange != null)
+                if (model.NewRoomRateRange != null )
                 {
                     var roomRateRange = new RoomRateRange
                     {
