@@ -1,8 +1,23 @@
-﻿@{
+﻿@model HotelManagement.Models.RoomTypeViewModel
+
+@{
     ViewData["Title"] = "Room Types";
 }
 
-@model HotelManagement.Models.RoomTypeViewModel
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 
 <div class="text-center">
     <h1 class="display-4">Room Types</h1>
@@ -11,91 +26,54 @@
     </button>
 </div>
 
-<!-- Modal për Shtim të RoomType -->
+<!-- SHTO ROOM TYPE -->
+
 <div class="modal fade" id="addRoomTypeModal" tabindex="-1" aria-labelledby="addRoomTypeLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add Room Type</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Forma për shtim -->
-                <form method="post" action="/RoomType/CreateRoomType">
-                    @Html.AntiForgeryToken()
+            <form asp-action="CreateType" asp-controller="RoomType" method="post">
+              
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Room Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label" for="Emer">Name</label>
-                        <input class="form-control" type="text" id="Emer" name="Emer" />
-                        <span class="text-danger field-validation-valid" data-valmsg-for="Emer" data-valmsg-replace="true"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="Siperfaqe">Area</label>
-                        <input class="form-control" type="text" id="Siperfaqe" name="Siperfaqe" />
-                        <span class="text-danger field-validation-valid" data-valmsg-for="Siperfaqe" data-valmsg-replace="true"></span>
+                        <label asp-for="NewType.Emer" class="form-label">Name</label>
+                        <input asp-for="NewType.Emer" class="form-control" />
+                        <span asp-validation-for="NewType.Emer" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="Kapacitet">Capacity</label>
-                        <input class="form-control" type="number" id="Kapacitet" name="Kapacitet" />
-                        <span class="text-danger field-validation-valid" data-valmsg-for="Kapacitet" data-valmsg-replace="true"></span>
+                        <label asp-for="NewType.Siperfaqe" class="form-label">Area</label>
+                        <input asp-for="NewType.Siperfaqe" class="form-control" />
+                        <span asp-validation-for="NewType.Siperfaqe" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="Pershkrim">Description</label>
-                        <textarea class="form-control" id="Pershkrim" name="Pershkrim"></textarea>
+                        <label asp-for="NewType.Kapacitet" class="form-label">Capacity</label>
+                        <input asp-for="NewType.Kapacitet" class="form-control" />
+                        <span asp-validation-for="NewType.Kapacitet" class="text-danger"></span>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <div class="mb-3">
+                        <label asp-for="NewType.Pershkrim" class="form-label">Description</label>
+                        <textarea asp-for="NewType.Pershkrim" class="form-control"></textarea>
+                        <span asp-validation-for="NewType.Pershkrim" class="text-danger"></span>
                     </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add Room Type</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-@foreach (var roomType in Model.RoomTypes)
-{
-    <div class="modal fade" id="editRoomTypeModal-@roomType.Id" tabindex="-1" aria-labelledby="editRoomTypeLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Room Type</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="/RoomType/EditRoomType">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="Id" value="@roomType.Id" />
-                        <div class="mb-3">
-                            <label class="form-label" for="Emer">Name</label>
-                            <input class="form-control" type="text" id="Emer" name="Emer" value="@roomType.Emer" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="Siperfaqe">Area</label>
-                            <input class="form-control" type="text" id="Siperfaqe" name="Siperfaqe" value="@roomType.Siperfaqe" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="Kapacitet">Capacity</label>
-                            <input class="form-control" type="number" id="Kapacitet" name="Kapacitet" value="@roomType.Kapacitet" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="Pershkrim">Description</label>
-                            <textarea class="form-control" id="Pershkrim" name="Pershkrim">@roomType.Pershkrim</textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-}
 
-<table class="table">
+<table class="table table-striped table-hover mt-4">
     <thead>
         <tr>
-            <th>Id</th>
+          
             <th>Name</th>
             <th>Area</th>
             <th>Capacity</th>
@@ -104,23 +82,71 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var roomType in Model.RoomTypes)
+        @foreach (var rt in Model.RoomTypes)
         {
             <tr>
-                <td>@roomType.Id</td>
-                <td>@roomType.Emer</td>
-                <td>@roomType.Siperfaqe</td>
-                <td>@roomType.Kapacitet</td>
-                <td>@roomType.Pershkrim</td>
+           
+                <td>@rt.Emer</td>
+                <td>@rt.Siperfaqe</td>
+                <td>@rt.Kapacitet</td>
+                <td>@rt.Pershkrim</td>
                 <td>
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRoomTypeModal-@roomType.Id">Edit</button>
-                    <form method="post" asp-action="DeleteRoomType" asp-controller="RoomType" style="display:inline;">
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRoomTypeModal-@rt.Id">Edit</button>
+
+                    <form asp-action="DeleteType" asp-controller="RoomType" method="post" style="display:inline;">
+
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@roomType.Id" />
+                        <input type="hidden" name="id" value="@rt.Id" />
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </td>
             </tr>
+
+            <!-- Edit  -->
+
+
+            <div class="modal fade" id="editRoomTypeModal-@rt.Id" tabindex="-1" aria-labelledby="editRoomTypeLabel-@rt.Id" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form asp-action="EditType" asp-controller="RoomType" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="Id" value="@rt.Id" />
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Room Type</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="Emer-@rt.Id" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="Emer-@rt.Id" name="Emer" value="@rt.Emer" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="Siperfaqe-@rt.Id" class="form-label">Area</label>
+                                    <input type="text" class="form-control" id="Siperfaqe-@rt.Id" name="Siperfaqe" value="@rt.Siperfaqe" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="Kapacitet-@rt.Id" class="form-label">Capacity</label>
+                                    <input type="number" class="form-control" id="Kapacitet-@rt.Id" name="Kapacitet" value="@rt.Kapacitet" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="Pershkrim-@rt.Id" class="form-label">Description</label>
+                                    <textarea class="form-control" id="Pershkrim-@rt.Id" name="Pershkrim">@rt.Pershkrim</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

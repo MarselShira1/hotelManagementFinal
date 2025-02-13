@@ -12,7 +12,10 @@ namespace hotelManagement.DAL.Persistence.Repositories
 
     public interface IRoomRateRepository : _IBaseRepository<RoomRate, int>
     {
-        void Update(RoomRate roomRate); // Add this
+        void Update(RoomRate roomRate);
+        IEnumerable<TipDhome> GetAllRoomTypes();
+
+
     }
 
     internal class RoomRateRepository : _BaseRepository<RoomRate, int>, IRoomRateRepository
@@ -22,7 +25,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
         }
         public IEnumerable<RoomRate> GetAll()
         {
-            return _dbSet.ToList();
+            return _dbSet.Include(r => r.TipDhome).ToList();
         }
         public new RoomRate GetById(int id)
         {
@@ -32,8 +35,12 @@ namespace hotelManagement.DAL.Persistence.Repositories
         public void Update(RoomRate roomRate)
         {
             _dbSet.Update(roomRate);
+            _dbContext.SaveChanges();
         }
-
+        public IEnumerable<TipDhome> GetAllRoomTypes()
+        {
+            return _dbContext.TipDhomes.ToList(); 
+        }
 
 
     }

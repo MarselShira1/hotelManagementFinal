@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using HotelManagement.Models;
-using System.Linq;
-using hotelManagamentFinal.Models.DTO.RoomRate;
+﻿using hotelManagamentFinal.Models.DTO.RoomRate;
 using hotelManagement.BLL.Services;
+using HotelManagement.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HotelManagement.Controllers
 {
     public class RoomRateController : Controller
     {
         private readonly IRoomRateService _roomRateService;
+        private List<SelectListItem> roomTypes;
 
         public RoomRateController(IRoomRateService roomRateService)
         {
@@ -18,14 +19,23 @@ namespace HotelManagement.Controllers
         public IActionResult RateView()
         {
             var rates = _roomRateService.GetAllRoomRates();
+            var roomTypes = _roomRateService.GetAllRoomTypes()
+                                     .Select(rt => new SelectListItem
+                                     {
+                                         Value = rt.Id.ToString(),
+                                         Text = rt.Emer
+                                     }).ToList();
             var model = new RoomRateViewModel
             {
                 Rates = rates.Select(r => new RoomRateDTO
                 {
                     Id = r.Id,
                     Emer = r.Emer,
-                    CmimBaze = r.CmimBaze
+                    CmimBaze = r.CmimBaze,
+                    TipDhomeId = r.TipDhomeId
+
                 }).ToList(),
+                RoomTypes = roomTypes, // per te shtuar select list me tipet e dhomave
                 NewRate = new RoomRateDTO()
             };
             return View(model);
@@ -47,39 +57,46 @@ namespace HotelManagement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateRate(RoomRateDTO model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                              .Select(e => e.ErrorMessage)
-                                              .ToList();
-                Console.WriteLine("Validation Errors: " + string.Join(", ", errors));
+                TempData["ErrorMessage"] = "There were errors in your submission. Please check the fields.";
 
-                //shtim i room rate
-                _roomRateService.AddRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
-                {
-                    Name = model.Emer,
-                    base_price = model.CmimBaze.ToString()
-                });
-
-
-                //marrja listes me room rate
+               
                 var rates = _roomRateService.GetAllRoomRates();
+                var roomTypes = _roomRateService.GetAllRoomTypes()
+                                                .Select(rt => new SelectListItem
+                                                {
+                                                    Value = rt.Id.ToString(),
+                                                    Text = rt.Emer
+                                                }).ToList();
+
                 var viewModel = new RoomRateViewModel
                 {
                     Rates = rates.Select(rate => new RoomRateDTO
                     {
                         Id = rate.Id,
                         Emer = rate.Emer,
-                        CmimBaze = rate.CmimBaze
+                        CmimBaze = rate.CmimBaze,
+                        TipDhomeId = rate.TipDhomeId
                     }).ToList(),
-                    NewRate = model
+                    RoomTypes = roomTypes,
+                    NewRate = model 
                 };
+
                 return View("RateView", viewModel);
             }
 
-          
+            _roomRateService.AddRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
+            {
+                Name = model.Emer,
+                base_price = model.CmimBaze,
+                TipDhomeId = model.TipDhomeId
+            });
+
+            TempData["SuccessMessage"] = "Room Rate added successfully!";
             return RedirectToAction("RateView");
         }
+
 
 
 
@@ -88,11 +105,15 @@ namespace HotelManagement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteRate(int id)
         {
-            var rate = _roomRateService.GetRoomRateById(id);
-            if (rate != null)
+            var service = _roomRateService.GetRoomRateById(id);
+            if (service == null)
             {
-                _roomRateService.DeleteRoomRate(id);
+                TempData["ErrorMessage"] = "RoomRate not found!";
+                return RedirectToAction("RateView");
             }
+
+            _roomRateService.SoftDeleteRoomRate(id);
+            TempData["SuccessMessage"] = "Room Rate deleted successfully!";
             return RedirectToAction("RateView");
         }
 
@@ -101,33 +122,46 @@ namespace HotelManagement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditRate(RoomRateDTO model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-
-                _roomRateService.UpdateRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
-                {
-                    Name = model.Emer,
-                    base_price = model.CmimBaze.ToString(),
-                    Id = model.Id // Ensure ID is passed for updating the correct record
-                });
-
+                TempData["ErrorMessage"] = "Failed to update the room. Please check the fields.";
 
                 var rates = _roomRateService.GetAllRoomRates();
+                var roomTypes = _roomRateService.GetAllRoomTypes()
+                                                .Select(rt => new SelectListItem
+                                                {
+                                                    Value = rt.Id.ToString(),
+                                                    Text = rt.Emer
+                                                }).ToList();
+
                 var viewModel = new RoomRateViewModel
                 {
                     Rates = rates.Select(rate => new RoomRateDTO
                     {
                         Id = rate.Id,
                         Emer = rate.Emer,
-                        CmimBaze = rate.CmimBaze
+                        CmimBaze = rate.CmimBaze,
+                        TipDhomeId = rate.TipDhomeId
                     }).ToList(),
+                    RoomTypes = roomTypes,
                     NewRate = new RoomRateDTO()
                 };
+
                 return View("RateView", viewModel);
             }
 
+            _roomRateService.UpdateRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
+            {
+                Name = model.Emer,
+                base_price = model.CmimBaze,
+                TipDhomeId = model.TipDhomeId,
+                Id = model.Id
+            });
+
+            TempData["SuccessMessage"] = "Room Rate updated successfully!";
             return RedirectToAction("RateView");
         }
+
     }
 }
 

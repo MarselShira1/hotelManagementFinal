@@ -11,9 +11,13 @@ namespace HotelManagementFinal.BLL.Services
 {
     public interface IUserService
     {
-        //void RegisterUser(string username, string email, string password, int roleId);
-        //User Authenticate(string email, string password);
+       
         IEnumerable<User> GetAllUsers();
+
+        //User GetUserById(int userId);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+
+
         public string GetUserEmailById(int userId);
 
         //void UpdateUserRole(int userId, int roleId);
@@ -38,6 +42,17 @@ namespace HotelManagementFinal.BLL.Services
         {
             return _userRepository.GetAll();
         }
+        public User GetUserById(int userId)
+        {
+            return _userRepository.GetById(userId); 
+        }
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _userRepository.GetAllUsersAsync();
+        }
+
+    }
+
         public string GetUserEmailById(int userId)
         {
             return _userRepository.GetEmailById(userId);
