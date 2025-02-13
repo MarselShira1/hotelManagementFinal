@@ -16,7 +16,31 @@ namespace HotelManagement.Controllers
                 _roomTypeService = roomTypeService;
             }
 
-            public IActionResult RoomTypeView()
+        //Marsel 
+        //metoda kthen listen me room types
+        //13/02/2025
+        [HttpGet]
+        public IActionResult GetAllRoomTypes()
+        {
+            var viewModel = new RoomTypeViewModel
+            {
+                RoomTypes = _roomTypeService.GetAllRoomTypes()
+                    .Select(rt => new RoomTypeDTO
+                    {
+                        Id = rt.Id,
+                        Emer = rt.Emer,
+                        Siperfaqe = rt.Siperfaqe ?? 0,
+                        Pershkrim = rt.Pershkrim,
+                        Kapacitet = rt.Kapacitet,
+                        Invalidated = rt.Invalidated
+                    }).ToList(),
+                NewType = new RoomTypeDTO()
+            };
+
+            return Ok(viewModel);
+        }
+
+        public IActionResult RoomTypeView()
             {
                 var roomTypes = _roomTypeService.GetAllRoomTypes();
                 var model = new RoomTypeViewModel

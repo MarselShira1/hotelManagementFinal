@@ -179,12 +179,14 @@
         });
     }
 
-    function loadRoomTypes() {
+       function loadRoomTypes() {
+           
         $.ajax({
             type: "GET",
-            url: '/RoomType/GetAllRoomTypes', // Update URL if the controller name or route differs
-            success: function (roomTypes) {
-                RoomTypes = roomTypes;
+            url: '/RoomType/GetAllRoomTypes', // Ensure this matches your actual route
+            success: function (response) {
+                debugger
+                RoomTypes = response; // Assign the full viewModel
                 console.log("RoomTypes = ", RoomTypes);
                 populateRoomTypeDropdown("NewRoom_RoomTypeId");
             },
@@ -193,7 +195,6 @@
             }
         });
     }
-
     function renderTable() {
         const startIndex = (currentPage - 1) * rowsPerPage;
         const endIndex = startIndex + rowsPerPage;
@@ -259,9 +260,12 @@
         var dropdown = $(`#${roomActionId}`);
         dropdown.empty(); // Clear any existing options
         dropdown.append('<option value="">Select Room Type</option>');
-        RoomTypes.forEach(function (roomType) {
-            dropdown.append(`<option value="${roomType.id}">${roomType.name}</option>`);
-        });
+        debugger;
+        if (RoomTypes && RoomTypes.roomTypes) {
+            RoomTypes.roomTypes.forEach(function (roomType) {
+                dropdown.append(`<option value="${roomType.id}">${roomType.emer}</option>`);
+            });
+        }
     }
 
     function showLoader() {
