@@ -1,60 +1,135 @@
-﻿@model hotelManagementFinal.Models1.CalendarViewModel
-
-<div class="container-fluid">
-    <div class="row">
-        <main class="col-md-12 ms-sm-auto px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Hotel Bookings Calendar</h1>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking Calendar</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="fas fa-calendar-alt me-2"></i>Hotel Booking Calendar</h4>
             </div>
+            <div class="card-body">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-4">
+                        <label for="roomSelect" class="form-label">
+                            <i class="fas fa-door-open me-2"></i>Select Room:
+                        </label>
+                        <select id="roomSelect" class="form-select">
+                            <option value="">All Rooms</option>
+                        </select>
+                    </div>
 
-            <div id='calendar'></div>
-        </main>
+                    <div class="col-md-3">
+                        <label for="startDateFilter" class="form-label">
+                            <i class="fas fa-calendar-alt me-2"></i> Start Date:
+                        </label>
+                        <input type="date" id="startDateFilter" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="endDateFilter" class="form-label">
+                            <i class="fas fa-calendar-alt me-2"></i> End Date:
+                        </label>
+                        <input type="date" id="endDateFilter" class="form-control">
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button id="filterButton" class="btn btn-success w-100">
+                            <i class="fas fa-filter me-2"></i> Check
+                        </button>
+                    </div>
+                </div>
+
+                
+                <div id="calendar"></div>
+            </div>
+        </div>
     </div>
-</div>
 
-@section Scripts {
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+ 
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel"><i class="fas fa-info-circle me-2"></i>Booking Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="bookingDetails"></div>
+            </div>
+        </div>
+    </div>
 
+ 
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log("Checking FullCalendar:", typeof FullCalendar);
-
+        document.addEventListener('DOMContentLoaded', async function () {
             if (typeof FullCalendar === "undefined") {
                 console.error("FullCalendar did NOT load. Check your network.");
                 return;
             }
 
-            var calendarEl = document.getElementById('calendar');
+            const calendarEl = document.getElementById('calendar');
+            const roomSelect = document.getElementById('roomSelect');
+            const startDateInput = document.getElementById('startDateFilter');
+            const endDateInput = document.getElementById('endDateFilter');
+            const filterButton = document.getElementById('filterButton');
+            const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            let selectedRoomId = '';
 
-            if (!calendarEl) {
-                console.error("Error: Calendar element not found!");
-                return;
+           
+            async function loadRooms() {
+                try {
+                    const response = await fetch('/Calendar/GetRooms');
+                    const rooms = await response.json();
+                    rooms.forEach(room => {
+                        const option = document.createElement('option');
+                        option.value = room.id;
+                        option.textContent = room.title;
+                        roomSelect.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error("Error fetching rooms:", error);
+                }
             }
 
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+            await loadRooms(); 
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                resourceAreaWidth: '20%',
                 height: 'auto',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                resources: async function (fetchInfo, successCallback, failureCallback) {
-                    try {
-                        let response = await fetch(`/Calendar/GetRooms`);
-                        let data = await response.json();
-                        successCallback(data);
-                    } catch (error) {
-                        console.error("Error fetching rooms:", error);
-                        failureCallback(error);
-                    }
+                buttonText: {
+                    today: 'Today',
+                    month: 'Month',
+                    week: 'Week',
+                    day: 'Day'
                 },
                 events: async function (fetchInfo, successCallback, failureCallback) {
                     try {
-                        let response = await fetch(`/Calendar/GetBookings?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}`);
-                        let data = await response.json();
+                        let startDate = startDateInput.value || fetchInfo.startStr.split("T")[0];
+                        let endDate = endDateInput.value || fetchInfo.endStr.split("T")[0];
+
+                        if (!selectedRoomId) {
+                            console.log("No room selected, skipping fetch.");
+                            successCallback([]);
+                            return;
+                        }
+
+                        const response = await fetch(
+                            `/Calendar/GetBookings?start=${startDate}&end=${endDate}&roomId=${selectedRoomId}`
+                        );
+                        const data = await response.json();
                         successCallback(data);
                     } catch (error) {
                         console.error("Error fetching bookings:", error);
@@ -62,11 +137,59 @@
                     }
                 },
                 eventClick: function (info) {
-                    alert("Booking Details:\n" + info.event.title);
+                    const event = info.event;
+                    const props = event.extendedProps;
+
+                    document.getElementById('bookingDetails').innerHTML = `
+                        <div class="mb-3">
+                            <strong><i class="fas fa-info-circle me-2"></i>Booking ID:</strong> ${event.id}
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-door-open me-2"></i>Room:</strong> ${props.roomNumber}
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-calendar-check me-2"></i>Check-in:</strong> ${event.start.toLocaleDateString()}
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-calendar-times me-2"></i>Check-out:</strong> ${event.end.toLocaleDateString()}
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-tag me-2"></i>Status:</strong>
+                            <span class="badge bg-success">${props.status}</span>
+                        </div>
+                    `;
+                    bookingModal.show();
+                },
+                eventDidMount: function(info) {
+                    new bootstrap.Tooltip(info.el, {
+                        title: `Room ${info.event.extendedProps.roomNumber} - ${info.event.title}`,
+                        placement: 'top',
+                        trigger: 'hover',
+                        container: 'body'
+                    });
                 }
             });
 
             calendar.render();
+
+            filterButton.addEventListener('click', function () {
+                selectedRoomId = roomSelect.value;
+                if (!selectedRoomId) {
+                    alert("Please select a room first.");
+                    return;
+                }
+
+                let startDate = startDateInput.value;
+                let endDate = endDateInput.value;
+
+                if (!startDate || !endDate) {
+                    alert("Please select both start and end dates.");
+                    return;
+                }
+
+                calendar.refetchEvents();
+            });
         });
     </script>
-}
+</body>
+</html>
