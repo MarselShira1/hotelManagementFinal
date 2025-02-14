@@ -26,8 +26,8 @@ public interface _IBaseRepository<T, T1> where T : BaseEntity<T1>
 
 internal class _BaseRepository<T, T1> : _IBaseRepository<T, T1> where T : BaseEntity<T1>
 {
-    private HotelManagementContext _dbContext;
-    protected DbSet<T> _dbSet;
+    protected readonly HotelManagementContext _dbContext;
+    protected readonly DbSet<T> _dbSet;
     public _BaseRepository(HotelManagementContext dbContext)
     {
         _dbContext = dbContext;

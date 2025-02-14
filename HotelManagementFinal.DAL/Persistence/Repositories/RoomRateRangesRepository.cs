@@ -32,14 +32,29 @@ namespace hotelManagement.DAL.Persistence.Repositories
 
         public void UpdateRoomRateRange(RoomRateRangeDataAccess roomRateRange)
         {
-            _dbSet.Update(roomRateRange);
+            var oldRange=_dbSet.RoomRateRanges.Find(roomRateRange.Id);
+            oldRange.Invalidated = 0;
+            oldRange.ModifiedOn = DateTime.UtcNow;
+            oldRange.Description = roomRateRange.Description;
+            oldRange.WeekendPricing = roomRateRange.WeekendPricing;
+            oldRange.HolidayPricing = roomRateRange.HolidayPricing;
+            oldRange.RoomRateId = roomRateRange.RoomRateId;
+            oldRange.StartDate = roomRateRange.StartDate;   
+            oldRange.EndDate = roomRateRange.EndDate;
             _dbSet.SaveChanges();
         }
 
         public void CreateRoomRateRange(RoomRateRangeDataAccess roomRateRange)
         {
+            try { 
+            roomRateRange.CreatedOn = DateTime.Now;
+            roomRateRange.Invalidated = 1;
             _dbSet.Add(roomRateRange);
             _dbSet.SaveChanges();
+            }catch(Exception ex)
+            {
+
+            }
         }
 
         public void DeleteRoomRateRange(int id)
@@ -48,7 +63,9 @@ namespace hotelManagement.DAL.Persistence.Repositories
 
             if(roomRateRange != null)
             {
-                _dbSet.RoomRateRanges.Remove(roomRateRange);
+                roomRateRange.ModifiedOn = DateTime.UtcNow;
+                roomRateRange.CreatedOn = _dbSet.RoomRateRanges.Where(r => r.Id == roomRateRange.Id).First().CreatedOn;
+                roomRateRange.Invalidated = 0;
                 _dbSet.SaveChanges();
             }
 

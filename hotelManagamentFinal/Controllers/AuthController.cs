@@ -107,7 +107,7 @@ namespace hotelManagamentFinal.Controllers
 
 
         [HttpPost]
-            public IActionResult Login(LogInDTO loginDto)
+        public IActionResult Login(LogInDTO loginDto)
         {
             if (!ModelState.IsValid)
             {
@@ -120,19 +120,20 @@ namespace hotelManagamentFinal.Controllers
                 if (user1 != null)
                 {
                     var user = _authService.Login(loginDto.Email, loginDto.Password);
-               
+
                     if (user != null)
                     {
+                        HttpContext.Session.SetInt32("UserId", user.Id);
                         HttpContext.Session.SetInt32("RoleId", user.Role);
                         HttpContext.Session.SetString("UserEmail", user.Email);
                         HttpContext.Session.SetString("UserName", user.Emer);
 
-                    return Json(
-                       new
-                       {
-                           Success = true,
-                           ErrorMessage = "Success Login"
-                       });
+                        return Json(
+                           new
+                           {
+                               Success = true,
+                               ErrorMessage = "Success Login"
+                           });
                     }
                     return Json(
                         new

@@ -11,10 +11,7 @@ public partial class Rezervim : BaseEntity<int>
 
     public int Dhome { get; set; }
 
-    public int? RoomRate { get; set; }
-
-    public int? Akomodim { get; set; }
-
+    public int RoomRate { get; set; }
     public DateOnly CheckIn { get; set; }
 
     public DateOnly CheckOut { get; set; }
@@ -27,7 +24,6 @@ public partial class Rezervim : BaseEntity<int>
 
     public byte? Invalidated { get; set; }
 
-    public virtual Akomodim? AkomodimNavigation { get; set; }
 
     public virtual Dhome DhomeNavigation { get; set; } = null!;
 

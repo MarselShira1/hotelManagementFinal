@@ -8,6 +8,7 @@ namespace HotelManagementFinal.Domain.Models
 {
     public class CreateRoomType
     {
+        public int Id { get; set; }
         public string Emer { get; set; }
         public decimal Siperfaqe { get; set; }
         public string Pershkrim { get; set; }

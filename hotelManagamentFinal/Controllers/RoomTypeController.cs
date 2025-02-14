@@ -1,183 +1,157 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using HotelManagement.Models;
-using System.Linq;
-using HotelManagement.Models.DTO;
 using hotelManagement.BLL.Services;
-using HotelManagementFinal.Domain.Models;
+using hotelManagamentFinal.Models.DTO.RoomType;
 
-namespace hotelManagementFinal.Controllers
+
+
+namespace HotelManagement.Controllers
 {
     public class RoomTypeController : Controller
     {
-        private readonly IRoomTypeService _roomTypeService;
+            private readonly IRoomTypeService _roomTypeService;
 
-        public RoomTypeController(IRoomTypeService roomTypeService)
-        {
-            _roomTypeService = roomTypeService;
-        }
+            public RoomTypeController(IRoomTypeService roomTypeService)
+            {
+                _roomTypeService = roomTypeService;
+            }
+
+        //Marsel 
+        //metoda kthen listen me room types
+        //13/02/2025
         [HttpGet]
         public IActionResult GetAllRoomTypes()
         {
-            try
+            var viewModel = new RoomTypeViewModel
             {
-                var roomTypes = _roomTypeService.GetAllRoomTypes(); // Assuming service method exists
-                var result = roomTypes.Select(rt => new
-                {
-                    Id = rt.Id,
-                    Name = rt.Emer
-                });
+                RoomTypes = _roomTypeService.GetAllRoomTypes()
+                    .Select(rt => new RoomTypeDTO
+                    {
+                        Id = rt.Id,
+                        Emer = rt.Emer,
+                        Siperfaqe = rt.Siperfaqe ?? 0,
+                        Pershkrim = rt.Pershkrim,
+                        Kapacitet = rt.Kapacitet,
+                        Invalidated = rt.Invalidated
+                    }).ToList(),
+                NewType = new RoomTypeDTO()
+            };
 
-                return Json(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Error loading room types.", error = ex.Message });
-            }
+            return Ok(viewModel);
         }
 
         public IActionResult RoomTypeView()
-        {
-            var roomTypes = _roomTypeService.GetAllRoomTypes();
-            var model = new RoomTypeViewModel
-            {
-                RoomTypes = roomTypes.Select(r => new RoomType
-                {
-                    Id = r.Id,
-                    Emer = r.Emer,
-                    Siperfaqe = (decimal)r.Siperfaqe,
-                    Pershkrim = r.Pershkrim,
-                    Kapacitet = r.Kapacitet
-                }).ToList(),
-                NewRoomType = new RoomType()
-            };
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateRoomType(RoomType model)
-        {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                              .Select(e => e.ErrorMessage)
-                                              .ToList();
-                Console.WriteLine("Validation Errors: " + string.Join(", ", errors));
-                var roomTypes = _roomTypeService.GetAllRoomTypes();
-                var viewModel = new RoomTypeViewModel
-                {
-                    RoomTypes = roomTypes.Select(roomType => new RoomType
-                    {
-                        Id = roomType.Id,
-                        Emer = roomType.Emer,
-                        Siperfaqe = (decimal)roomType.Siperfaqe,
-                        Pershkrim = roomType.Pershkrim,
-                        Kapacitet = roomType.Kapacitet
-                    }).ToList(),
-                    NewRoomType = model
-                };
-                return View("RoomTypeView", viewModel);
-            }
-
-            _roomTypeService.AddRoomType(new CreateRoomType
-            {
-                Emer = model.Emer,
-                Siperfaqe = model.Siperfaqe,
-                Pershkrim = model.Pershkrim,
-                Kapacitet = model.Kapacitet
-            });
-
-            return RedirectToAction("RoomTypeView");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteRoomType(int id)
-        {
-            var roomType = _roomTypeService.GetRoomTypeById(id);
-            if (roomType != null)
-            {
-                _roomTypeService.RemoveRoomType(id);
-            }
-            return RedirectToAction("RoomTypeView");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditRoomType(RoomType model)
-        {
-            if (!ModelState.IsValid)
             {
                 var roomTypes = _roomTypeService.GetAllRoomTypes();
-                var viewModel = new RoomTypeViewModel
+                var model = new RoomTypeViewModel
                 {
-                    RoomTypes = roomTypes.Select(roomType => new RoomType
+                    RoomTypes = roomTypes.Select(rt => new RoomTypeDTO
                     {
-                        Id = roomType.Id,
-                        Emer = roomType.Emer,
-                        Siperfaqe = (decimal)roomType.Siperfaqe,
-                        Pershkrim = roomType.Pershkrim,
-                        Kapacitet = roomType.Kapacitet
+                        Id = rt.Id,
+                        Emer = rt.Emer,
+                        Siperfaqe = rt.Siperfaqe ?? 0,
+                        Pershkrim = rt.Pershkrim,
+                        Kapacitet = rt.Kapacitet,
+                        Invalidated = rt.Invalidated
                     }).ToList(),
-                    NewRoomType = new RoomType()
+                    NewType = new RoomTypeDTO()
                 };
-                return View("RoomTypeView", viewModel);
+
+                return View("RoomTypeView", model);
             }
 
-            _roomTypeService.EditRoomType(model.Id, new CreateRoomType
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public IActionResult CreateType(RoomTypeViewModel model)
             {
-                Emer = model.Emer,
-                Siperfaqe = model.Siperfaqe,
-                Pershkrim = model.Pershkrim,
-                Kapacitet = model.Kapacitet
-            });
+                if (!ModelState.IsValid)
+                {
+                    TempData["ErrorMessage"] = "There were errors in your submission. Please check the fields.";
+                    
+                
+                   var roomTypes = _roomTypeService.GetAllRoomTypes();
+                    var viewModel = new RoomTypeViewModel
+                    {
+                        RoomTypes = roomTypes.Select(rt => new RoomTypeDTO
+                        {
+                            Id = rt.Id,
+                            Emer = rt.Emer,
+                            Siperfaqe = rt.Siperfaqe ?? 0,
+                            Pershkrim = rt.Pershkrim,
+                            Kapacitet = rt.Kapacitet,
+                            Invalidated = rt.Invalidated
+                        }).ToList(),
+                        NewType = model.NewType
+                    };
 
-            return RedirectToAction("RoomTypeView");
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult UpdateRoomType(int id, RoomType model)
-        {
-            if (!ModelState.IsValid)
+                    return View("RoomTypeView", viewModel);
+                }
+
+                _roomTypeService.AddRoomType(new HotelManagementFinal.Domain.Models.CreateRoomType
+                {
+                    Emer = model.NewType.Emer,
+                    Siperfaqe = model.NewType.Siperfaqe,
+                    Pershkrim = model.NewType.Pershkrim,
+                    Kapacitet = model.NewType.Kapacitet
+                });
+
+                TempData["SuccessMessage"] = "Room Type added successfully!";
+                return RedirectToAction("RoomTypeView");
+            }
+
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public IActionResult EditType(RoomTypeDTO model)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                                .Select(e => e.ErrorMessage)
-                                                .ToList();
-                Console.WriteLine("Validation Errors: " + string.Join(", ", errors));
+                if (!ModelState.IsValid)
+                {
+                    TempData["ErrorMessage"] = "Failed to update room type. Please check the fields.";
+                    
                 var roomTypes = _roomTypeService.GetAllRoomTypes();
-                var viewModel = new RoomTypeViewModel
-                {
-                    RoomTypes = roomTypes.Select(roomType => new RoomType
+                    var viewModel = new RoomTypeViewModel
                     {
-                        Id = roomType.Id,
-                        Emer = roomType.Emer,
-                        Siperfaqe = (decimal)roomType.Siperfaqe,
-                        Pershkrim = roomType.Pershkrim,
-                        Kapacitet = roomType.Kapacitet
-                    }).ToList(),
-                    NewRoomType = model
-                };
-                return View("RoomTypeView", viewModel);
-            }
+                        RoomTypes = roomTypes.Select(rt => new RoomTypeDTO
+                        {
+                            Id = rt.Id,
+                            Emer = rt.Emer,
+                            Siperfaqe = rt.Siperfaqe ?? 0,
+                            Pershkrim = rt.Pershkrim,
+                            Kapacitet = rt.Kapacitet,
+                            Invalidated = rt.Invalidated
+                        }).ToList(),
+                        NewType = new RoomTypeDTO()
+                    };
 
-            try
-            {
-                _roomTypeService.UpdateRoomType(id, new CreateRoomType
+                    return View("RoomTypeView", viewModel);
+                }
+
+                _roomTypeService.UpdateRoomType(new HotelManagementFinal.Domain.Models.CreateRoomType
                 {
+                    Id = model.Id, // used for update
                     Emer = model.Emer,
                     Siperfaqe = model.Siperfaqe,
                     Pershkrim = model.Pershkrim,
                     Kapacitet = model.Kapacitet
                 });
+
+                TempData["SuccessMessage"] = "Room Type updated successfully!";
+                return RedirectToAction("RoomTypeView");
             }
-            catch (Exception ex)
+
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public IActionResult DeleteType(int id)
             {
-                // Trajtoni gabimin në rast se ndodhin ndonjë problem
-                Console.WriteLine(ex.Message);
+                var roomType = _roomTypeService.GetRoomTypeById(id);
+                if (roomType == null)
+                {
+                    TempData["ErrorMessage"] = "Room type not found!";
+                    return RedirectToAction("RoomTypeView");
+                }
+
+                _roomTypeService.SoftDeleteRoomType(id);
+                TempData["SuccessMessage"] = "Room type deleted successfully!";
+                return RedirectToAction("RoomTypeView");
             }
-
-            return RedirectToAction("RoomTypeView");
         }
-
     }
-}

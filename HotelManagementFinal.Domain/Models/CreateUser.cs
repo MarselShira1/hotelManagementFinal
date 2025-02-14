@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagementFinal.BLL.Services
+namespace HotelManagementFinal.Domain.Models
 {
-    internal class ExtraService
+    internal class CreateUser
     {
     }
 }

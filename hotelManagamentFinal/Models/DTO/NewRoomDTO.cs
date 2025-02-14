@@ -2,7 +2,8 @@
 {
     public class NewRoomDTO
     {
-        public int? RoomId { get; set; }
+        //esteri hoqi nullable nga RoomId
+        public int RoomId { get; set; }
         public int? RoomTypeId { get; set; }
         public int? RoomFloor { get; set; }
         public string? RoomNumber { get; set; }
