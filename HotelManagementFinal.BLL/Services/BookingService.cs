@@ -16,6 +16,7 @@ namespace hotelManagement.BLL.Services
         Task<decimal> CalculatePriceAsync(int roomRateId, DateOnly checkIn, DateOnly checkOut);
         Task<IEnumerable<Rezervim>> GetAllBookingsAsync();
         Task<IEnumerable<Rezervim>> GetBookingsByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end);
+        Task<RezervimModel> GetRezervimById(int rezervimId);
     }
 
     public class BookingService : IBookingService
@@ -135,5 +136,4 @@ namespace hotelManagement.BLL.Services
             return await _bookingRepository.GetByRoomAndDateRangeAsync(roomId, start, end);
         }
     }
-}
 }

@@ -57,18 +57,24 @@ namespace hotelManagement.BLL.Services
 
         public async Task<IEnumerable<CreateRoom>> GetRoomsAsync()
         {
-            var rooms = await roomRepository.GetAllRoomsAsync();
+            try {
+                var rooms = await roomRepository.GetAllRoomsAsync();
 
-            return rooms.Select(room => new CreateRoom
-            {
-                RoomId = room.Id,
-                RoomFloor = room.Kat,
-                RoomNumber = room.NumerDhome,
-                RoomTypeId = room.TipDhome,
-                RoomTypeName = room.TipDhomeNavigation.Emer, 
-                Price = room.TipDhomeNavigation.CmimBaze        
-            });
-        }
+                return rooms.Select(room => new CreateRoom
+                {
+                    RoomId = room.Id,
+                    RoomFloor = room.Kat,
+                    RoomNumber = room.NumerDhome,
+                    RoomTypeId = room.TipDhome,
+                    RoomTypeName = room.TipDhomeNavigation.Emer,
+                    Price = room.TipDhomeNavigation.CmimBaze
+                });
+            }
+                catch(Exception ex)
+                { 
+                    return null;
+                }
+            }
 
 
         public async Task<CreateRoom> GetRoomById(int roomId)

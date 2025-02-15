@@ -42,7 +42,7 @@ namespace HotelManagementFinal.BLL.Services
                   - rezervimDetails.Result.CheckIn.ToDateTime(TimeOnly.MinValue)).Days;
 
             //do merret cimimi qe i perkon roomType * roomRateMultiplier per nje dhome qe te shtohet ne fature 
-            var price =  _bookingService.CalculatePriceAsync((int)roomDetails.Result.RoomTypeId, rezervimDetails.Result.CheckIn, rezervimDetails.Result.CheckOut);
+            var price =  _bookingService.CalculatePriceAsync((int)roomDetails.Result.RoomTypeId , rezervimDetails.Result.CheckIn, rezervimDetails.Result.CheckOut);
 
             using (MemoryStream stream = new MemoryStream())
             {

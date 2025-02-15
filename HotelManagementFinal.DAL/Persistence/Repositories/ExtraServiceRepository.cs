@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using hotelManagement.DAL.Persistence.Entities;
-using hotelManagement.DAL.Persistence;
-
+using hotelManagement.DAL.Persistence; 
 namespace HotelManagementFinal.DAL.Persistence.Repositories
 {
     public interface IExtraServiceRepository : _IBaseRepository<ExtraService, int>
@@ -16,8 +15,12 @@ namespace HotelManagementFinal.DAL.Persistence.Repositories
 
     internal class ExtraServiceRepository : _BaseRepository<ExtraService, int>, IExtraServiceRepository
     {
+        private readonly HotelManagementContext _dbContext;
+
         public ExtraServiceRepository(HotelManagementContext dbContext) : base(dbContext)
         {
+            _dbContext = dbContext;
+
         }
 
         public IEnumerable<ExtraService> GetAll()

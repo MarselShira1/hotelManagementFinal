@@ -39,10 +39,16 @@ namespace hotelManagement.DAL.Persistence.Repositories
 
         public async Task<IEnumerable<Dhome>> GetAllRoomsAsync()
         {
-            return _dbSet
-       .Include(r => r.TipDhomeNavigation)
-       .Where(r => r.Invalidated == 1)  
-       .ToList();
+            try
+            {
+                return await  _dbSet
+               .Include(r => r.TipDhomeNavigation)
+               .Where(r => r.Invalidated == 1)
+               .ToListAsync();
+            }catch(Exception ex)
+            {
+                return null;
+            }
         }
 
         public void DeleteRoom(Dhome room)
