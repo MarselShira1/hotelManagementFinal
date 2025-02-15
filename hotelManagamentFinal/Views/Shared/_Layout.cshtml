@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <link rel="stylesheet" href="@Url.Content("~/css/site.css")" />
 
     <style>
@@ -182,7 +184,12 @@
                         @if (!string.IsNullOrEmpty(userEmail))
                         {
                             <p class="welcome-message">Welcome, @userName!</p>
-                            <a href="@Url.Action("Logout", "Auth")" class="btn btn-dark">Logout</a>
+                           // <a href="@Url.Action("Logout", "Auth")" class="btn btn-dark">Logout</a>
+
+                            <button class="btn btn-warning rounded-circle" onclick="location.href='@Url.Action("ProfileView", "Profile")'">
+                                <i class="fa-solid fa-user"></i>
+                            </button>
+
                         }
                         @* else *@
                         @* { *@
