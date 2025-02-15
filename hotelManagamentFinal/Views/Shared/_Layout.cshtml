@@ -170,8 +170,9 @@
                             <a class="nav-link  " asp-area="" asp-controller="Room" asp-action="SendEmail">Send Email</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " asp-area="" asp-controller="Room" asp-action="GenerateBill">Download bill</a>
+                            <a class="nav-link" href="javascript:void(0);" onclick="downloadBill(1)">Download Bill</a>
                         </li>
+
                     </ul>
                     <div class="auth-section">
                         @{
@@ -439,6 +440,14 @@
     @*     }); *@
     @* </script> *@
     <script>
+        // funksioni qe shkarkon faturen (test)
+        function downloadBill(rezervimId) {
+    if (!rezervimId) {
+        alert("Reservation ID is missing!");
+        return;
+    }
+    window.location.href = `/Room/GenerateBill?rezervimId=${rezervimId}`;
+}
         const sidebar = document.getElementById('sidebar');
         const toggleButton = document.getElementById('sidebarToggle');
 
@@ -455,6 +464,7 @@
         function hideLoader() {
             $("#pageLoader").fadeOut(); 
         }
+
     </script>
 </body>
 </html>
