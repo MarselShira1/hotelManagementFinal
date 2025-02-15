@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using hotelManagement.DAL.Persistence;
 using hotelManagement.DAL.Persistence.Entities;
+using hotelManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 namespace hotelManagement.DAL.Persistence.Repositories
 {
@@ -18,8 +19,8 @@ namespace hotelManagement.DAL.Persistence.Repositories
         
         User GetById(int id);
         public string GetEmailById(int userId);
-
-
+    
+        void Update(User user);
     }
 
     internal class UserRepository : _BaseRepository<User , int> , IUserRepository
@@ -60,6 +61,12 @@ namespace hotelManagement.DAL.Persistence.Repositories
                 .Where(u => u.Id == userId)
                 .Select(u => u.Email)
                 .FirstOrDefault(); 
+        }
+
+        public void Update(User user)
+        {
+            _dbSet.Update(user);
+            _dbContext.SaveChanges();
         }
 
     }

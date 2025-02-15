@@ -176,27 +176,7 @@
                         </li>
 
                     </ul>
-                    <div class="auth-section">
-                        @{
-                            var userEmail = Context.Session.GetString("UserEmail");
-                            var userName = Context.Session.GetString("UserName");
-                        }
-                        @if (!string.IsNullOrEmpty(userEmail))
-                        {
-                            <p class="welcome-message">Welcome, @userName!</p>
-                           // <a href="@Url.Action("Logout", "Auth")" class="btn btn-dark">Logout</a>
-
-                            <button class="btn btn-warning rounded-circle" onclick="location.href='@Url.Action("ProfileView", "Profile")'">
-                                <i class="fa-solid fa-user"></i>
-                            </button>
-
-                        }
-                        @* else *@
-                        @* { *@
-                        @*     <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#logInModal">Log In</button> *@
-                        @*     <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign Up</button> *@
-                        @* } *@
-                    </div>
+                    
                 </div>
             </div>
         </nav>
