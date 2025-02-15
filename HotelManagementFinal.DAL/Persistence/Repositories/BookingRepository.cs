@@ -13,6 +13,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
         Task<IEnumerable<Rezervim>> GetAllBookingsAsync();
         Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync();
         RoomRate GetRoomRateById(int roomRateId);
+        Task<Rezervim> GetRezervimById(int rezervimId);
     }
 
     public class BookingRepository : IBookingRepository
@@ -50,6 +51,12 @@ namespace hotelManagement.DAL.Persistence.Repositories
                 .Include(r => r.RoomRateNavigation)
                 .Where(b => b.Invalidated == 1)
                 .ToListAsync();
+        }
+
+
+        public async Task<Rezervim> GetRezervimById(int rezervimId)
+        {
+            return await _dbContext.Rezervime.Where(w => w.Id == rezervimId).FirstOrDefaultAsync();
         }
     }
 }

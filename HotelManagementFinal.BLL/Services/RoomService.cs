@@ -18,7 +18,7 @@ namespace hotelManagement.BLL.Services
         bool AddRoom(hotelManagement.Domain.Models.CreateRoom room);
         Task<IEnumerable<CreateRoom>> GetRoomsAsync();
         bool EditRoom(hotelManagement.Domain.Models.CreateRoom roomModel);
-
+        Task<CreateRoom> GetRoomById(int roomId);
         bool DeleteRoom(int id);
     }
     //
@@ -67,6 +67,23 @@ namespace hotelManagement.BLL.Services
         }
 
 
+        public async Task<CreateRoom> GetRoomById(int roomId)
+        {
+            var room = roomRepository.GetById(roomId);
+
+            if (room == null)
+                return null;  
+
+            return new CreateRoom
+            {
+                RoomId = room.Id,
+                RoomTypeId = room.TipDhome,
+                RoomTypeName = room.TipDhomeNavigation?.Emer, 
+                RoomFloor = room.Kat,
+                RoomNumber = room.NumerDhome,
+                
+            };
+        }
 
 
         public bool EditRoom(hotelManagement.Domain.Models.CreateRoom roomModel)
