@@ -87,6 +87,24 @@
       color: #002a5c;
     }
 
+   .btn-outline-light {
+            border: 2px solid white;
+            color: white;
+            font-weight: bold;
+            padding: 10px 18px;
+            border-radius: 30px;
+            transition: 0.3s ease-in-out;
+        }
+
+    .btn-outline-light:hover {
+      background-color: white;
+      color: black;
+    }
+
+  .btn-outline-light.me-3 {
+     margin-right: 20px !important;
+     }
+
     main {
       
       margin-top: 0;
@@ -155,12 +173,16 @@
             }
             else
             {
+             <button type="button" class="btn btn-outline-light me-3" onclick="location.href='@Url.Action("Index", "Home")'">
+             Go To Admin 
+              </button>
               <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#logInModal">
                 Log In
               </button>
               <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#signUpModal">
                 Sign Up
               </button>
+
             }
           </div>
         </div>
