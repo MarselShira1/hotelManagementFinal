@@ -95,14 +95,14 @@ namespace hotelManagamentFinal.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View("~/Views/Home/Index.cshtml");
+            return View("~/Views/LandingPage/Index.cshtml");
         }
 
         [HttpGet]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "LandingPage");
         }
 
 
@@ -111,7 +111,7 @@ namespace hotelManagamentFinal.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("~/Views/Home/Index.cshtml", loginDto);
+                return View("~/Views/LandingPage/Index.cshtml", loginDto);
             }
 
             try

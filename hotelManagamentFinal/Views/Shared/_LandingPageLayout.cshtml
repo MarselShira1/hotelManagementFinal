@@ -1,110 +1,389 @@
 ﻿@{
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ISE Hotel</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="ISE Hotel - Relax and Rejuvenate" />
-    <meta name="keywords" content="hotel, luxury, rooms, booking" />
-    <meta name="author" content="ISE Hotel" />
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ISE Hotel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="ISE Hotel - Relax and Rejuvenate" />
+  <meta name="keywords" content="hotel, luxury, rooms, booking" />
+  <meta name="author" content="ISE Hotel" />
 
-    <!-- Fonts -->
-    <link href="//fonts.googleapis.com/css?family=Roboto+Sans:400,700|Playfair+Display:400,700" rel="stylesheet">
+  <link href="//fonts.googleapis.com/css?family=Roboto+Sans:400,700|Playfair+Display:400,700" rel="stylesheet">
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/animate.css">
-    <link rel="stylesheet" href="/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="/css/aos.css">
-    <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="/css/jquery.timepicker.css">
-    <link rel="stylesheet" href="/css/fancybox.min.css">
-    <link rel="stylesheet" href="/fonts/ionicons/css/ionicons.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
 
-    <!-- Additional styles -->
-    @RenderSection("Styles", required: false)
+  <link rel="stylesheet" href="/css/animate.css">
+  <link rel="stylesheet" href="/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="/css/aos.css">
+  <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
+  <link rel="stylesheet" href="/css/jquery.timepicker.css">
+  <link rel="stylesheet" href="/css/fancybox.min.css">
+  <link rel="stylesheet" href="/fonts/ionicons/css/ionicons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  @RenderSection("Styles", required: false)
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('/images/your-background.jpg') no-repeat center center/cover;
+    }
+
+    .navbar {
+      position: absolute !important; 
+      top: 0;
+      left: 0;
+      z-index: 9999; 
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.2) !important; 
+      transition: background-color 0.4s ease, padding 0.4s ease;
+    }
+
+    .navbar.scrolled {
+      background-color: rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .navbar-brand,
+    .navbar-nav .nav-link,
+    .welcome-message {
+      color: #fff !important;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    }
+
+    .navbar-toggler-icon {
+      filter: invert(100%);
+    }
+    .btn-outline-light {
+      border-color: #fff;
+      color: #fff;
+    }
+    .btn-outline-light:hover {
+      background-color: #fff;
+      color: #000;
+    }
+
+    .error-message {
+      color: red;
+      display: none;
+    }
+    .btn-modal {
+      background-color: #002a5c;
+      color: #f2c94c;
+      border: none;
+    }
+    .btn-modal:hover {
+      background-color: #f2c94c;
+      color: #002a5c;
+    }
+
+    main {
+      
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    .footer-section {
+      background-color: #002a5c; 
+      color: #fff;
+    }
+    .footer-section a {
+      color: #fff;
+      text-decoration: none;
+    }
+    .footer-section a:hover {
+      color: #f2c94c;
+    }
+  </style>
 </head>
 <body>
-    <header class="site-header js-site-header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-6 col-lg-4 site-logo" data-aos="fade">
-                    <a href="@Url.Action("Index", "LandingPage")">ISE Hotel</a>
-                </div>
-                <div class="col-6 col-lg-8">
-                    <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    <div class="site-navbar js-site-navbar">
-                        <nav role="navigation">
-                            <div class="container">
-                                <div class="row full-height align-items-center">
-                                    <div class="col-md-6 mx-auto">
-                                        <ul class="list-unstyled menu">
-                                            <li><a href="@Url.Action("Index", "LandingPage")">Home</a></li>
-                                            <li><a href="@Url.Action("Rooms", "LandingPage")">Rooms</a></li>
-                                            <li><a href="@Url.Action("Reservations", "LandingPage")">Reservation</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark py-3">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="@Url.Action("Index", "LandingPage")">ISE Hotel</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="@Url.Action("Index", "LandingPage")">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="@Url.Action("Rooms", "LandingPage")">Rooms</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="@Url.Action("Privacy", "Home")">Privacy</a>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center">
+            @using Microsoft.AspNetCore.Http
+            @{
+              var userEmail = Context.Session.GetString("UserEmail");
+              var userName = Context.Session.GetString("UserName");
+            }
+            @if (!string.IsNullOrEmpty(userEmail))
+            {
+              <span class="welcome-message me-3">Welcome, @userName!</span>
+              <a href="@Url.Action("Logout", "Auth")" class="btn btn-outline-light me-2">Logout</a>
+            }
+            else
+            {
+              <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#logInModal">
+                Log In
+              </button>
+              <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#signUpModal">
+                Sign Up
+              </button>
+            }
+          </div>
         </div>
-    </header>
+      </div>
+    </nav>
+  </header>
 
-    <!-- Main Content -->
-    <main role="main">
-        @RenderBody()
-    </main>
+  <main role="main">
+    @RenderBody()
+  </main>
 
-    <!-- Scripts -->
-    <script src="/js/jquery-3.3.1.min.js"></script>
-    <script src="/js/jquery-migrate-3.0.1.min.js"></script>
-    <script src="/js/popper.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/owl.carousel.min.js"></script>
-    <script src="/js/jquery.stellar.min.js"></script>
-    <script src="/js/jquery.fancybox.min.js"></script>
-    <script src="/js/aos.js"></script>
-    <script src="/js/bootstrap-datepicker.js"></script>
-    <script src="/js/jquery.timepicker.min.js"></script>
-    <script src="/js/main.js"></script>
-
-    <!-- Additional Scripts -->
-    @RenderSection("Scripts", required: false)
-    <footer class="section footer-section">
-        <div class="container">
-            <div class="row mb-4">
-                <div class="col-md-3 mb-5">
-                    <ul class="list-unstyled link">
-                        <li><a href="terms.html">Terms &amp; Conditions</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="@Url.Action("Rooms", "LandingPage")">Rooms</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3 mb-5 pr-md-5 contact-info">
-                    <p><span class="d-block"><span class="ion-ios-location h5 mr-3 text-primary"></span>Address:</span> <span>Dhermi, Albania </span></p>
-                    <p><span class="d-block"><span class="ion-ios-telephone h5 mr-3 text-primary"></span>Phone:</span> <span>+355691010500</span></p>
-                    <p><span class="d-block"><span class="ion-ios-email h5 mr-3 text-primary"></span>Email:</span> <span>info@isehotel.com </span></p>
-                </div>
-            </div>
-            <div class="row pt-5">
-                <p class="col-md-6 text-left">
-                    Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | ISE Hotel
-                </p>
-            </div>
+  <footer class="section footer-section mt-5">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-md-3 mb-5">
+          <ul class="list-unstyled link">
+            <li><a href="terms.html">Terms &amp; Conditions</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="@Url.Action("Rooms", "LandingPage")">Rooms</a></li>
+          </ul>
         </div>
-    </footer>
+        <div class="col-md-3 mb-5 pr-md-5 contact-info">
+          <p>
+            <span class="d-block">
+              <span class="ion-ios-location h5 mr-3 text-primary"></span>Address:
+            </span> 
+            <span>Dhermi, Albania</span>
+          </p>
+          <p>
+            <span class="d-block">
+              <span class="ion-ios-telephone h5 mr-3 text-primary"></span>Phone:
+            </span>
+            <span>+355691010500</span>
+          </p>
+          <p>
+            <span class="d-block">
+              <span class="ion-ios-email h5 mr-3 text-primary"></span>Email:
+            </span>
+            <span>info@isehotel.com</span>
+          </p>
+        </div>
+      </div>
+      <div class="row pt-5">
+        <p class="col-md-6 text-left">
+          Copyright &copy;
+          <script>document.write(new Date().getFullYear());</script> 
+          All rights reserved | ISE Hotel
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal fade" id="logInModal" tabindex="-1" aria-labelledby="logInModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logInModalLabel">Log In</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form asp-controller="Auth" asp-action="Login" method="post" id="loginForm">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="text" class="form-control" id="LogInemail" name="email" required />
+              <div id="emailError" class="error-message">
+                Please enter a valid email address.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required />
+              <div id="passwordError" class="error-message">
+                Incorrect email or password.
+              </div>
+            </div>
+            <button type="submit" class="btn btn-modal">Log In</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signUpModalLabel">Create Account</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="signUpForm" asp-controller="Auth" asp-action="Register" method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="name" name="emer" required />
+              <div id="nameError" class="error-message">
+                Name must be at least 2 characters long and contain only letters.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="surname" class="form-label">Surname</label>
+              <input type="text" class="form-control" id="surname" name="mbiemer" required />
+              <div id="surnameError" class="error-message">
+                Surname must be at least 2 characters long and contain only letters.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="emailSignUp" class="form-label">Email</label>
+              <input type="email" class="form-control" id="emailSignUp" name="email" required />
+              <div id="emailSignUpError" class="error-message">
+                Please enter a valid email address.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="passwordSignUp" class="form-label">Password</label>
+              <input type="password" class="form-control" id="passwordSignUp" name="password" required />
+              <div id="passwordSignUpError" class="error-message">
+                Password must be at least 8 characters long and include uppercase, lowercase, and numbers.
+              </div>
+            </div>
+            <div id="generalSignUpError" class="error-message"></div>
+            <button type="submit" class="btn btn-modal">Sign Up</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="~/lib/jquery/dist/jquery.min.js"></script>
+  <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/owl.carousel.min.js"></script>
+  <script src="/js/jquery.stellar.min.js"></script>
+  <script src="/js/jquery.fancybox.min.js"></script>
+  <script src="/js/aos.js"></script>
+  <script src="/js/bootstrap-datepicker.js"></script>
+  <script src="/js/jquery.timepicker.min.js"></script>
+  <script src="/js/main.js"></script>
+  @RenderSection("Scripts", required: false)
+
+  <script>
+    window.addEventListener('scroll', function () {
+      const navbar = document.querySelector('nav.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  </script>
+
+  <script>
+   
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      document.getElementById('emailError').style.display = 'none';
+      document.getElementById('passwordError').style.display = 'none';
+
+      var email = document.getElementById('LogInemail').value;
+      var password = document.getElementById('password').value;
+      var emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        document.getElementById('emailError').style.display = 'block';
+        return;
+      }
+
+      $.ajax({
+        url: '/Auth/Login',
+        type: 'POST',
+        data: { email: email, password: password },
+        success: function(response) {
+          if (response.success) {
+            window.location.href = '/LandingPage/Index';
+          } else {
+            document.getElementById('passwordError').style.display = 'block';
+          }
+        },
+        error: function() {
+          alert('Error occurred while processing the login.');
+        }
+      });
+    });
+
+    
+    document.getElementById('signUpForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+      const name = document.getElementById('name').value;
+      const surname = document.getElementById('surname').value;
+      const email = document.getElementById('emailSignUp').value;
+      const password = document.getElementById('passwordSignUp').value;
+
+      let isValid = true;
+      
+      if (!/^[A-Za-z]{2,}$/.test(name)) {
+        document.getElementById('nameError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!/^[A-Za-z]{2,}$/.test(surname)) {
+        document.getElementById('surnameError').style.display = 'block';
+        isValid = false;
+      }
+      
+      var emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        document.getElementById('emailSignUpError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password)) {
+        document.getElementById('passwordSignUpError').style.display = 'block';
+        isValid = false;
+      }
+
+      if (isValid) {
+        $.ajax({
+          url: '/Auth/Register',
+          type: 'POST',
+          data: {
+            emer: name,
+            mbiemer: surname,
+            email: email,
+            password: password
+          },
+          success: function(response) {
+            if (response.success) {
+              window.location.href = '/Auth/Login';
+            } else {
+              document.getElementById('generalSignUpError').style.display = 'block';
+              document.getElementById('generalSignUpError').textContent = response.errorMessage;
+            }
+          },
+          error: function() {
+            alert('Error occurred while processing the registration.');
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

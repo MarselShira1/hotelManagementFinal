@@ -20,6 +20,7 @@ namespace hotelManagement.BLL.Services
         void SoftDeleteRoomRate(int id);
         void UpdateRoomRate(CreateRoomRate roomRate);
         IEnumerable<TipDhome> GetAllRoomTypes();
+        IEnumerable<RoomRate> GetRoomRatesByRoomType(int roomTypeId);
     }
     
     internal class RoomRateService : IRoomRateService
@@ -36,7 +37,7 @@ namespace hotelManagement.BLL.Services
             var roomRateToAdd = new hotelManagement.DAL.Persistence.Entities.RoomRate
             {
                 Emer = roomRate.Name,
-                CmimBaze = roomRate.base_price,
+                RateMultiplier = roomRate.RateMultiplier,
                 TipDhomeId = roomRate.TipDhomeId,
                 CreatedOn = DateTime.Now,
                 Invalidated = 1
@@ -57,7 +58,7 @@ namespace hotelManagement.BLL.Services
             {
                 Id = rate.Id,
                 Emer = rate.Emer,
-                CmimBaze = rate.CmimBaze,
+                RateMultiplier = rate.RateMultiplier,
                 TipDhomeId = rate.TipDhomeId,
                 
                 Invalidated = rate.Invalidated
@@ -70,7 +71,7 @@ namespace hotelManagement.BLL.Services
             {
                 Id = rate.Id,
                 Emer = rate.Emer,
-                CmimBaze = rate.CmimBaze,
+                RateMultiplier = rate.RateMultiplier,
                 TipDhomeId = rate.TipDhomeId
             };
         }
@@ -102,7 +103,7 @@ namespace hotelManagement.BLL.Services
 
 
             rateToUpdate.Emer = roomRate.Name;
-            rateToUpdate.CmimBaze = roomRate.base_price;
+            rateToUpdate.RateMultiplier = roomRate.RateMultiplier;
             rateToUpdate.TipDhomeId = roomRate.TipDhomeId;
 
             rateToUpdate.ModifiedOn = DateTime.Now;
@@ -115,6 +116,16 @@ namespace hotelManagement.BLL.Services
         {
             return RoomRateRepository.GetAllRoomTypes();
         }
-
+        public IEnumerable<RoomRate> GetRoomRatesByRoomType(int roomTypeId)
+        {
+            var rates = RoomRateRepository.GetRoomRatesByRoomType(roomTypeId);
+            return rates.Select(r => new RoomRate
+            {
+                Id = r.Id,
+                Emer = r.Emer,
+                RateMultiplier = r.RateMultiplier,
+                TipDhomeId = r.TipDhomeId
+            });
+        }
     }
 }

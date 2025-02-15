@@ -20,8 +20,9 @@ namespace hotelManagement.BLL.Services
         bool EditRoom(hotelManagement.Domain.Models.CreateRoom roomModel);
         Task<CreateRoom> GetRoomById(int roomId);
         bool DeleteRoom(int id);
+        
     }
-    //
+    
     internal class RoomService : IRoomService
     {
         private readonly IRoomRepository roomRepository;
@@ -56,15 +57,24 @@ namespace hotelManagement.BLL.Services
 
         public async Task<IEnumerable<CreateRoom>> GetRoomsAsync()
         {
-            var rooms = await roomRepository.GetAllRoomsAsync();
-            return rooms.Select(room => new CreateRoom
-            {
-                RoomId = room.Id,
-                RoomFloor = room.Kat,
-                RoomNumber = room.NumerDhome,
-                RoomTypeId = room.TipDhome
-            });
-        }
+            try {
+                var rooms = await roomRepository.GetAllRoomsAsync();
+
+                return rooms.Select(room => new CreateRoom
+                {
+                    RoomId = room.Id,
+                    RoomFloor = room.Kat,
+                    RoomNumber = room.NumerDhome,
+                    RoomTypeId = room.TipDhome,
+                    RoomTypeName = room.TipDhomeNavigation.Emer,
+                    Price = room.TipDhomeNavigation.CmimBaze
+                });
+            }
+                catch(Exception ex)
+                { 
+                    return null;
+                }
+            }
 
 
         public async Task<CreateRoom> GetRoomById(int roomId)
@@ -84,6 +94,7 @@ namespace hotelManagement.BLL.Services
                 
             };
         }
+
 
 
         public bool EditRoom(hotelManagement.Domain.Models.CreateRoom roomModel)
@@ -114,8 +125,8 @@ namespace hotelManagement.BLL.Services
         public bool AddRoom(hotelManagement.Domain.Models.CreateRoom createRoom)
         {
             try { 
-                var existingBrand = roomRepository.GetByName(createRoom.RoomNumber);
-                if (existingBrand != null)
+                var existingRoom = roomRepository.GetByName(createRoom.RoomNumber);
+                if (existingRoom != null)
                 {
                     throw new RoomException("Room already exists");
                 }
