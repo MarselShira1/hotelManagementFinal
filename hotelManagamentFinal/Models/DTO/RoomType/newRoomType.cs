@@ -5,6 +5,7 @@ namespace hotelManagamentFinal.Models.DTO.RoomType
     public class newRoomType
     {
         public string Emer { get; set; } = null!;
+        public decimal CmimBaze { get; set; }
         public decimal Siperfaqe { get; set; }
         public string? Pershkrim { get; set; }
         public int Kapacitet { get; set; }
@@ -17,7 +18,7 @@ namespace hotelManagamentFinal.Models.DTO.RoomType
         [StringLength(100, ErrorMessage = "Name must be between 3 and 100 characters", MinimumLength = 3)]
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Name must contain only letters and spaces.")]
         public string Emer { get; set; } = null!;
-
+        public decimal CmimBaze { get; set; }
         [Required(ErrorMessage = "Area is required")]
         [Range(1, 10000, ErrorMessage = "Area must be between 1 and 10,000")]
         public decimal Siperfaqe { get; set; }

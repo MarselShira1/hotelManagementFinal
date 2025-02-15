@@ -15,11 +15,14 @@ namespace HotelManagement.Controllers
         private readonly HotelManagementDbContext _context;
         private readonly IRoomService roomsService;
         private readonly IMailSenderService _mailSenderService;
-        public RoomController(HotelManagementDbContext context, IRoomService service, IMailSenderService mailSenderService)
+        private readonly IBillService _billService;
+        public RoomController(HotelManagementDbContext context, IRoomService service, 
+            IMailSenderService mailSenderService, IBillService billService)
         {
             _context = context;
             roomsService = service;
             _mailSenderService = mailSenderService;
+            _billService = billService;
         }
         public IActionResult RoomView()
         {
@@ -124,6 +127,15 @@ namespace HotelManagement.Controllers
         }
 
 
+        public IActionResult GenerateBill(int rezervimId)
+        {
+            // Call the GenerateBillPdf method to get the PDF as a byte array
+            byte[] billPdf = _billService.GenerateBillPdf(rezervimId);
+
+            // Return the PDF file as a download response
+            return File(billPdf, "application/pdf", "HotelBill.pdf");
+        }
+
         public async Task<IActionResult> GetRoomList()
         {
             try
@@ -136,7 +148,8 @@ namespace HotelManagement.Controllers
                     RoomTypeId = room.RoomTypeId, 
                     RoomFloor = room.RoomFloor,   
                     RoomNumber = room.RoomNumber  ,
-                    RoomTypeName = room.RoomTypeName
+                    RoomTypeName = room.RoomTypeName,
+                    BasePrice = room.Price
                 }).ToList();
 
 

@@ -28,7 +28,7 @@ public partial class HotelManagementContext : DbContext
 
     public virtual DbSet<Action> Actions { get; set; }
 
-    public virtual DbSet<Akomodim> Akomodims { get; set; }
+    //public virtual DbSet<Akomodim> Akomodims { get; set; }
 
     public virtual DbSet<Dhome> Dhomes { get; set; }
 
@@ -58,7 +58,7 @@ public partial class HotelManagementContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server = DESKTOP-K6CTF30; Database=HotelManagement;User ID = sa; Password=kleaklea2003;Trusted_Connection=False;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=MARSEL\\MSSQLSERVER1;Database=HotelManagement;User ID=hotelManagement1;Password=hotelManagement11;Trusted_Connection=False;TrustServerCertificate=Yes");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -79,25 +79,25 @@ public partial class HotelManagementContext : DbContext
                 .HasColumnName("pershkrim");
         });
 
-        modelBuilder.Entity<Akomodim>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Akomodim__3213E83FCC7936E6");
+        //modelBuilder.Entity<Akomodim>(entity =>
+        //{
+        //    entity.HasKey(e => e.Id).HasName("PK__Akomodim__3213E83FCC7936E6");
 
-            entity.ToTable("Akomodim");
+        //    entity.ToTable("Akomodim");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Adults).HasColumnName("adults");
-            entity.Property(e => e.Cmim)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("cmim");
-            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
-            entity.Property(e => e.Emer)
-                .HasMaxLength(50)
-                .HasColumnName("emer");
-            entity.Property(e => e.Femije).HasColumnName("femije");
-            entity.Property(e => e.KrevatExtra).HasColumnName("krevat_extra");
-            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
-        });
+        //    entity.Property(e => e.Id).HasColumnName("id");
+        //    entity.Property(e => e.Adults).HasColumnName("adults");
+        //    entity.Property(e => e.Cmim)
+        //        .HasColumnType("decimal(10, 2)")
+        //        .HasColumnName("cmim");
+        //    entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+        //    entity.Property(e => e.Emer)
+        //        .HasMaxLength(50)
+        //        .HasColumnName("emer");
+        //    entity.Property(e => e.Femije).HasColumnName("femije");
+        //    entity.Property(e => e.KrevatExtra).HasColumnName("krevat_extra");
+        //    entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+        //});
 
         modelBuilder.Entity<Dhome>(entity =>
         {
@@ -243,7 +243,6 @@ public partial class HotelManagementContext : DbContext
             entity.ToTable("Rezervim");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Akomodim).HasColumnName("akomodim");
             entity.Property(e => e.CheckIn).HasColumnName("check_in");
             entity.Property(e => e.CheckOut).HasColumnName("check_out");
             entity.Property(e => e.Cmim)
@@ -255,9 +254,6 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.RoomRate).HasColumnName("room_rate");
             entity.Property(e => e.User).HasColumnName("user");
 
-            entity.HasOne(d => d.AkomodimNavigation).WithMany(p => p.Rezervims)
-                .HasForeignKey(d => d.Akomodim)
-                .HasConstraintName("FK__Rezervim__akomod__5441852A");
 
             entity.HasOne(d => d.DhomeNavigation).WithMany(p => p.Rezervims)
                 .HasForeignKey(d => d.Dhome)
@@ -284,8 +280,8 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Rezervim).HasColumnName("rezervim");
-            entity.Property(e => e.Sasi).HasColumnName("sasi");
             entity.Property(e => e.Sherbim).HasColumnName("sherbim");
+            entity.Property(e => e.Price).HasColumnName("Cmim");
 
             entity.HasOne(d => d.RezervimNavigation).WithMany(p => p.RezervimServices)
                 .HasForeignKey(d => d.Rezervim)
@@ -314,9 +310,9 @@ public partial class HotelManagementContext : DbContext
             entity.ToTable("Room_Rate");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CmimBaze)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("cmim_baze");
+            entity.Property(e => e.RateMultiplier)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("rate_multiplier");
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Emer)
                 .HasMaxLength(50)
@@ -352,10 +348,10 @@ public partial class HotelManagementContext : DbContext
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("weekend_pricing");
 
-            entity.HasOne(d => d.RoomRate).WithMany(p => p.RoomRateRanges)
-                .HasForeignKey(d => d.RoomRateId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Room_Rate__room___4E88ABD4");
+            //entity.HasOne(d => d.RoomRate).WithMany(p => p.RoomRateRanges)
+            //    .HasForeignKey(d => d.RoomRateId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK__Room_Rate__room___4E88ABD4");
         });
 
         modelBuilder.Entity<TipDhome>(entity =>
@@ -377,6 +373,9 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.Siperfaqe)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("siperfaqe");
+            entity.Property(e => e.CmimBaze)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("cmim_baze");
         });
 
         modelBuilder.Entity<User>(entity =>

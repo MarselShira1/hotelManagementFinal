@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotel Booking Calendar</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-someIntegrityHash" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h4>
+                    <i class="fas fa-calendar-alt me-2"></i>Hotel Booking Calendar
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-4">
+                        <label for="roomSelect" class="form-label">
+                            <i class="fas fa-door-open me-2"></i>Select Room:
+                        </label>
+                        <select id="roomSelect" class="form-select">
+                            <option value="">All Rooms</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="startDateFilter" class="form-label">
+                            <i class="fas fa-calendar-alt me-2"></i>Start Date:
+                        </label>
+                        <input type="date" id="startDateFilter" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label for="endDateFilter" class="form-label">
+                            <i class="fas fa-calendar-alt me-2"></i>End Date:
+                        </label>
+                        <input type="date" id="endDateFilter" class="form-control" />
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button id="filterButton" class="btn btn-success w-100">
+                            <i class="fas fa-filter me-2"></i>Check
+                        </button>
+                    </div>
+                </div>
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">
+                        <i class="fas fa-info-circle me-2"></i>Booking Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+                    <div id="bookingDetails"></div>
+                    <hr />
+                    
+                    <h5>Add Extra Service</h5>
+                    <form id="extraServiceForm">
+                        <div class="mb-3">
+                            <label for="extraServiceSelect" class="form-label">
+                                <i class="fas fa-concierge-bell me-2"></i>Extra Service
+                            </label>
+                            <select id="extraServiceSelect" class="form-select">
+                                <option value="">Select Service</option>
+                                
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="priceInput" class="form-label">
+                                <i class="fas fa-dollar-sign me-2"></i>Price
+                            </label>
+                            <input type="number" id="priceInput" class="form-control" step="0.01" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Add Service
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+          if (typeof FullCalendar === "undefined") {
+            console.error("FullCalendar did NOT load. Check your network.");
+            return;
+          }
+
+          const calendarEl = document.getElementById('calendar');
+          const roomSelect = document.getElementById('roomSelect');
+          const startDateInput = document.getElementById('startDateFilter');
+          const endDateInput = document.getElementById('endDateFilter');
+          const filterButton = document.getElementById('filterButton');
+          const bookingModalEl = document.getElementById('bookingModal');
+          const bookingModal = new bootstrap.Modal(bookingModalEl);
+          const extraServiceForm = document.getElementById('extraServiceForm');
+          let selectedRoomId = '';
+          let currentBookingId = null; 
+
+          async function loadRooms() {
+            try {
+              const response = await fetch('/Calendar/GetRooms');
+              const rooms = await response.json();
+              rooms.forEach(room => {
+                const option = document.createElement('option');
+                option.value = room.id;
+                option.textContent = room.title;
+                roomSelect.appendChild(option);
+              });
+            } catch (error) {
+              console.error("Error fetching rooms:", error);
+            }
+          }
+          await loadRooms();
+
+          
+          async function loadExtraServices() {
+            try {
+              const response = await fetch('/ExtraService/GetAll');
+              const services = await response.json();
+              const extraServiceSelect = document.getElementById('extraServiceSelect');
+              extraServiceSelect.innerHTML = '<option value="">Select Service</option>'; // Reset dropdown
+              services.forEach(service => {
+                const option = document.createElement('option');
+                option.value = service.id;
+                option.textContent = service.emer; 
+                extraServiceSelect.appendChild(option);
+              });
+            } catch (error) {
+              console.error('Error fetching extra services:', error);
+            }
+          }
+
+          
+          const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            height: 'auto',
+            headerToolbar: {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+              today: 'Today',
+              month: 'Month',
+              week: 'Week',
+              day: 'Day'
+            },
+            events: async function (fetchInfo, successCallback, failureCallback) {
+              try {
+                let startDate = startDateInput.value || fetchInfo.startStr.split("T")[0];
+                let endDate = endDateInput.value || fetchInfo.endStr.split("T")[0];
+
+                if (!selectedRoomId) {
+                  console.log("No room selected, skipping fetch.");
+                  successCallback([]);
+                  return;
+                }
+
+                const response = await fetch(
+                  `/Calendar/GetBookings?start=${startDate}&end=${endDate}&roomId=${selectedRoomId}`
+                );
+                const data = await response.json();
+                successCallback(data);
+              } catch (error) {
+                console.error("Error fetching bookings:", error);
+                failureCallback(error);
+              }
+            },
+            eventClick: function (info) {
+              const event = info.event;
+              
+              currentBookingId = event.id;
+
+              
+              document.getElementById('bookingDetails').innerHTML = `
+                <div class="mb-3">
+                  <strong><i class="fas fa-info-circle me-2"></i>Booking ID:</strong> ${event.id}
+                </div>
+                <div class="mb-3">
+                  <strong><i class="fas fa-door-open me-2"></i>Room:</strong> ${event.extendedProps.roomNumber}
+                </div>
+                <div class="mb-3">
+                  <strong><i class="fas fa-calendar-check me-2"></i>Check-in:</strong> ${event.start.toLocaleDateString()}
+                </div>
+                <div class="mb-3">
+                  <strong><i class="fas fa-calendar-times me-2"></i>Check-out:</strong> ${event.end.toLocaleDateString()}
+                </div>
+                <div class="mb-3">
+                  <strong><i class="fas fa-tag me-2"></i>Status:</strong>
+                  <span class="badge bg-success">${event.extendedProps.status}</span>
+                </div>
+              `;
+              
+              loadExtraServices();
+              bookingModal.show();
+            },
+            eventDidMount: function (info) {
+              new bootstrap.Tooltip(info.el, {
+                title: `Room ${info.event.extendedProps.roomNumber} - ${info.event.title}`,
+                placement: 'top',
+                trigger: 'hover',
+                container: 'body'
+              });
+            }
+          });
+          calendar.render();
+
+          filterButton.addEventListener('click', function () {
+            selectedRoomId = roomSelect.value;
+            if (!selectedRoomId) {
+              alert("Please select a room first.");
+              return;
+            }
+
+            let startDate = startDateInput.value;
+            let endDate = endDateInput.value;
+            if (!startDate || !endDate) {
+              alert("Please select both start and end dates.");
+              return;
+            }
+            calendar.refetchEvents();
+          });
+
+          
+          extraServiceForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const extraServiceId = document.getElementById('extraServiceSelect').value;
+            const price = document.getElementById('priceInput').value;
+
+            if (!extraServiceId) {
+              alert("Please select an extra service.");
+              return;
+            }
+
+            const payload = {
+              BookingId: currentBookingId,
+              ExtraServiceId: extraServiceId,
+              Price: parseFloat(price)
+            };
+
+            try {
+              const response = await fetch('/Booking/AddExtraService', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+              });
+              if (response.ok) {
+                alert("Extra service added successfully.");
+                extraServiceForm.reset();
+              } else {
+                const err = await response.text();
+                alert("Error adding extra service: " + err);
+              }
+            } catch (error) {
+              console.error("Error adding extra service:", error);
+              alert("An error occurred while adding the extra service.");
+            }
+          });
+        });
+    </script>
+</body>
+</html>

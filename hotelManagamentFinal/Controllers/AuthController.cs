@@ -8,7 +8,6 @@ using hotelManagement.Domain.Models;
 using HotelManagementFinal.BLL.Services;
 using hotelManagamentFinal.Models.DTO;
 using hotelManagement.DAL.Persistence.Entities;
-using hotelManagamentFinal.Models.DTO;
 
 namespace hotelManagamentFinal.Controllers
 {
@@ -96,14 +95,14 @@ namespace hotelManagamentFinal.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View("~/Views/Home/Index.cshtml");
+            return View("~/Views/LandingPage/Index.cshtml");
         }
 
         [HttpGet]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "LandingPage");
         }
 
 
@@ -112,7 +111,7 @@ namespace hotelManagamentFinal.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("~/Views/Home/Index.cshtml", loginDto);
+                return View("~/Views/LandingPage/Index.cshtml", loginDto);
             }
 
             try
@@ -124,6 +123,7 @@ namespace hotelManagamentFinal.Controllers
 
                     if (user != null)
                     {
+                        HttpContext.Session.SetInt32("UserId", user.Id);
                         HttpContext.Session.SetInt32("RoleId", user.Role);
                         HttpContext.Session.SetString("UserEmail", user.Email);
                         HttpContext.Session.SetString("UserName", user.Emer);

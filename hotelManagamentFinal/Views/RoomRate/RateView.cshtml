@@ -1,4 +1,4 @@
-﻿@*
+﻿ @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -41,6 +41,7 @@
 
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
+                        
                         <label class="form-label" for="TipDhomeId">Room Type</label>
                         <select class="form-control" id="TipDhomeId" name="TipDhomeId" asp-for="NewRate.TipDhomeId" asp-items="Model.RoomTypes">
                             <option value="">Select Room Type</option>
@@ -54,9 +55,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label" for="CmimBaze">Base Price</label>
-                        <input class="form-control" type="text" id="CmimBaze" name="CmimBaze" asp-for="NewRate.CmimBaze" />
-                        <span class="text-danger" asp-validation-for="NewRate.CmimBaze"></span>
+                        <label class="form-label" for="RateMultiplier">RateMultiplier</label>
+                        <input class="form-control" type="text" id="RateMultiplier" name="RateMultiplier" asp-for="NewRate.RateMultiplier" />
+                        <span class="text-danger" asp-validation-for="NewRate.RateMultiplier"></span>
                     </div>
 
                     <div class="modal-footer">
@@ -89,6 +90,7 @@
                     <form method="post" asp-action="EditRate" asp-controller="RoomRate">
 
                         @Html.AntiForgeryToken()
+                        <input type="hidden" value="@rate.Id" name="Id"/>
                         <div class="mb-3">
                             <label class="form-label" for="TipDhomeId">Room Type</label>
                             <select class="form-control" id="TipDhomeId" name="TipDhomeId" asp-for="@rate.TipDhomeId" asp-items="Model.RoomTypes">
@@ -102,9 +104,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label" for="CmimBaze">Base Price</label>
-                            <input class="form-control" type="text" id="CmimBaze" name="CmimBaze" asp-for="NewRate.CmimBaze" />
-                            <span class="text-danger" asp-validation-for="NewRate.CmimBaze"></span>
+                            <label class="form-label" for="RateMultiplier">Base Price</label>
+                            <input class="form-control" type="text" id="RateMultiplier" name="RateMultiplier" asp-for="NewRate.RateMultiplier" />
+                            <span class="text-danger" asp-validation-for="NewRate.RateMultiplier"></span>
                         </div>
 
                         
@@ -137,7 +139,7 @@
             <tr>
                 
                 <td>@rate.Emer</td>
-                <td>@rate.CmimBaze</td>
+                <td>@rate.RateMultiplier</td>
                 <td> @Model.RoomTypes.FirstOrDefault(rt => rt.Value == rate.TipDhomeId.ToString())?.Text</td>
 
                 <td>

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence.Repositories;
+using hotelManagement.Domain.Models;
 using HotelManagementFinal.DAL.Persistence.Repositories;
 
 namespace HotelManagementFinal.BLL.Services
@@ -14,10 +15,13 @@ namespace HotelManagementFinal.BLL.Services
        
         IEnumerable<User> GetAllUsers();
 
-        //User GetUserById(int userId);
+        UserModel GetUserById(int userId);
         Task<IEnumerable<User>> GetAllUsersAsync();
 
 
+        public string GetUserEmailById(int userId);
+
+        //void UpdateUserRole(int userId, int roleId);
     }
 
     public class UserService : IUserService
@@ -39,16 +43,38 @@ namespace HotelManagementFinal.BLL.Services
         {
             return _userRepository.GetAll();
         }
-        public User GetUserById(int userId)
+
+        //Marsel
+        //14/02/2025
+        public UserModel GetUserById(int userId)
         {
-            return _userRepository.GetById(userId); 
+            var user = _userRepository.GetById(userId);
+
+            if (user == null)
+                return null;  
+
+            return new UserModel
+            {
+                Id = user.Id,
+                Emer = user.Emer,
+                Mbiemer = user.Mbiemer,
+                Email = user.Email,
+                Role = user.Role,
+                CreatedOn = user.CreatedOn,
+                ModifiedOn = user.ModifiedOn,
+                Invalidated = user.Invalidated.HasValue && user.Invalidated.Value == 1
+            };
         }
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await _userRepository.GetAllUsersAsync();
         }
 
-    }
 
+        public string GetUserEmailById(int userId)
+        {
+            return _userRepository.GetEmailById(userId);
+        }
+    }
 
 }

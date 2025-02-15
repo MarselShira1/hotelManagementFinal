@@ -1,7 +1,7 @@
 ﻿using hotelManagamentFinal.Models.DTO.ExtraService;
 using hotelManagamentFinal.Models1;
 using HotelManagementFinal.BLL.Services;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc; 
 
 namespace hotelManagamentFinal.Controllers
 {
@@ -111,6 +111,12 @@ namespace hotelManagamentFinal.Controllers
             });
             TempData["SuccessMessage"] = "Extra Service updated successfully!";
             return RedirectToAction("ExtraServiceView");
+        }
+
+        public IActionResult GetAll()
+        {
+            var services = _extraServiceService.GetAllExtraServices();
+            return Ok(services);
         }
     }
 }

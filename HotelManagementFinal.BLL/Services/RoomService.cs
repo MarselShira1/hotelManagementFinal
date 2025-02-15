@@ -18,18 +18,21 @@ namespace hotelManagement.BLL.Services
         bool AddRoom(hotelManagement.Domain.Models.CreateRoom room);
         Task<IEnumerable<CreateRoom>> GetRoomsAsync();
         bool EditRoom(hotelManagement.Domain.Models.CreateRoom roomModel);
-
+        Task<CreateRoom> GetRoomById(int roomId);
         bool DeleteRoom(int id);
+        
     }
-    //
+    
     internal class RoomService : IRoomService
     {
         private readonly IRoomRepository roomRepository;
         private readonly IRoomTypeRepository _roomTypeRepository;
-        public RoomService(IRoomRepository repository , IRoomTypeRepository roomTypeRepository)
+        private readonly IRoomRateRepository _roomRateRepository;
+        public RoomService(IRoomRepository repository , IRoomTypeRepository roomTypeRepository, IRoomRateRepository roomRate)
         {
             roomRepository = repository;
             _roomTypeRepository = roomTypeRepository;
+            _roomRateRepository = roomRate;
         }
 
         public bool DeleteRoom(int id)
@@ -54,25 +57,43 @@ namespace hotelManagement.BLL.Services
 
         public async Task<IEnumerable<CreateRoom>> GetRoomsAsync()
         {
-            var rooms =  await roomRepository.GetAllRoomsAsync();
-            var createRooms = new List<CreateRoom>();
+            try {
+                var rooms = await roomRepository.GetAllRoomsAsync();
 
-            foreach (var room in rooms)
-            {
-                var roomType =   _roomTypeRepository.GetById(room.TipDhome); 
-                createRooms.Add(new CreateRoom
+                return rooms.Select(room => new CreateRoom
                 {
                     RoomId = room.Id,
                     RoomFloor = room.Kat,
                     RoomNumber = room.NumerDhome,
                     RoomTypeId = room.TipDhome,
-                    RoomTypeName = roomType?.Emer
+                    RoomTypeName = room.TipDhomeNavigation.Emer,
+                    Price = room.TipDhomeNavigation.CmimBaze
                 });
             }
-            return createRooms;
+                catch(Exception ex)
+                { 
+                    return null;
+                }
+            }
 
+
+        public async Task<CreateRoom> GetRoomById(int roomId)
+        {
+            var room = roomRepository.GetById(roomId);
+
+            if (room == null)
+                return null;  
+
+            return new CreateRoom
+            {
+                RoomId = room.Id,
+                RoomTypeId = room.TipDhome,
+                RoomTypeName = room.TipDhomeNavigation?.Emer, 
+                RoomFloor = room.Kat,
+                RoomNumber = room.NumerDhome,
+                
+            };
         }
-
 
 
 
@@ -80,7 +101,8 @@ namespace hotelManagement.BLL.Services
         {
             try
             {
-                var room = roomRepository.GetById(roomModel.RoomId ?? 0);
+                //esteri ndryshoi (roomModel.RoomId ?? 0)
+                var room = roomRepository.GetById(roomModel.RoomId);
 
                 if (room != null)
                 {
@@ -103,8 +125,8 @@ namespace hotelManagement.BLL.Services
         public bool AddRoom(hotelManagement.Domain.Models.CreateRoom createRoom)
         {
             try { 
-                var existingBrand = roomRepository.GetByName(createRoom.RoomNumber);
-                if (existingBrand != null)
+                var existingRoom = roomRepository.GetByName(createRoom.RoomNumber);
+                if (existingRoom != null)
                 {
                     throw new RoomException("Room already exists");
                 }
