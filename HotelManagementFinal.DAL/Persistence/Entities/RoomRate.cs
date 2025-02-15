@@ -9,7 +9,7 @@ public partial class RoomRate : BaseEntity<int>
 
     public string Emer { get; set; } = null!;
 
-    public decimal CmimBaze { get; set; }
+    public decimal RateMultiplier { get; set; }
 
     public int TipDhomeId { get; set; }
 

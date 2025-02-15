@@ -1,5 +1,6 @@
 ﻿using hotelManagamentFinal.Models.DTO.RoomRate;
 using hotelManagement.BLL.Services;
+using hotelManagement.DAL.Persistence.Entities;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,11 +10,15 @@ namespace HotelManagement.Controllers
     public class RoomRateController : Controller
     {
         private readonly IRoomRateService _roomRateService;
+        private readonly IRoomTypeService _roomTypeService;
+        private readonly IRoomService _roomService; 
         private List<SelectListItem> roomTypes;
 
-        public RoomRateController(IRoomRateService roomRateService)
+        public RoomRateController(IRoomRateService roomRateService, IRoomTypeService roomTypeService , IRoomService roomService)
         {
             _roomRateService = roomRateService;
+            _roomTypeService = roomTypeService;
+            _roomService = roomService;
         }
 
         public IActionResult RateView()
@@ -31,7 +36,7 @@ namespace HotelManagement.Controllers
                 {
                     Id = r.Id,
                     Emer = r.Emer,
-                    CmimBaze = r.CmimBaze,
+                    RateMultiplier = r.RateMultiplier,
                     TipDhomeId = r.TipDhomeId
 
                 }).ToList(),
@@ -41,11 +46,13 @@ namespace HotelManagement.Controllers
             return View(model);
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllRoomRates()
+        public async Task<IActionResult> GetAllRoomRates([FromQuery] int roomId)
         {
             try
             {
-                var roomRates =  _roomRateService.GetAllRoomRates().ToList();
+                var room = _roomService.GetRoomById(roomId);
+                var roomType = _roomTypeService.GetRoomTypeById((int)room.Result.RoomTypeId);
+                var roomRates =  _roomRateService.GetRoomRatesByRoomType(roomType.Id).ToList();
                 return Json(roomRates); 
             }
             catch (Exception ex)
@@ -59,9 +66,13 @@ namespace HotelManagement.Controllers
         {
             if (!ModelState.IsValid)
             {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
                 TempData["ErrorMessage"] = "There were errors in your submission. Please check the fields.";
 
-               
+
                 var rates = _roomRateService.GetAllRoomRates();
                 var roomTypes = _roomRateService.GetAllRoomTypes()
                                                 .Select(rt => new SelectListItem
@@ -76,7 +87,7 @@ namespace HotelManagement.Controllers
                     {
                         Id = rate.Id,
                         Emer = rate.Emer,
-                        CmimBaze = rate.CmimBaze,
+                        RateMultiplier = rate.RateMultiplier,
                         TipDhomeId = rate.TipDhomeId
                     }).ToList(),
                     RoomTypes = roomTypes,
@@ -89,7 +100,7 @@ namespace HotelManagement.Controllers
             _roomRateService.AddRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
             {
                 Name = model.Emer,
-                base_price = model.CmimBaze,
+                RateMultiplier = model.RateMultiplier,
                 TipDhomeId = model.TipDhomeId
             });
 
@@ -124,6 +135,10 @@ namespace HotelManagement.Controllers
         {
             if (!ModelState.IsValid)
             {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage); 
+                }
                 TempData["ErrorMessage"] = "Failed to update the room. Please check the fields.";
 
                 var rates = _roomRateService.GetAllRoomRates();
@@ -140,7 +155,7 @@ namespace HotelManagement.Controllers
                     {
                         Id = rate.Id,
                         Emer = rate.Emer,
-                        CmimBaze = rate.CmimBaze,
+                        RateMultiplier = rate.RateMultiplier,
                         TipDhomeId = rate.TipDhomeId
                     }).ToList(),
                     RoomTypes = roomTypes,
@@ -152,10 +167,11 @@ namespace HotelManagement.Controllers
 
             _roomRateService.UpdateRoomRate(new hotelManagement.Domain.Models.CreateRoomRate
             {
+                Id = model.Id,
                 Name = model.Emer,
-                base_price = model.CmimBaze,
-                TipDhomeId = model.TipDhomeId,
-                Id = model.Id
+                RateMultiplier = model.RateMultiplier,
+                TipDhomeId = model.TipDhomeId
+                
             });
 
             TempData["SuccessMessage"] = "Room Rate updated successfully!";

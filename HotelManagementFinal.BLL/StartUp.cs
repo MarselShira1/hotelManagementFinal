@@ -24,6 +24,9 @@ public static class Startup
         services.AddScoped<IExtraServiceService, ExtraServiceService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IBookingService, BookingService>();
+        services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IRezervimServiceService, RezervimServiceService>();
+
     }
 }
 

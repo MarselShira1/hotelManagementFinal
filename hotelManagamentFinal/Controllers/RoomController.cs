@@ -127,10 +127,10 @@ namespace HotelManagement.Controllers
         }
 
 
-        public IActionResult GenerateBill()
+        public IActionResult GenerateBill(int rezervimId)
         {
             // Call the GenerateBillPdf method to get the PDF as a byte array
-            byte[] billPdf = _billService.GenerateBillPdf();
+            byte[] billPdf = _billService.GenerateBillPdf(rezervimId);
 
             // Return the PDF file as a download response
             return File(billPdf, "application/pdf", "HotelBill.pdf");
@@ -148,7 +148,8 @@ namespace HotelManagement.Controllers
                     RoomTypeId = room.RoomTypeId, 
                     RoomFloor = room.RoomFloor,   
                     RoomNumber = room.RoomNumber  ,
-                    RoomTypeName = room.RoomTypeName
+                    RoomTypeName = room.RoomTypeName,
+                    BasePrice = room.Price
                 }).ToList();
 
 

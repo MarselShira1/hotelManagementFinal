@@ -16,13 +16,34 @@ namespace HotelManagementFinal.BLL.Services
 {
     public interface IBillService
     {
-        byte[] GenerateBillPdf();
+        byte[] GenerateBillPdf(int rezervimId);
     }
     internal class BillService : IBillService
     {
-        public BillService() { }
-        public byte[] GenerateBillPdf()
+        private readonly IAuthService _authService;
+        private readonly IUserService _userService;
+        private readonly IBookingService _bookingService;
+        private readonly IRoomService _roomService;
+
+        public BillService(IAuthService authService, IBookingService bookingService,
+            IUserService userService, IRoomService roomService) {
+            _authService = authService;
+            _bookingService = bookingService;
+            _userService = userService;
+            _roomService = roomService;
+        }
+        public byte[] GenerateBillPdf(int rezervimId)
         {
+            //merr te dhenat e rezervimit
+            var rezervimDetails = _bookingService.GetRezervimById(rezervimId);
+            var userDetails = _userService.GetUserById(rezervimDetails.Result.UserId);
+            var roomDetails = _roomService.GetRoomById(rezervimDetails.Result.DhomeId);
+            int numberOfDays = (rezervimDetails.Result.CheckOut.ToDateTime(TimeOnly.MinValue)
+                  - rezervimDetails.Result.CheckIn.ToDateTime(TimeOnly.MinValue)).Days;
+
+            //do merret cimimi qe i perkon roomType * roomRateMultiplier per nje dhome qe te shtohet ne fature 
+            var price =  _bookingService.CalculatePriceAsync((int)roomDetails.Result.RoomTypeId , rezervimDetails.Result.CheckIn, rezervimDetails.Result.CheckOut);
+
             using (MemoryStream stream = new MemoryStream())
             {
                 // Create a new PDF document
@@ -42,7 +63,7 @@ namespace HotelManagementFinal.BLL.Services
 
                 // Add Hotel Name
                 Font titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18);
-                Paragraph title = new Paragraph("Hotel XYZ - Invoice", titleFont);
+                Paragraph title = new Paragraph("Hotel ISE - Invoice", titleFont);
                 title.Alignment = Element.ALIGN_CENTER;
                 document.Add(title);
 
@@ -51,10 +72,10 @@ namespace HotelManagementFinal.BLL.Services
                 // Add Customer Details
                 Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
                 document.Add(new Paragraph("Customer Details:", headerFont));
-                document.Add(new Paragraph("Name: John Doe"));
-                document.Add(new Paragraph("Room Number: 101"));
-                document.Add(new Paragraph("Check-in Date: 2025-02-01"));
-                document.Add(new Paragraph("Check-out Date: 2025-02-05"));
+                document.Add(new Paragraph("Name: "+ userDetails.Emer +" "+ userDetails.Mbiemer));
+                document.Add(new Paragraph("Room Number:"+ roomDetails.Result.RoomNumber));
+                document.Add(new Paragraph("Check-in Date: "+rezervimDetails.Result.CheckIn));
+                document.Add(new Paragraph("Check-out Date: "+ rezervimDetails.Result.CheckOut));
                 document.Add(new Paragraph("\n"));
 
                 // Add Bill Details in Table Format
@@ -69,7 +90,7 @@ namespace HotelManagementFinal.BLL.Services
 
                 // Add Charges
                 table.AddCell("Room Charges ($50 per day)");
-                table.AddCell("4");
+                table.AddCell(numberOfDays.ToString());
                 table.AddCell("$200");
 
                 table.AddCell("Food & Beverages");
@@ -84,7 +105,7 @@ namespace HotelManagementFinal.BLL.Services
                 Font totalFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
                 PdfPCell totalCell = new PdfPCell(new Phrase("Total Amount", totalFont)) { Colspan = 2, HorizontalAlignment = Element.ALIGN_RIGHT };
                 table.AddCell(totalCell);
-                table.AddCell(new PdfPCell(new Phrase("$275", totalFont)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                table.AddCell(new PdfPCell(new Phrase(price.Result.ToString(), totalFont)) { HorizontalAlignment = Element.ALIGN_CENTER });
 
                 document.Add(table);
                 document.Add(new Paragraph("\n"));

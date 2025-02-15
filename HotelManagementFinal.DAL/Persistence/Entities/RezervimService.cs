@@ -11,7 +11,7 @@ public partial class RezervimService : BaseEntity<int>
 
     public int Sherbim { get; set; }
 
-    public int Sasi { get; set; }
+    public decimal Price { get; set; }
 
     public DateTime? CreatedOn { get; set; }
 

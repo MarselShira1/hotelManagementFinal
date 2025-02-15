@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HotelManagementFinal.Domain.Models;
 
 namespace hotelManagement.DAL.Persistence.Repositories
 {
@@ -13,6 +14,9 @@ namespace hotelManagement.DAL.Persistence.Repositories
         Task<IEnumerable<Rezervim>> GetAllBookingsAsync();
         Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync();
         RoomRate GetRoomRateById(int roomRateId);
+        Task<Rezervim> GetRezervimById(int rezervimId);
+        Task<IEnumerable<Rezervim>> GetByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end);
+        Task<IEnumerable<RoomRateRange>> GetRoomRateRangesByRoomRateIdAsync(int roomRateId);
     }
 
     public class BookingRepository : IBookingRepository
@@ -50,6 +54,42 @@ namespace hotelManagement.DAL.Persistence.Repositories
                 .Include(r => r.RoomRateNavigation)
                 .Where(b => b.Invalidated == 1)
                 .ToListAsync();
+        }
+        public async Task<IEnumerable<Rezervim>> GetByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end)
+        {
+            return await _dbContext.Rezervime
+                .Where(b => b.Dhome == roomId)
+                .Where(b => b.CheckIn < end && b.CheckOut > start)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<RoomRateRange>> GetRoomRateRangesByRoomRateIdAsync(int roomRateId)
+        {
+            var roomRateRangesDataAccess = await _dbContext.RoomRateRanges
+                .Where(r => r.RoomRateId == roomRateId && r.Invalidated == 1)
+                .ToListAsync();
+
+            var roomRateRanges = roomRateRangesDataAccess.Select(r => new RoomRateRange
+            {
+                Id = r.Id,
+                RoomRateId = r.RoomRateId,
+                StartDate = r.StartDate,
+                EndDate = r.EndDate,
+                WeekendPricing = r.WeekendPricing,
+                HolidayPricing = r.HolidayPricing,
+                Description = r.Description,
+                CreatedOn = r.CreatedOn,
+                ModifiedOn = r.ModifiedOn,
+                Invalidated = r.Invalidated
+            });
+
+            return roomRateRanges;
+        }
+
+
+        public async Task<Rezervim> GetRezervimById(int rezervimId)
+        {
+            return await _dbContext.Rezervime.Where(w => w.Id == rezervimId).FirstOrDefaultAsync();
         }
     }
 }

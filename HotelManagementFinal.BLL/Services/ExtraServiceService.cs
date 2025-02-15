@@ -8,6 +8,7 @@ using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence.Repositories;
 using HotelManagementFinal.DAL.Persistence.Repositories;
 using HotelManagementFinal.Domain.Models;
+using hotelManagement.BLL.Services;
 
 namespace HotelManagementFinal.BLL.Services
 {
