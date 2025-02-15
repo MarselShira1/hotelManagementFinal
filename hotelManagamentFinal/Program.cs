@@ -1,3 +1,4 @@
+using HotelManagamentFinal.Models;
 using hotelManagement.BLL.Services;
 using HotelManagement.Models;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 builder.Services.AddControllersWithViews();
 builder.Services.RegisterBLLServices(builder.Configuration);
 
