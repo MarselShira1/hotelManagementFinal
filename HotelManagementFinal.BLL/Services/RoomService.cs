@@ -18,10 +18,11 @@ namespace hotelManagement.BLL.Services
         bool AddRoom(hotelManagement.Domain.Models.CreateRoom room);
         Task<IEnumerable<CreateRoom>> GetRoomsAsync();
         bool EditRoom(hotelManagement.Domain.Models.CreateRoom roomModel);
-
+        Dhome GetRoomById(int id);
         bool DeleteRoom(int id);
+        
     }
-    //
+    
     internal class RoomService : IRoomService
     {
         private readonly IRoomRepository roomRepository;
@@ -57,14 +58,18 @@ namespace hotelManagement.BLL.Services
         public async Task<IEnumerable<CreateRoom>> GetRoomsAsync()
         {
             var rooms = await roomRepository.GetAllRoomsAsync();
+
             return rooms.Select(room => new CreateRoom
             {
                 RoomId = room.Id,
                 RoomFloor = room.Kat,
                 RoomNumber = room.NumerDhome,
-                RoomTypeId = room.TipDhome
+                RoomTypeId = room.TipDhome,
+                RoomTypeName = room.TipDhomeNavigation.Emer, 
+                Price = room.TipDhomeNavigation.CmimBaze        
             });
         }
+
 
 
 
@@ -97,8 +102,8 @@ namespace hotelManagement.BLL.Services
         public bool AddRoom(hotelManagement.Domain.Models.CreateRoom createRoom)
         {
             try { 
-                var existingBrand = roomRepository.GetByName(createRoom.RoomNumber);
-                if (existingBrand != null)
+                var existingRoom = roomRepository.GetByName(createRoom.RoomNumber);
+                if (existingRoom != null)
                 {
                     throw new RoomException("Room already exists");
                 }
@@ -120,6 +125,27 @@ namespace hotelManagement.BLL.Services
             {
                 return false;
             }
+        }
+
+        public Dhome GetRoomById(int id)
+        {
+            var room = roomRepository.GetById(id);
+            if (room == null || room.Invalidated == 0)
+            {
+                throw new Exception("Room not found.");
+            }
+            return new Dhome
+            {
+                Id = room.Id,
+                TipDhome = room.TipDhome,  
+                Kat = room.Kat,            
+                NumerDhome = room.NumerDhome,
+                Invalidated = room.Invalidated,
+                CreatedOn = room.CreatedOn,
+                ModifiedOn = room.ModifiedOn,
+                TipDhomeNavigation = room.TipDhomeNavigation,
+                Rezervims = room.Rezervims
+            };
         }
 
     }

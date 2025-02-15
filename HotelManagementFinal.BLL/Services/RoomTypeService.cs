@@ -12,9 +12,10 @@ namespace hotelManagement.BLL.Services
         void SoftDeleteRoomType(int id);
         Task<IEnumerable<TipDhome>> GetAllRoomTypesAsync();
         void UpdateRoomType(CreateRoomType roomType);
+        TipDhome GetTipDhomeById(int tipDhomeId);
     }
 
-    internal class RoomTypeService : IRoomTypeService
+    public class RoomTypeService : IRoomTypeService
     {
         private readonly IRoomTypeRepository _roomTypeRepository;
 
@@ -35,6 +36,7 @@ namespace hotelManagement.BLL.Services
             var newRoomType = new TipDhome
             {
                 Emer = roomType.Emer,
+                CmimBaze = roomType.CmimBaze,   
                 Siperfaqe = roomType.Siperfaqe,
                 Pershkrim = roomType.Pershkrim,
                 Kapacitet = roomType.Kapacitet,
@@ -57,6 +59,7 @@ namespace hotelManagement.BLL.Services
             {
                 Id = rt.Id,
                 Emer = rt.Emer,
+                CmimBaze = rt.CmimBaze, 
                 Siperfaqe = rt.Siperfaqe ?? 0,
                 Pershkrim = rt.Pershkrim,
                 Kapacitet = rt.Kapacitet,
@@ -77,6 +80,7 @@ namespace hotelManagement.BLL.Services
             {
                 Id = roomType.Id,
                 Emer = roomType.Emer,
+                CmimBaze = roomType.CmimBaze,   
                 Siperfaqe = roomType.Siperfaqe ?? 0,
                 Pershkrim = roomType.Pershkrim,
                 Kapacitet = roomType.Kapacitet,
@@ -105,6 +109,7 @@ namespace hotelManagement.BLL.Services
             }
 
             existing.Emer = roomType.Emer;
+            existing.CmimBaze = roomType.CmimBaze;
             existing.Siperfaqe = roomType.Siperfaqe;
             existing.Pershkrim = roomType.Pershkrim;
             existing.Kapacitet = roomType.Kapacitet;
@@ -120,6 +125,9 @@ namespace hotelManagement.BLL.Services
             return await _roomTypeRepository.GetAllAsync();
         }
 
-
+        public TipDhome GetTipDhomeById(int tipDhomeId)
+        {
+            return _roomTypeRepository.GetById(tipDhomeId);
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using hotelManagement.DAL.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
+using iText.Commons.Actions.Contexts;
 
 namespace hotelManagement.DAL.Persistence.Repositories
 {
@@ -14,7 +15,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
     {
         void Update(RoomRate roomRate);
         IEnumerable<TipDhome> GetAllRoomTypes();
-
+        IEnumerable<RoomRate> GetRoomRatesByRoomType(int roomTypeId);
 
     }
 
@@ -41,7 +42,13 @@ namespace hotelManagement.DAL.Persistence.Repositories
         {
             return _dbContext.TipDhomes.ToList(); 
         }
-
+        public IEnumerable<RoomRate> GetRoomRatesByRoomType(int roomTypeId)
+        {
+           
+            return _dbContext.RoomRates
+                           .Where(rate => rate.TipDhomeId == roomTypeId && rate.Invalidated != 0)
+                           .ToList();
+        }
 
     }
 }

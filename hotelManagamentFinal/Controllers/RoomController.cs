@@ -148,7 +148,8 @@ namespace HotelManagement.Controllers
                     RoomTypeId = room.RoomTypeId, 
                     RoomFloor = room.RoomFloor,   
                     RoomNumber = room.RoomNumber  ,
-                    RoomTypeName = room.RoomTypeName
+                    RoomTypeName = room.RoomTypeName,
+                    BasePrice = room.Price
                 }).ToList();
 
 

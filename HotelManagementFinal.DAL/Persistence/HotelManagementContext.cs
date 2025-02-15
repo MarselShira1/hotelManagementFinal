@@ -58,7 +58,7 @@ public partial class HotelManagementContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=MARSEL\\MSSQLSERVER1;Database=HotelManagement;User ID=hotelManagement1;Password=hotelManagement11;Trusted_Connection=False;TrustServerCertificate=Yes");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-F8EDG2P;Database=HotelManagement;User ID=sa;Password=Ester123;Trusted_Connection=False;TrustServerCertificate=Yes");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -280,8 +280,8 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
             entity.Property(e => e.Rezervim).HasColumnName("rezervim");
-            entity.Property(e => e.Sasi).HasColumnName("sasi");
             entity.Property(e => e.Sherbim).HasColumnName("sherbim");
+            entity.Property(e => e.Price).HasColumnName("Cmim");
 
             entity.HasOne(d => d.RezervimNavigation).WithMany(p => p.RezervimServices)
                 .HasForeignKey(d => d.Rezervim)
@@ -310,9 +310,9 @@ public partial class HotelManagementContext : DbContext
             entity.ToTable("Room_Rate");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CmimBaze)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("cmim_baze");
+            entity.Property(e => e.RateMultiplier)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("rate_multiplier");
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Emer)
                 .HasMaxLength(50)
@@ -373,6 +373,9 @@ public partial class HotelManagementContext : DbContext
             entity.Property(e => e.Siperfaqe)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("siperfaqe");
+            entity.Property(e => e.CmimBaze)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("cmim_baze");
         });
 
         modelBuilder.Entity<User>(entity =>
