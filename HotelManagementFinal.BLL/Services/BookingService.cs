@@ -21,11 +21,14 @@ namespace hotelManagement.BLL.Services
     public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
+        private readonly IRoomTypeService _roomTypeService;
 
-        public BookingService(IBookingRepository bookingRepository)
+        public BookingService(IBookingRepository bookingRepository, IRoomTypeService roomTypeService)
         {
             _bookingRepository = bookingRepository;
+            _roomTypeService = roomTypeService;
         }
+
 
         public async Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync()
         {
@@ -47,10 +50,17 @@ namespace hotelManagement.BLL.Services
             if (checkIn >= checkOut)
                 throw new ArgumentException("Check-out date must be after check-in.");
 
-            var roomRate =  _bookingRepository.GetRoomRateById(roomRateId);
+            
+            var roomRate = _bookingRepository.GetRoomRateById(roomRateId);
             if (roomRate == null)
                 throw new Exception("Room rate not found.");
 
+           
+            var roomType = _roomTypeService.GetRoomTypeById(roomRate.TipDhomeId);
+            if (roomType == null)
+                throw new Exception("Room type not found.");
+
+            
             var roomRateRanges = await _bookingRepository.GetRoomRateRangesByRoomRateIdAsync(roomRateId);
 
             decimal totalPrice = 0;
@@ -60,23 +70,24 @@ namespace hotelManagement.BLL.Services
             {
                 
                 var applicableRateRange = roomRateRanges
-                    .FirstOrDefault(r =>
-                        (currentDate >= r.StartDate && currentDate <= r.EndDate) ||
-                        (currentDate <= r.EndDate && currentDate >= r.StartDate) ||
-                        (currentDate >= r.StartDate && currentDate <= r.EndDate));
+                    .FirstOrDefault(r => currentDate >= r.StartDate && currentDate <= r.EndDate);
 
-                decimal dailyRate = roomRate.CmimBaze; 
+               
+                decimal dailyRate = roomType.CmimBaze * roomRate.RateMultiplier;
 
+                
                 if (applicableRateRange != null)
                 {
-                    
+                   
                     if (currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday)
                     {
-                        dailyRate *= applicableRateRange.WeekendPricing ?? 1; 
+                      
+                        dailyRate *= applicableRateRange.WeekendPricing ?? 1;
                     }
+                   
                     if (applicableRateRange.HolidayPricing.HasValue)
                     {
-                        dailyRate *= applicableRateRange.HolidayPricing.Value; 
+                        dailyRate *= applicableRateRange.HolidayPricing.Value;
                     }
                 }
 
@@ -86,6 +97,7 @@ namespace hotelManagement.BLL.Services
 
             return totalPrice;
         }
+
 
 
 

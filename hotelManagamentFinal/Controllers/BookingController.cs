@@ -14,12 +14,14 @@ namespace hotelManagement.Controllers
         private readonly IBookingService _bookingService;
         private readonly IMailSenderService _mailSenderService;
         private readonly IUserService _userService;
+        private readonly IRezervimServiceService _rezervimServiceService;
 
-        public BookingController(IBookingService bookingService, IMailSenderService mailSenderService,IUserService userService)
+        public BookingController(IBookingService bookingService, IMailSenderService mailSenderService,IUserService userService , IRezervimServiceService rezervimServiceService)
         {
             _bookingService = bookingService;
             _mailSenderService = mailSenderService;
             _userService = userService;
+            _rezervimServiceService = rezervimServiceService;
         }
 
        
@@ -107,6 +109,28 @@ namespace hotelManagement.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult AddExtraService([FromBody] AddExtraServiceDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            try
+            {
+                _rezervimServiceService.AddExtraService(
+                    dto.BookingId,
+                    dto.ExtraServiceId,
+                    dto.Price
+                );
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                
+                return StatusCode(500, "An error occurred while adding the extra service: " + ex.Message);
+            }
+        }
     }
 }

@@ -10,6 +10,8 @@ namespace hotelManagement.DAL.Persistence.Repositories
         IEnumerable<TipDhome> GetAllRoomTypes();
         Task<IEnumerable<TipDhome>> GetAllAsync();
 
+
+
     }
 
     internal class RoomTypeRepository : _BaseRepository<TipDhome, int>, IRoomTypeRepository

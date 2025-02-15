@@ -112,5 +112,11 @@ namespace hotelManagamentFinal.Controllers
             TempData["SuccessMessage"] = "Extra Service updated successfully!";
             return RedirectToAction("ExtraServiceView");
         }
+
+        public IActionResult GetAll()
+        {
+            var services = _extraServiceService.GetAllExtraServices();
+            return Ok(services);
+        }
     }
 }

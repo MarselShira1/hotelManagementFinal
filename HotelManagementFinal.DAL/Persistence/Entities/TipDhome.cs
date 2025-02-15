@@ -9,6 +9,7 @@ public partial class TipDhome : BaseEntity<int>
 
     public string Emer { get; set; } = null!;
 
+    public decimal CmimBaze { get; set; }
     public decimal? Siperfaqe { get; set; }
 
     public string? Pershkrim { get; set; }
