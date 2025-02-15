@@ -16,7 +16,12 @@ namespace hotelManagement.DAL.Persistence.Repositories
 
     internal class RoomTypeRepository : _BaseRepository<TipDhome, int>, IRoomTypeRepository
     {
-        public RoomTypeRepository(HotelManagementContext dbContext) : base(dbContext) { }
+        private readonly HotelManagementContext _dbContext;
+
+        public RoomTypeRepository(HotelManagementContext dbContext) : base(dbContext) {
+
+            _dbContext = dbContext;
+        }
 
         public IEnumerable<TipDhome> GetAllRoomTypes()
         {

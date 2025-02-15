@@ -16,6 +16,7 @@ namespace hotelManagement.BLL.Services
         Task<decimal> CalculatePriceAsync(int roomRateId, DateOnly checkIn, DateOnly checkOut);
         Task<IEnumerable<Rezervim>> GetAllBookingsAsync();
         Task<IEnumerable<Rezervim>> GetBookingsByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end);
+        Task<RezervimModel> GetRezervimById(int rezervimId);
     }
 
     public class BookingService : IBookingService
@@ -105,6 +106,31 @@ namespace hotelManagement.BLL.Services
         {
             return await _bookingRepository.GetAllBookingsAsync();
         }
+
+        public async Task<RezervimModel> GetRezervimById(int rezervimId)
+        {
+              var rezervim  = await _bookingRepository.GetRezervimById(rezervimId);
+
+            if (rezervim == null)
+                return null;  
+
+            // Convert Entity to domain model
+            return new RezervimModel
+            {
+                Id = rezervim.Id,
+                UserId = rezervim.User,
+                DhomeId = rezervim.Dhome,
+                RoomRateId = rezervim.RoomRate,
+                CheckIn = rezervim.CheckIn,
+                CheckOut = rezervim.CheckOut,
+                Cmim = rezervim.Cmim,
+                CreatedOn = rezervim.CreatedOn,
+                ModifiedOn = rezervim.ModifiedOn,
+                Invalidated = (byte)rezervim.Invalidated
+            };
+
+        }
+
         public async Task<IEnumerable<Rezervim>> GetBookingsByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end)
         {
             return await _bookingRepository.GetByRoomAndDateRangeAsync(roomId, start, end);

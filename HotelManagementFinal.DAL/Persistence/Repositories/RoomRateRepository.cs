@@ -21,8 +21,11 @@ namespace hotelManagement.DAL.Persistence.Repositories
 
     internal class RoomRateRepository : _BaseRepository<RoomRate, int>, IRoomRateRepository
     {
+        private readonly HotelManagementContext _dbContext;
+
         public RoomRateRepository(HotelManagementContext dbContext) : base(dbContext)
         {
+            _dbContext = dbContext;
         }
         public IEnumerable<RoomRate> GetAll()
         {

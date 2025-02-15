@@ -51,7 +51,7 @@ namespace HotelManagement.Controllers
             try
             {
                 var room = _roomService.GetRoomById(roomId);
-                var roomType = _roomTypeService.GetRoomTypeById(room.TipDhome);
+                var roomType = _roomTypeService.GetRoomTypeById((int)room.Result.RoomTypeId);
                 var roomRates =  _roomRateService.GetRoomRatesByRoomType(roomType.Id).ToList();
                 return Json(roomRates); 
             }

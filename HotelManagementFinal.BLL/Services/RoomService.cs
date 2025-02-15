@@ -18,7 +18,7 @@ namespace hotelManagement.BLL.Services
         bool AddRoom(hotelManagement.Domain.Models.CreateRoom room);
         Task<IEnumerable<CreateRoom>> GetRoomsAsync();
         bool EditRoom(hotelManagement.Domain.Models.CreateRoom roomModel);
-        Dhome GetRoomById(int id);
+        Task<CreateRoom> GetRoomById(int roomId);
         bool DeleteRoom(int id);
         
     }
@@ -57,20 +57,43 @@ namespace hotelManagement.BLL.Services
 
         public async Task<IEnumerable<CreateRoom>> GetRoomsAsync()
         {
-            var rooms = await roomRepository.GetAllRoomsAsync();
+            try {
+                var rooms = await roomRepository.GetAllRoomsAsync();
 
-            return rooms.Select(room => new CreateRoom
+                return rooms.Select(room => new CreateRoom
+                {
+                    RoomId = room.Id,
+                    RoomFloor = room.Kat,
+                    RoomNumber = room.NumerDhome,
+                    RoomTypeId = room.TipDhome,
+                    RoomTypeName = room.TipDhomeNavigation.Emer,
+                    Price = room.TipDhomeNavigation.CmimBaze
+                });
+            }
+                catch(Exception ex)
+                { 
+                    return null;
+                }
+            }
+
+
+        public async Task<CreateRoom> GetRoomById(int roomId)
+        {
+            var room = roomRepository.GetById(roomId);
+
+            if (room == null)
+                return null;  
+
+            return new CreateRoom
             {
                 RoomId = room.Id,
+                RoomTypeId = room.TipDhome,
+                RoomTypeName = room.TipDhomeNavigation?.Emer, 
                 RoomFloor = room.Kat,
                 RoomNumber = room.NumerDhome,
-                RoomTypeId = room.TipDhome,
-                RoomTypeName = room.TipDhomeNavigation.Emer, 
-                Price = room.TipDhomeNavigation.CmimBaze        
-            });
+                
+            };
         }
-
-
 
 
 
@@ -125,27 +148,6 @@ namespace hotelManagement.BLL.Services
             {
                 return false;
             }
-        }
-
-        public Dhome GetRoomById(int id)
-        {
-            var room = roomRepository.GetById(id);
-            if (room == null || room.Invalidated == 0)
-            {
-                throw new Exception("Room not found.");
-            }
-            return new Dhome
-            {
-                Id = room.Id,
-                TipDhome = room.TipDhome,  
-                Kat = room.Kat,            
-                NumerDhome = room.NumerDhome,
-                Invalidated = room.Invalidated,
-                CreatedOn = room.CreatedOn,
-                ModifiedOn = room.ModifiedOn,
-                TipDhomeNavigation = room.TipDhomeNavigation,
-                Rezervims = room.Rezervims
-            };
         }
 
     }
