@@ -42,7 +42,7 @@ namespace hotelManagement.BLL.Services
                 var room = roomRepository.GetById(id);
                 if(room != null)
                 {
-                    roomRepository.Delete(room);
+                    roomRepository.DeleteRoom(room);
                     return true;
 
                 }
@@ -67,7 +67,9 @@ namespace hotelManagement.BLL.Services
                     RoomNumber = room.NumerDhome,
                     RoomTypeId = room.TipDhome,
                     RoomTypeName = room.TipDhomeNavigation.Emer,
-                    Price = room.TipDhomeNavigation.CmimBaze
+                    Price = room.TipDhomeNavigation.CmimBaze,
+                    description = room.TipDhomeNavigation.Pershkrim,
+                    Capacity = room.TipDhomeNavigation.Kapacitet
                 });
             }
                 catch(Exception ex)

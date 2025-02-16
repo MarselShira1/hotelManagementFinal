@@ -6,7 +6,7 @@ using System;
 using hotelManagamentFinal.Models.DTO;
 using hotelManagement.DAL.Persistence.Entities;
 using HotelManagementFinal.BLL.Services;
-using hotelManagementFinal.Models1;
+using hotelManagamentFinal.Models.DTO;
 
 namespace hotelManagementFinal.Controllers
 {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using hotelManagement.Common.Exceptions;
 using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence.Repositories;
+using hotelManagement.Domain.Models;
 using HotelManagementFinal.Domain.Models;
 
 namespace hotelManagement.BLL.Services
@@ -88,7 +89,14 @@ namespace hotelManagement.BLL.Services
                 Description=range1.Description,
                 CreatedOn=range1.CreatedOn,
                 ModifiedOn=range1.ModifiedOn,
-                Invalidated=range1.Invalidated
+                Invalidated=range1.Invalidated,
+                RoomRate = range1.RoomRate == null ? null : new CreateRoomRate
+                {
+                    Id = range1.RoomRate.Id,
+                    Name = range1.RoomRate.Emer,
+                    RateMultiplier = range1.RoomRate.RateMultiplier,
+                    TipDhomeId = range1.RoomRate.TipDhomeId,
+                }
             };
         }
     }

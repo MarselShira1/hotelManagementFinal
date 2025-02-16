@@ -1,14 +1,11 @@
 ﻿@using hotelManagement.Domain.Models;
 @using hotelManagement.DAL.Persistence.Entities;
 @model IEnumerable<CreateRoom>
+
 @{
     Layout = "~/Views/Shared/_LandingPageLayout.cshtml";
 }
 
-@* <script> *@
-@*     // Use Razor to set a JS flag based on whether the user is authenticated. *@
-@*     var isLoggedIn = '@User.Identity.IsAuthenticated'.toLowerCase() === 'true'; *@
-@* </script> *@
 <section class="site-hero inner-page overlay" style="background-image: url(/css/hero_4.jpg)" data-stellar-background-ratio="0.5">
     <div class="container">
         <div class="row site-hero-inner justify-content-center align-items-center">
@@ -39,43 +36,14 @@
                             <label for="checkin_date" class="font-weight-bold text-black">Check In</label>
                             <div class="field-icon-wrap">
                                 <div class="icon"><span class="icon-calendar"></span></div>
-                                <input type="text" id="checkin_date" class="form-control">
+                                <input type="date" id="checkin_date" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
                             <label for="checkout_date" class="font-weight-bold text-black">Check Out</label>
                             <div class="field-icon-wrap">
                                 <div class="icon"><span class="icon-calendar"></span></div>
-                                <input type="text" id="checkout_date" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3 mb-md-0 col-lg-3">
-                            <div class="row">
-                                <div class="col-md-6 mb-3 mb-md-0">
-                                    <label for="adults" class="font-weight-bold text-black">Adults</label>
-                                    <div class="field-icon-wrap">
-                                        <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                        <select id="adults" class="form-control">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4+</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3 mb-md-0">
-                                    <label for="children" class="font-weight-bold text-black">Children</label>
-                                    <div class="field-icon-wrap">
-                                        <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                        <select id="children" class="form-control">
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4+</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                <input type="date" id="checkout_date" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-3 align-self-end">
@@ -90,31 +58,52 @@
 
 <section class="section">
     <div class="container" id="room_list">
-        @foreach (CreateRoom el in Model)
-        {
-            <div class="row">
-                <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-                    <a class="room">
-                        <figure class="img-wrap">
-                            <img src="/css/img_1.jpg" class="img-fluid mb-3">
-                        </figure>
-                        <div class="p-3 text-center room-info">
-                            <h2>@el.RoomNumber</h2>
-                            <span class="text-uppercase letter-spacing-1">
-                                @el.Price $ / per night
-                            </span>
-                            @* <span class="text-uppercase letter-spacing-1">@el.Capacity persona</span> *@
-                            <button class="btn btn-primary book-room-btn"
-                                    data-room-id="@el.RoomId"
-                                    data-room-name="@el.RoomNumber">
-                                Book Now
-                            </button>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        }
-        }
+        
+        <div class="row">
+            @foreach (CreateRoom el in Model)
+            {
+                <div class="col-12 mb-4">
+                    <div class="card flex-row" data-aos="fade-up">
+                       
+                        <img class="card-img-left"
+                             src="/css/img_1.jpg"
+                             alt="Room image"
+                             style="width: 300px; object-fit: cover;">
+
+                        <div class="card-body d-flex flex-column justify-content-between">
+                           
+                            <div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-danger mr-2">Sale</span>
+                                    <strong>Book now</strong>
+                                </div>
+
+                                <h4 class="card-title mb-2">@el.RoomNumber</h4>
+                                <p class="card-text mb-2">
+                                    @el.description
+                                </p>
+
+                                
+                                <p class="card-text text-muted">
+                                    @el.Capacity People &middot; Free Wi-Fi 
+                                </p>
+                            </div>
+
+                            <div>
+                                <h5 class="text-primary mb-3">
+                                    @el.Price $ / per night
+                                </h5>
+                                <button class="btn btn-success book-room-btn"
+                                        data-room-id="@el.RoomId"
+                                        data-room-name="@el.RoomNumber">
+                                    Book
+                                </button>
+                            </div>
+                        </div> 
+                    </div> 
+                </div> 
+            }
+        </div> 
     </div>
 </section>
 
@@ -133,7 +122,7 @@
     </div>
 </section>
 
-<!-- Create Booking Modal -->
+
 <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -147,7 +136,7 @@
                 <form id="bookingForm">
                     <input type="hidden" name="RoomId" id="RoomId" />
 
-                    <!-- Step 1: Personal Details -->
+                   
                     <div class="form-step" id="step-1">
                         <h4>Step 1: Personal Details</h4>
                         <div class="form-group">
@@ -161,6 +150,7 @@
                         <button type="button" class="btn btn-primary next-step">Next</button>
                     </div>
 
+                  
                     <div class="form-step d-none" id="step-2">
                         <h4>Step 2: Booking Details</h4>
                         <div class="form-group">
@@ -177,7 +167,6 @@
                             @{
                                 var roomRates = ViewBag.RoomRates as List<RoomRate> ?? new List<RoomRate>();
                             }
-
                             <select class="form-control" id="roomRate" name="RoomRateId" required>
                                 @if (roomRates.Count > 0)
                                 {
@@ -197,6 +186,7 @@
                         <button type="button" class="btn btn-primary next-step">Next</button>
                     </div>
 
+                   
                     <div class="form-step d-none" id="step-3">
                         <h4>Step 3: Confirm Booking</h4>
                         <p>Please review your details before submitting.</p>
@@ -210,7 +200,6 @@
     </div>
 </div>
 
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
@@ -218,17 +207,14 @@
     $(document).ready(function () {
         const userId = "@ViewBag.UserId".trim() !== "" ? "@ViewBag.UserId" : null;
 
-
-        console.log("User id = "+ userId);
+        console.log("User id = " + userId);
         let selectedRoomId = null;
 
-        // Open Booking Modal
-        $('.book-room-btn').on('click', function () {
-             if (!userId || userId === "null" || userId === "undefined") {
-            alert("You need to log in to book a room.");
-           
-            return;
-        }
+        $(document).on('click', '.book-room-btn', function () {
+            if (!userId || userId === "null" || userId === "undefined") {
+                alert("You need to log in to book a room.");
+                return;
+            }
             selectedRoomId = $(this).data('room-id');
             let roomName = $(this).data('room-name');
 
@@ -248,33 +234,46 @@
             const currentStep = $(this).closest('.form-step');
             const nextStep = currentStep.next('.form-step');
 
+            if (currentStep.attr('id') === 'step-2') {
+                const checkInVal = $('#checkin').val();
+                const checkOutVal = $('#checkout').val();
+
+                if (!checkInVal || !checkOutVal) {
+                    alert('Please select both check-in and check-out dates.');
+                    return; 
+                }
+
+                const checkInDate = new Date(checkInVal);
+                const checkOutDate = new Date(checkOutVal);
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (checkInDate < today) {
+                    alert('Check-in date cannot be in the past.');
+                    return;
+                }
+
+                if (checkOutDate <= checkInDate) {
+                    alert('Check-out date must be after check-in date.');
+                    return;
+                }
+            }
+
             currentStep.addClass('d-none');
             nextStep.removeClass('d-none');
 
             if (nextStep.attr('id') === 'step-3') {
-                    calculatePrice();
+                calculatePrice();
                 updateBookingSummary();
             }
         });
-
-        $('.prev-step').on('click', function () {
-            const currentStep = $(this).closest('.form-step');
-            const prevStep = currentStep.prev('.form-step');
-
-            currentStep.addClass('d-none');
-            prevStep.removeClass('d-none');
-        });
-
-        // $('#checkin, #checkout, #roomRate').on('change', calculatePrice);
 
         function loadRoomRates(selectedRoomId) {
             $.ajax({
                 type: "GET",
                 url: '/RoomRate/GetAllRoomRates',
-                data: {roomId: selectedRoomId},
+                data: { roomId: selectedRoomId },
                 success: function (roomRates) {
-                    //console.log("Room rates received:", roomRates);
-
                     const roomRateSelect = $('#roomRate');
                     roomRateSelect.empty();
 
@@ -293,23 +292,11 @@
         }
 
         async function calculatePrice() {
-            debugger
             const roomRateId = $('#roomRate').val();
             const checkIn = $('#checkin').val();
             const checkOut = $('#checkout').val();
 
-        if (!roomRateId || !checkIn || !checkOut) return;
-        debugger
-        const requestData = {
-            roomRateId: parseInt(roomRateId),
-            checkIn: checkIn,
-            checkOut: checkOut,
-            //roomId: selectedRoomId,
-            userId: userId
-        };
-
-        // Log the request data before sending it
-        console.log("Request Data:", requestData);
+            if (!roomRateId || !checkIn || !checkOut) return;
 
             try {
                 const response = await fetch('/Booking/CalculatePrice', {
@@ -326,13 +313,11 @@
 
                 if (response.ok) {
                     const result = await response.json();
+                 
                     if ($('#totalPrice').length === 0) {
-
-                        // $('#step-3').prepend('<p><strong>Total Price: </strong><span id="totalPrice"></span></p>');
+                       
                     }
-                        $('#totalPrice').text(`$${result.totalPrice}`);
-
-                    // $('#totalPrice').text(`$${result.totalPrice}`);
+                    $('#totalPrice').text(`$${result.totalPrice}`);
                 }
             } catch (error) {
                 console.error('Error calculating price:', error);
@@ -340,13 +325,13 @@
         }
 
         function updateBookingSummary() {
-           $('#bookingSummary').html(`
-        <p><strong>Name:</strong> ${$('#customerName').val()}</p>
-        <p><strong>Email:</strong> ${$('#email').val()}</p>
-        <p><strong>Check In:</strong> ${$('#checkin').val()}</p>
-        <p><strong>Check Out:</strong> ${$('#checkout').val()}</p>
-        <p>Total Price:<strong id = "totalPrice"</strong></p>
-    `);
+            $('#bookingSummary').html(`
+                <p><strong>Name:</strong> ${$('#customerName').val()}</p>
+                <p><strong>Email:</strong> ${$('#email').val()}</p>
+                <p><strong>Check In:</strong> ${$('#checkin').val()}</p>
+                <p><strong>Check Out:</strong> ${$('#checkout').val()}</p>
+                <p>Total Price: <strong id="totalPrice"></strong></p>
+            `);
         }
 
         $('#bookingForm').on('submit', async function (e) {
@@ -356,14 +341,13 @@
                 roomId: selectedRoomId,
                 roomRateId: parseInt($('#roomRate').val()),
                 userId: userId,
-                    //email: $('#email').val(),
                 checkIn: $('#checkin').val(),
                 checkOut: $('#checkout').val(),
                 price: parseFloat($('#totalPrice').text().replace('$', ''))
             };
 
             try {
-                const response = await fetch('/Booking/AddBooking' , {
+                const response = await fetch('/Booking/AddBooking', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(bookingData)
@@ -374,8 +358,6 @@
                 if (result.success) {
                     $('#bookingModal').modal('hide');
                     alert('Confirmation email sent!');
-
-                    // Reset form
                     $('#bookingForm')[0].reset();
                     $('.form-step').addClass('d-none');
                     $('#step-1').removeClass('d-none');
@@ -388,23 +370,17 @@
             }
         });
         $(document).on('click', '.close', function () {
-        console.log("Closing modal via close button.");
-        $('#bookingModal').modal('hide');
-    });
+            console.log("Closing modal via close button.");
+            $('#bookingModal').modal('hide');
+        });
     });
 
     function checkAvailability(event) {
         event.preventDefault();
         const checkinDate = document.getElementById("checkin_date").value;
         const checkoutDate = document.getElementById("checkout_date").value;
-        const adults = document.getElementById("adults").value;
-        const children = document.getElementById("children").value;
-        const params = new URLSearchParams({
-            checkinDate,
-            checkoutDate,
-            adults,
-            children
-        }).toString();
+        const params = new URLSearchParams({ checkinDate, checkoutDate }).toString();
+
         fetch(`/LandingPage/CheckAvailability?${params}`, {
             method: "GET",
             headers: {
@@ -415,38 +391,88 @@
         .then(data => {
             const roomList = document.getElementById("room_list");
             roomList.innerHTML = "";
+
+            const rowDiv = document.createElement("div");
+            rowDiv.classList.add("row");
+
             data.forEach(room => {
-                const roomElement = document.createElement("div");
-                roomElement.classList.add("col-md-6", "col-lg-4", "mb-5");
-                roomElement.setAttribute("data-aos", "fade-up");
-                const roomLink = document.createElement("a");
-                roomLink.href = "#";
-                roomLink.classList.add("room");
-                const imgWrap = document.createElement("figure");
-                imgWrap.classList.add("img-wrap");
+                const colDiv = document.createElement("div");
+                colDiv.classList.add("col-12", "mb-4");
+                const cardDiv = document.createElement("div");
+                cardDiv.classList.add("card", "flex-row");
+                cardDiv.setAttribute("data-aos", "fade-up");
+
                 const img = document.createElement("img");
+                img.classList.add("card-img-left");
                 img.src = "/css/img_1.jpg";
-                img.classList.add("img-fluid", "mb-3");
-                imgWrap.appendChild(img);
-                roomLink.appendChild(imgWrap);
-                const roomInfo = document.createElement("div");
-                roomInfo.classList.add("p-3", "text-center", "room-info");
-                const roomName = document.createElement("h2");
-                roomName.innerText = room.Emer;
-                const roomRate = document.createElement("span");
-                roomRate.classList.add("text-uppercase", "letter-spacing-1");
-                roomRate.innerText = `${room.Kapacitet} person`;
-                roomInfo.appendChild(roomName);
-                roomInfo.appendChild(roomRate);
-                roomLink.appendChild(roomInfo);
-                roomElement.appendChild(roomLink);
-                roomList.appendChild(roomElement);
+                img.alt = "Room image";
+                img.style.width = "300px";
+                img.style.objectFit = "cover";
+
+                cardDiv.appendChild(img);
+
+                const cardBody = document.createElement("div");
+                cardBody.classList.add("card-body", "d-flex", "flex-column", "justify-content-between");
+
+                const topDiv = document.createElement("div");
+
+                const saleDiv = document.createElement("div");
+                saleDiv.classList.add("d-flex", "align-items-center", "mb-2");
+
+                const saleBadge = document.createElement("span");
+                saleBadge.classList.add("badge", "badge-danger", "mr-2");
+                saleBadge.innerText = "Sale";
+
+                const saleStrong = document.createElement("strong");
+                saleStrong.innerText = "WEB discounted rate";
+
+                saleDiv.appendChild(saleBadge);
+                saleDiv.appendChild(saleStrong);
+                topDiv.appendChild(saleDiv);
+
+                const title = document.createElement("h4");
+                title.classList.add("card-title", "mb-2");
+                title.innerText = room.roomNumber;
+                topDiv.appendChild(title);
+
+                const desc = document.createElement("p");
+                desc.classList.add("card-text", "mb-2");
+                desc.innerText = room.description;
+                topDiv.appendChild(desc);
+
+                const details = document.createElement("p");
+                details.classList.add("card-text", "text-muted");
+                details.innerHTML = "4 People &middot; Free Wi-Fi & Breakfast";
+                topDiv.appendChild(details);
+
+                cardBody.appendChild(topDiv);
+
+                const bottomDiv = document.createElement("div");
+
+
+                const priceH5 = document.createElement("h5");
+                priceH5.classList.add("text-primary", "mb-3");
+                priceH5.innerText = `${room.price} $ / per night`;
+                bottomDiv.appendChild(priceH5);
+
+                const bookButton = document.createElement("button");
+                bookButton.classList.add("btn", "btn-success", "book-room-btn");
+                bookButton.setAttribute("data-room-id", room.roomId);
+                bookButton.setAttribute("data-room-name", room.roomNumber);
+                bookButton.innerText = "Book";
+                bottomDiv.appendChild(bookButton);
+
+                cardBody.appendChild(bottomDiv);
+
+                cardDiv.appendChild(cardBody);
+                colDiv.appendChild(cardDiv);
+                rowDiv.appendChild(colDiv);
             });
+
+            roomList.appendChild(rowDiv);
         })
         .catch(error => {
             console.error("Error fetching availability:", error);
         });
     }
-
 </script>
-

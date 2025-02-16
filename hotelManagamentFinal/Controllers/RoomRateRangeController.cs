@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using HotelManagement.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using hotelManagement.BLL.Services;
 using HotelManagementFinal.Domain.Models;
-
+using hotelManagamentFinal.Models.DTO;
+using hotelManagamentFinal.Models;
 namespace HotelManagement.Controllers
 {
     public class RoomRateRangeController : Controller

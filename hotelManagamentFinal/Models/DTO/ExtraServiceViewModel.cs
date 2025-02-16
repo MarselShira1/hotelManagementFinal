@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using hotelManagamentFinal.Models.DTO.ExtraService;
 
-namespace hotelManagamentFinal.Models1
+namespace hotelManagamentFinal.Models.DTO
 {
     public class ExtraServiceViewModel
     {

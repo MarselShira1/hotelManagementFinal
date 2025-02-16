@@ -17,6 +17,7 @@ namespace hotelManagement.BLL.Services
         Task<IEnumerable<Rezervim>> GetAllBookingsAsync();
         Task<IEnumerable<Rezervim>> GetBookingsByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end);
         Task<RezervimModel> GetRezervimById(int rezervimId);
+        Task<List<CreateRoom>> GetAvailableRooms(DateOnly checkinDate, DateOnly checkoutDate);
     }
 
     public class BookingService : IBookingService
@@ -51,17 +52,17 @@ namespace hotelManagement.BLL.Services
             if (checkIn >= checkOut)
                 throw new ArgumentException("Check-out date must be after check-in.");
 
-            
+
             var roomRate = _bookingRepository.GetRoomRateById(roomRateId);
             if (roomRate == null)
                 throw new Exception("Room rate not found.");
 
-           
+
             var roomType = _roomTypeService.GetRoomTypeById(roomRate.TipDhomeId);
             if (roomType == null)
                 throw new Exception("Room type not found.");
 
-            
+
             var roomRateRanges = await _bookingRepository.GetRoomRateRangesByRoomRateIdAsync(roomRateId);
 
             decimal totalPrice = 0;
@@ -69,23 +70,23 @@ namespace hotelManagement.BLL.Services
 
             while (currentDate < checkOut)
             {
-                
+
                 var applicableRateRange = roomRateRanges
                     .FirstOrDefault(r => currentDate >= r.StartDate && currentDate <= r.EndDate);
 
-               
+
                 decimal dailyRate = roomType.CmimBaze * roomRate.RateMultiplier;
 
-                
+
                 if (applicableRateRange != null)
                 {
-                   
+
                     if (currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday)
                     {
-                      
+
                         dailyRate *= applicableRateRange.WeekendPricing ?? 1;
                     }
-                   
+
                     if (applicableRateRange.HolidayPricing.HasValue)
                     {
                         dailyRate *= applicableRateRange.HolidayPricing.Value;
@@ -109,12 +110,12 @@ namespace hotelManagement.BLL.Services
 
         public async Task<RezervimModel> GetRezervimById(int rezervimId)
         {
-              var rezervim  = await _bookingRepository.GetRezervimById(rezervimId);
+            var rezervim = await _bookingRepository.GetRezervimById(rezervimId);
 
             if (rezervim == null)
-                return null;  
+                return null;
 
-            // Convert Entity to domain model
+
             return new RezervimModel
             {
                 Id = rezervim.Id,
@@ -134,6 +135,24 @@ namespace hotelManagement.BLL.Services
         public async Task<IEnumerable<Rezervim>> GetBookingsByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end)
         {
             return await _bookingRepository.GetByRoomAndDateRangeAsync(roomId, start, end);
+        }
+
+        public async Task<List<CreateRoom>> GetAvailableRooms(DateOnly checkinDate, DateOnly checkoutDate)
+        {
+
+            var availableRooms = await _bookingRepository.GetAvailableRooms(checkinDate, checkoutDate);
+
+            var createRooms = availableRooms.Select(r => new CreateRoom
+            {
+                RoomId = r.Id,
+                RoomTypeId = r.TipDhome,
+                RoomTypeName = r.TipDhomeNavigation?.Emer,
+                RoomFloor = r.Kat,
+                RoomNumber = r.NumerDhome,
+                Price = r.TipDhomeNavigation != null ? r.TipDhomeNavigation.CmimBaze : 0
+            }).ToList();
+
+            return createRooms;
         }
     }
 }

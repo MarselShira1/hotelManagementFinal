@@ -1,5 +1,5 @@
 ﻿using HotelManagementFinal.BLL.Services;
-using hotelManagamentFinal.Models1;
+using hotelManagamentFinal.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using hotelManagamentFinal.Models.DTO.RoomRate;
 using HotelManagement.Models;
@@ -24,7 +24,7 @@ namespace hotelManagamentFinal.Controllers
         {
 
             // var users = await _userService.GetAllUsersAsync();
-            var users = await _userService.GetAllUsersAsync() ?? new List<User>();
+            var users =  _userService.GetRezervationCount() ;
 
             if (!users.Any())  
             {
@@ -36,14 +36,14 @@ namespace hotelManagamentFinal.Controllers
             {
                 Users = users.Select(user => new UserDto
                 {
-                    Id = user.Id,
-                    emer = user.Emer,
-                    mbiemer = user.Mbiemer,
-                    email = user.Email
+                    Id = user.UserId,
+                    emer = user.Name,
+                    mbiemer = user.Surname,
+                    email = user.Email,
+                    nrRezervimesh = user.ReservationCount
 
                 }).ToList(),
-                
-              //  NewUser = new UserDto()
+
             };
            
             return View(model); 

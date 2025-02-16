@@ -17,6 +17,8 @@ namespace hotelManagement.DAL.Persistence.Repositories
         Task<Rezervim> GetRezervimById(int rezervimId);
         Task<IEnumerable<Rezervim>> GetByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end);
         Task<IEnumerable<RoomRateRange>> GetRoomRateRangesByRoomRateIdAsync(int roomRateId);
+        Task<List<Dhome>> GetAvailableRooms(DateOnly checkIn, DateOnly checkOut);
+       
     }
 
     public class BookingRepository : IBookingRepository
@@ -90,6 +92,18 @@ namespace hotelManagement.DAL.Persistence.Repositories
         public async Task<Rezervim> GetRezervimById(int rezervimId)
         {
             return await _dbContext.Rezervime.Where(w => w.Id == rezervimId).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Dhome>> GetAvailableRooms(DateOnly checkIn, DateOnly checkOut)
+        {
+            return await _dbContext.Dhomes
+                .Include(d => d.TipDhomeNavigation)
+                .Where(r => r.Invalidated == 1 &&
+                            !_dbContext.Rezervime.Any(b =>
+                                b.Dhome == r.Id &&
+                                b.CheckIn < checkOut &&
+                                b.CheckOut > checkIn))
+                .ToListAsync();
         }
     }
 }

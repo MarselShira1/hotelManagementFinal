@@ -43,7 +43,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
         }
         public IEnumerable<TipDhome> GetAllRoomTypes()
         {
-            return _dbContext.TipDhomes.ToList(); 
+            return _dbContext.TipDhomes.Where(t => t.Invalidated ==1).ToList(); 
         }
         public IEnumerable<RoomRate> GetRoomRatesByRoomType(int roomTypeId)
         {

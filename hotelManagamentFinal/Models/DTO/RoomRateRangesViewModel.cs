@@ -1,7 +1,7 @@
 ﻿using hotelManagement.DAL.Persistence.Entities;
 using HotelManagementFinal.Domain.Models;
-
-namespace HotelManagement.Models
+using hotelManagement.DAL.Persistence.Entities;
+namespace hotelManagamentFinal.Models
 {
     public class RoomRateRangesViewModel
     {

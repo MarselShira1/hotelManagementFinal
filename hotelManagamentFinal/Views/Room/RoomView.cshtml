@@ -1,8 +1,8 @@
-﻿@model HotelManagement.Models.RoomViewModel
+﻿@using hotelManagamentFinal.Models.DTO
+@model RoomViewModel
 
 <div class="text-center">
     <h1 class="display-4">Rooms</h1>
-    <input type="text" id="roomSearch" class="form-control mb-3" placeholder="Search rooms...">
     <button type="button" id="addNew" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">+</button>
 </div>
 
@@ -16,10 +16,12 @@
             <div class="modal-body">
                 <form id="editRoomForm">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" id="editRoomId" name="Id" />
+                    
+                    <input type="hidden" id="editRoomId" name="RoomId" />
                     <div class="mb-3">
                         <label for="EditRoom_RoomTypeId" class="form-label">Choose room type</label>
-                        <select id="EditRoom_RoomTypeId" class="form-select" required>
+                        
+                        <select id="EditRoom_RoomTypeId" name="RoomTypeId" class="form-select" required>
                             <option value="">Select Room Type</option>
                         </select>
                     </div>
@@ -50,32 +52,23 @@
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
                         <label for="NewRoom_RoomTypeId" class="form-label">Choose room type</label>
-                        <select id="NewRoom_RoomTypeId" class="form-select" required>
+                        
+                        <select id="NewRoom_RoomTypeId" name="RoomTypeId" class="form-select" required>
                             <option value="">Select Room Type</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="NewRoom_room_floor" class="form-label">Room Floor:</label>
-                        <input id="NewRoom_room_floor" class="form-control" />
+                        <input id="NewRoom_room_floor" name="RoomFloor" class="form-control" />
                     </div>
                     <div class="mb-3">
                         <label for="NewRoom_room_number" class="form-label">Room Number:</label>
-                        <input id="NewRoom_room_number" class="form-control" />
+                        <input id="NewRoom_room_number" name="RoomNumber" class="form-control" />
                     </div>
                     <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>
-    </div>
-</div>
-
-<br />
-
-<div class="d-flex justify-content-between">
-    <div class="pagination">
-        <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
-        <span id="pageNumber">Page 1</span>
-        <button id="nextPage" class="btn btn-secondary">Next</button>
     </div>
 </div>
 
@@ -88,17 +81,13 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
-        <!-- Rows will be populated here -->
+    <tbody id="roomsTableBody">
+        
     </tbody>
 </table>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script>
-    let currentPage = 1;
-    let rowsPerPage = 5; // Number of rows per page
-    let filteredRooms = [];
     let allRooms = [];
     let RoomTypes = [];
 
@@ -106,7 +95,7 @@
         loadRoomData();
         loadRoomTypes();
 
-        $('#submitButton').click(function (event) {
+        $('#roomForm').submit(function (event) {
             event.preventDefault();
             var roomTypeId = $('#NewRoom_RoomTypeId').val();
             var roomFloor = $('#NewRoom_room_floor').val();
@@ -130,64 +119,63 @@
                     }
                 },
                 error: function () {
-                    alert('An error occurred.');
+                    alert('An error occurred while saving the room.');
                 }
             });
         });
 
-        $('#roomSearch').keyup(function () {
-            const query = $(this).val().toLowerCase();
-            filteredRooms = allRooms.filter(function (room) {
-                return room.roomTypeName.toLowerCase().includes(query) ||
-                    room.roomFloor.toString().includes(query) ||
-                    room.roomNumber.toLowerCase().includes(query);
+        $('#editRoomForm').submit(function (event) {
+            event.preventDefault();
+            var roomId = $('#editRoomId').val();
+            var roomTypeId = $('#EditRoom_RoomTypeId').val();
+            var roomFloor = $('#editRoomFloor').val();
+            var roomNumber = $('#editRoomNumber').val();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateRoomSql", "Room")',
+                data: {
+                    RoomId: roomId,
+                    RoomTypeId: roomTypeId,
+                    RoomFloor: roomFloor,
+                    RoomNumber: roomNumber
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert('Room updated successfully.');
+                        $('#editRoomModal').modal('hide');
+                        loadRoomData();
+                    } else {
+                        alert('Failed to update room: ' + (response.errors ? response.errors.join(', ') : 'Unknown error'));
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while updating the room.');
+                }
             });
-            currentPage = 1; // Reset to first page when filter is applied
-            renderTable();
-        });
-
-        $('#nextPage').click(function () {
-            if (currentPage * rowsPerPage < filteredRooms.length) {
-                currentPage++;
-                renderTable();
-            }
-        });
-
-        $('#prevPage').click(function () {
-            if (currentPage > 1) {
-                currentPage--;
-                renderTable();
-            }
         });
     });
 
     function loadRoomData() {
-        showLoader();
         $.ajax({
             type: "GET",
             url: '@Url.Action("GetRoomList", "Room")',
             success: function (rooms) {
                 allRooms = rooms;
-                filteredRooms = rooms; // Initially, no filter is applied
                 renderTable();
-                hideLoader();
             },
             error: function () {
-                hideLoader();
                 alert('Failed to load room data.');
             }
         });
     }
 
-       function loadRoomTypes() {
-           
+    function loadRoomTypes() {
         $.ajax({
             type: "GET",
-            url: '/RoomType/GetAllRoomTypes', // Ensure this matches your actual route
+            url: '/RoomType/GetAllRoomTypes',
             success: function (response) {
-                debugger
-                RoomTypes = response; // Assign the full viewModel
-                console.log("RoomTypes = ", RoomTypes);
+                RoomTypes = response;
                 populateRoomTypeDropdown("NewRoom_RoomTypeId");
             },
             error: function () {
@@ -195,28 +183,50 @@
             }
         });
     }
+
+    function populateRoomTypeDropdown(dropdownId) {
+        var dropdown = $(`#${dropdownId}`);
+        dropdown.empty();
+        dropdown.append('<option value="">Select Room Type</option>');
+        if (RoomTypes && RoomTypes.roomTypes) {
+            RoomTypes.roomTypes.forEach(function (roomType) {
+                dropdown.append(`<option value="${roomType.id}">${roomType.emer}</option>`);
+            });
+        }
+    }
+
+    function populateEditModal(data) {
+        $('#editRoomId').val(data.id);
+        var dropdown = $('#EditRoom_RoomTypeId');
+        dropdown.empty();
+        dropdown.append('<option value="">Select Room Type</option>');
+        if (RoomTypes && RoomTypes.roomTypes) {
+            RoomTypes.roomTypes.forEach(function (roomType) {
+                dropdown.append(`<option value="${roomType.id}">${roomType.emer}</option>`);
+            });
+            dropdown.val(data.roomTypeId);
+        }
+        $('#editRoomFloor').val(data.roomFloor);
+        $('#editRoomNumber').val(data.roomNumber);
+    }
+
     function renderTable() {
-        const startIndex = (currentPage - 1) * rowsPerPage;
-        const endIndex = startIndex + rowsPerPage;
-        const pageRooms = filteredRooms.slice(startIndex, endIndex);
-
-        var tbody = $("table tbody");
-        tbody.empty(); // Clear the table body before appending new rows
-
-        pageRooms.forEach(function (room) {
+        var tbody = $("#roomsTableBody");
+        tbody.empty();
+        allRooms.forEach(function (room) {
             var row = `
                 <tr>
                     <td>${room.roomTypeName}</td>
                     <td>${room.roomFloor}</td>
                     <td>${room.roomNumber}</td>
                     <td>
-                        <button id="editButton" type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#editRoomModal"
                                 onclick="populateEditModal({
-                                        id: '${room.roomId}',
-                                        roomTypeId: '${room.roomTypeId ? room.roomTypeId : 0}',
-                                        roomNumber: '${room.roomNumber}',
-                                        roomFloor: '${room.roomFloor}'
+                                    id: '${room.roomId}',
+                                    roomTypeId: '${room.roomTypeId ? room.roomTypeId : 0}',
+                                    roomNumber: '${room.roomNumber}',
+                                    roomFloor: '${room.roomFloor}'
                                 })">
                             <i class="fas fa-edit"></i> Edit
                         </button>
@@ -227,11 +237,6 @@
                 </tr>`;
             tbody.append(row);
         });
-
-        // Update pagination controls
-        $('#pageNumber').text(`Page ${currentPage}`);
-        $('#prevPage').prop('disabled', currentPage === 1);
-        $('#nextPage').prop('disabled', currentPage * rowsPerPage >= filteredRooms.length);
     }
 
     $(document).on('click', '.delete-button', function () {
@@ -244,7 +249,7 @@
                 success: function (response) {
                     if (response.success) {
                         alert('Room deleted successfully.');
-                        $(`button[data-room-id="${roomId}"]`).closest('tr').remove();
+                        loadRoomData();
                     } else {
                         alert('Failed to delete room: ' + response.message);
                     }
@@ -255,24 +260,4 @@
             });
         }
     });
-
-    function populateRoomTypeDropdown(roomActionId) {
-        var dropdown = $(`#${roomActionId}`);
-        dropdown.empty(); // Clear any existing options
-        dropdown.append('<option value="">Select Room Type</option>');
-        debugger;
-        if (RoomTypes && RoomTypes.roomTypes) {
-            RoomTypes.roomTypes.forEach(function (roomType) {
-                dropdown.append(`<option value="${roomType.id}">${roomType.emer}</option>`);
-            });
-        }
-    }
-
-    function showLoader() {
-        // Add your loader code here
-    }
-
-    function hideLoader() {
-        // Add your loader code here
-    }
 </script>
