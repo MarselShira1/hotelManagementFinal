@@ -27,9 +27,10 @@ namespace HotelManagementISE.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Rooms()
+        public async Task<IActionResult> Rooms(bool? success)
         {
-
+            //bool paymentSuccess = HttpContext.Session.GetString("PaymentSuccess") == "true";
+            //HttpContext.Session.Remove("PaymentSuccess");
             var userName = HttpContext.Session.GetString("UserName");
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -39,6 +40,7 @@ namespace HotelManagementISE.Controllers
             ViewBag.UserId = userId;
             var roomRates = await _bookingService.GetAllRoomRatesAsync();
             ViewBag.RoomRates = roomRates;
+            ViewBag.PaymentSuccess = success;
 
             try
             {

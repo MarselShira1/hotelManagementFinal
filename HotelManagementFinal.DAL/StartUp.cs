@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,7 +34,8 @@ namespace hotelManagement.DAL
             services.AddScoped<IRoomRateRangesRepository, RoomRateRangesRepository>();
             services.AddScoped<IDashboardRepository, DashboardRepository>();
             services.AddScoped<IRezervimServiceRepository, RezervimServiceRepository>();
-
+            services.AddScoped<IFatureRepository, FatureRepository>();
+            services.AddScoped<IPageseRepository, PageseRepository>();
         }
 
 

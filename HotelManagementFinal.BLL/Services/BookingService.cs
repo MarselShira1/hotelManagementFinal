@@ -12,22 +12,26 @@ namespace hotelManagement.BLL.Services
     public interface IBookingService
     {
         Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync();
-        Task AddBookingAsync(Rezervim booking);
         Task<decimal> CalculatePriceAsync(int roomRateId, DateOnly checkIn, DateOnly checkOut);
         Task<IEnumerable<Rezervim>> GetAllBookingsAsync();
         Task<IEnumerable<Rezervim>> GetBookingsByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end);
         Task<RezervimModel> GetRezervimById(int rezervimId);
+        Fature AddBill(int rezervimId);
+        RezervimModel AddBookingAsync(Rezervim booking);
     }
 
     public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IRoomTypeService _roomTypeService;
+        private readonly IFatureRepository _fatureRepository;
 
-        public BookingService(IBookingRepository bookingRepository, IRoomTypeService roomTypeService)
+        public BookingService(IBookingRepository bookingRepository, IRoomTypeService roomTypeService,
+            IFatureRepository fatureRepository)
         {
             _bookingRepository = bookingRepository;
             _roomTypeService = roomTypeService;
+            _fatureRepository = fatureRepository;
         }
 
 
@@ -36,14 +40,28 @@ namespace hotelManagement.BLL.Services
             return await _bookingRepository.GetAllRoomRatesAsync();
         }
 
-        public async Task AddBookingAsync(Rezervim booking)
+        public  RezervimModel AddBookingAsync(Rezervim booking)
         {
-            //var totalPrice = await CalculatePriceAsync(booking.RoomRate, booking.CheckIn, booking.CheckOut);
-            //booking.Cmim = totalPrice;
             booking.CreatedOn = DateTime.Now;
             booking.Invalidated = 1;
 
-            await _bookingRepository.AddBookingAsync(booking);
+            var savedBooking =  _bookingRepository.AddBookingAsync(booking);
+             
+            var rezervimModel = new RezervimModel
+            {
+                Id = savedBooking.Id,
+                UserId = savedBooking.User,
+                DhomeId = savedBooking.Dhome,
+                RoomRateId = savedBooking.RoomRate,
+                CheckIn = savedBooking.CheckIn,
+                CheckOut = savedBooking.CheckOut,
+                Cmim = savedBooking.Cmim,
+                CreatedOn = savedBooking.CreatedOn,
+                ModifiedOn = savedBooking.ModifiedOn,
+                Invalidated = savedBooking.Invalidated ?? 0  
+            };
+
+            return rezervimModel;
         }
 
         public async Task<decimal> CalculatePriceAsync(int roomRateId, DateOnly checkIn, DateOnly checkOut)
@@ -135,5 +153,15 @@ namespace hotelManagement.BLL.Services
         {
             return await _bookingRepository.GetByRoomAndDateRangeAsync(roomId, start, end);
         }
+
+
+        public Fature AddBill(int rezervimId)
+        {
+             
+           var fature =  _fatureRepository.AddBill(rezervimId); 
+            return fature;
+        }
+
+
     }
 }

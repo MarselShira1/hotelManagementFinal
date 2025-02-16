@@ -19,6 +19,7 @@ namespace HotelManagementFinal.BLL.Services
         ExtraService GetExtraServiceById(int id);
         void SoftDeleteExtraService(int id);
         void UpdateExtraService(CreateExtraService extraService);
+        Task<List<ExtraServiceModel>> GetExtraService(int rezervimId);
     }
 
     internal class ExtraServiceService : IExtraServiceService
@@ -79,5 +80,13 @@ namespace HotelManagementFinal.BLL.Services
             _extraServiceRepository.Update(serviceToUpdate);
             _extraServiceRepository.SaveChanges();
         }
+        public async Task<List<ExtraServiceModel>> GetExtraService(int rezervimId)
+        {
+            var extraServices = await _extraServiceRepository.GetExtraService(rezervimId);
+                 
+            return extraServices;
+        }
+
+
     }
 }
