@@ -1,5 +1,5 @@
 ﻿using hotelManagamentFinal.Models.DTO.ExtraService;
-using hotelManagamentFinal.Models1;
+using hotelManagamentFinal.Models.DTO;
 using HotelManagementFinal.BLL.Services;
 using Microsoft.AspNetCore.Mvc; 
 

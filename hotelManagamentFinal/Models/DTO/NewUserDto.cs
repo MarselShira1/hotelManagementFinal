@@ -15,6 +15,7 @@
         public string mbiemer { get; set; }
         public string email { get; set; }
         public string password { get; set; }
+        public int nrRezervimesh { get; set; }
         public int RoleId { get; set; }
         public byte? Invalidated { get; set; }
     }

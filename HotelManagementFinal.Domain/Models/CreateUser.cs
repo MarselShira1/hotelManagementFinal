@@ -17,4 +17,13 @@ namespace hotelManagement.Domain.Models
         public DateTime? ModifiedOn { get; set; }
         public bool Invalidated { get; set; }
     }
+
+    public class UserReservations
+    {
+        public int UserId { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Email { get; set; }
+        public int ReservationCount { get; set; }
+    }
 }

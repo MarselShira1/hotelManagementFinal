@@ -7,7 +7,6 @@ using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence.Repositories;
 using hotelManagement.Domain.Models;
 using HotelManagementFinal.DAL.Persistence.Repositories;
-
 namespace HotelManagementFinal.BLL.Services
 {
     public interface IUserService
@@ -18,7 +17,7 @@ namespace HotelManagementFinal.BLL.Services
         UserModel GetUserById(int userId);
         Task<IEnumerable<User>> GetAllUsersAsync();
 
-
+        IEnumerable<UserReservations> GetRezervationCount();
         public string GetUserEmailById(int userId);
 
         //void UpdateUserRole(int userId, int roleId);
@@ -75,6 +74,14 @@ namespace HotelManagementFinal.BLL.Services
         {
             return _userRepository.GetEmailById(userId);
         }
+        public IEnumerable<UserReservations> GetRezervationCount()
+        {
+            // Retrieve the users with their reservation counts
+            var userReservations = _userRepository.getRezervationCount();
+
+            return  userReservations;
+        }
+
     }
 
 }

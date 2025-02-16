@@ -41,4 +41,8 @@
     <ProjectReference Include="..\HotelManagementFinal.Domain\HotelManagementFinal.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models1\" />
+  </ItemGroup>
+
 </Project>

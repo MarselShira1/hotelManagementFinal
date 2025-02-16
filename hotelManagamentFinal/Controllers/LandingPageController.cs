@@ -65,14 +65,10 @@ namespace HotelManagementISE.Controllers
             return View("Index");
         }
 
-        public async Task<JsonResult> CheckAvailability(DateTime checkinDate, DateTime checkoutDate, int adults, int children)
+        public async Task<JsonResult> CheckAvailability(DateOnly checkinDate, DateOnly checkoutDate)
         {
-            var rooms = await _room.GetRoomsAsync();
-            if(rooms.Count()>0)
-            {
-                rooms = rooms.Where(r=>r.Capacity>=adults+children);
-            }
-            return Json(rooms);
+            var rooms = await _bookingService.GetAvailableRooms(checkinDate, checkoutDate);
+                return Json(rooms);
         }
     }
 }

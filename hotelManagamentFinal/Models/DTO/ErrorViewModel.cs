@@ -1,4 +1,4 @@
-namespace HotelManagement.Models
+namespace hotelManagamentFinal.Models.DTO
 {
     public class ErrorViewModel
     {

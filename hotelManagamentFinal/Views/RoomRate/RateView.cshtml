@@ -1,9 +1,10 @@
-﻿ @*
+﻿@using hotelManagamentFinal.Models.DTO
+ @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
-@model HotelManagement.Models.RoomRateViewModel
+@model RoomRateViewModel
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -44,7 +45,7 @@
                         
                         <label class="form-label" for="TipDhomeId">Room Type</label>
                         <select class="form-control" id="TipDhomeId" name="TipDhomeId" asp-for="NewRate.TipDhomeId" asp-items="Model.RoomTypes">
-                            <option value="">Select Room Type</option>
+                            <option value="">Select Room Typ</option>
                         </select>
                         <span class="text-danger field-validation-valid" data-valmsg-for="TipDhomeId" data-valmsg-replace="true"></span>
                     </div>
@@ -104,7 +105,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label" for="RateMultiplier">Base Price</label>
+                            <label class="form-label" for="RateMultiplier">Rate multiplier</label>
                             <input class="form-control" type="text" id="RateMultiplier" name="RateMultiplier" asp-for="NewRate.RateMultiplier" />
                             <span class="text-danger" asp-validation-for="NewRate.RateMultiplier"></span>
                         </div>

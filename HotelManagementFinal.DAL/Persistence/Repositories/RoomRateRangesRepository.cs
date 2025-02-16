@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using hotelManagement.DAL.Persistence.Entities;
 using hotelManagement.DAL.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace hotelManagement.DAL.Persistence.Repositories
 {
@@ -26,14 +27,14 @@ namespace hotelManagement.DAL.Persistence.Repositories
         }
         public List<RoomRateRangeDataAccess> GetAll()
         {
-            List < RoomRateRangeDataAccess > lista= _dbSet.RoomRateRanges.ToList();
+            List < RoomRateRangeDataAccess > lista= _dbSet.RoomRateRanges.Include(r => r.RoomRate).ToList();
             return lista;
         }
 
         public void UpdateRoomRateRange(RoomRateRangeDataAccess roomRateRange)
         {
             var oldRange=_dbSet.RoomRateRanges.Find(roomRateRange.Id);
-            oldRange.Invalidated = 0;
+            oldRange.Invalidated = 1;
             oldRange.ModifiedOn = DateTime.UtcNow;
             oldRange.Description = roomRateRange.Description;
             oldRange.WeekendPricing = roomRateRange.WeekendPricing;

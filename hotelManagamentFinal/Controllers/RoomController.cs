@@ -7,6 +7,7 @@ using hotelManagement.Domain.Models;
 using HotelManagementFinal.BLL.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
+using hotelManagamentFinal.Models.DTO;
 namespace HotelManagement.Controllers
 {
     public class RoomController : Controller 
@@ -79,7 +80,7 @@ namespace HotelManagement.Controllers
             {
                 return View(model);
             }
-            if(model.RoomId != null)
+            if(model.RoomId != 0)
             {
                 isSaved = roomsService.EditRoom(new CreateRoom
                 {
@@ -113,28 +114,28 @@ namespace HotelManagement.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> SendEmail()
-        {
-            try { 
-            await _mailSenderService.SendEmailAsync("selishira2017@gmail.com", "Test Subject", "This is a test email.");
-            return Ok("Email sent successfully!");
-            }
-            catch(Exception ex)
-            {
-                return Ok("Email sent successfully!");
+        //public async Task<IActionResult> SendEmail()
+        //{
+        //    try { 
+        //    await _mailSenderService.SendEmailAsync("selishira2017@gmail.com", "Test Subject", "This is a test email.");
+        //    return Ok("Email sent successfully!");
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        return Ok("Email sent successfully!");
 
-            }
-        }
+        //    }
+        //}
 
 
-        public IActionResult GenerateBill(int rezervimId)
-        {
-            // Call the GenerateBillPdf method to get the PDF as a byte array
-            byte[] billPdf = _billService.GenerateBillPdf(rezervimId);
+        //public IActionResult GenerateBill(int rezervimId)
+        //{
+        //    // Call the GenerateBillPdf method to get the PDF as a byte array
+        //    byte[] billPdf = _billService.GenerateBillPdf(rezervimId);
 
-            // Return the PDF file as a download response
-            return File(billPdf, "application/pdf", "HotelBill.pdf");
-        }
+        //    // Return the PDF file as a download response
+        //    return File(billPdf, "application/pdf", "HotelBill.pdf");
+        //}
 
         public async Task<IActionResult> GetRoomList()
         {

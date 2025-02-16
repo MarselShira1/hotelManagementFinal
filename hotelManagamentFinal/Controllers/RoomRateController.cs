@@ -1,4 +1,5 @@
-﻿using hotelManagamentFinal.Models.DTO.RoomRate;
+﻿using hotelManagamentFinal.Models.DTO;
+using hotelManagamentFinal.Models.DTO.RoomRate;
 using hotelManagement.BLL.Services;
 using hotelManagement.DAL.Persistence.Entities;
 using HotelManagement.Models;

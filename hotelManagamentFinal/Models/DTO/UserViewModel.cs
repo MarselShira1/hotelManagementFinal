@@ -1,8 +1,6 @@
-﻿using hotelManagamentFinal.Models.DTO;
-using hotelManagamentFinal.Models.DTO;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace hotelManagamentFinal.Models1
+namespace hotelManagamentFinal.Models.DTO
 
 {
     public class UserViewModel
