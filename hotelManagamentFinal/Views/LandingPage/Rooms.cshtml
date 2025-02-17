@@ -381,12 +381,12 @@
 
      $('#bookingForm').on('submit', function (e) {
         e.preventDefault();
-        // Create a hidden form dynamically
+       
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = '/Booking/CreateCheckoutSession'; // Your controller endpoint
+        form.action = '/Booking/CreateCheckoutSession'; 
 
-        // Add required fields as hidden inputs
+      
         const bookingData = {
             roomId: selectedRoomId,
             roomRateId: parseInt($('#roomRate').val()),
@@ -404,7 +404,7 @@
             form.appendChild(input);
         }
 
-        // Append form to body and submit it
+      
         document.body.appendChild(form);
         form.submit();
     });
@@ -514,14 +514,14 @@
             console.error("Error fetching availability:", error);
         });
         }
-    // preview bill
+
 function previewBill() {
         debugger
     const roomRateId = $('#roomRate').val();
     const checkIn = $('#checkin').val();
     const checkOut = $('#checkout').val();
      const totalPrice = parseFloat($('#totalPrice').text().replace('$', ''));
-    // const selectedRoomId = $(this).data('room-id');
+
         const billDto = {
         roomId: selectedRoomId,
         roomRateId: roomRateId,
@@ -530,13 +530,13 @@ function previewBill() {
         totalPrice: totalPrice
     };
          debugger
-      // Send the DTO via a POST request
+     
     fetch("/Room/GetBillPdf", {
-        method: "POST", // Change to POST since you are sending data
+        method: "POST", 
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(billDto) // Pass DTO as the request body
+        body: JSON.stringify(billDto) 
     })
     .then(response => response.json())
     .then(data => {

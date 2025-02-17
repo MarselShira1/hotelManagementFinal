@@ -216,8 +216,12 @@
             var hPrice = parseFloat($('#' + section + 'RoomRateRangeHolidayPricing').val());
             var description = $('#' + section + 'RoomRateRangeDescription').val();
 
-            console.log("Validation values for", section, { dropDowm, startDate, endDate, wPrice, hPrice, description });
+            var start = new Date (startDate);
+            var end = new Date (endDate);
 
+
+            console.log("Validation values for", section, { dropDowm, startDate, endDate, wPrice, hPrice, description });
+            debugger;
             if (dropDowm != null && dropDowm !== '') {
                 document.getElementById(section + "RoomRateRangeRoomRateIdError").textContent = '';
             } else {
@@ -237,6 +241,22 @@
                 valid = false;
                 document.getElementById(section + "RoomRateRangeEndDateError").textContent = 'Choose an End Date';
             }
+                if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+            const today = new Date();
+             today.setHours(0, 0, 0, 0);
+
+           
+            if (start < today) {
+                valid = false;
+                document.getElementById(section + "RoomRateRangeStartDateError").textContent = 'Check‑in date cannot be in the past.';
+            }
+
+            
+            if (end <= start) {
+                valid = false;
+                document.getElementById(section + "RoomRateRangeEndDateError").textContent = 'Check‑out date must be after check‑in date.';
+            }
+        }
 
             if (!isNaN(wPrice) && wPrice > 0) {
                 document.getElementById(section + "RoomRateRangeWeekendPricingError").textContent = '';

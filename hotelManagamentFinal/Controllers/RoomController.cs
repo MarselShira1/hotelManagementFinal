@@ -52,7 +52,7 @@ namespace HotelManagement.Controllers
         {
             try
             {
-                // Check if the room exists
+               
                 var room = roomsService.DeleteRoom(id);
                 if (room == false)
                 {
@@ -62,7 +62,7 @@ namespace HotelManagement.Controllers
             }
             catch (Exception ex)
             {
-                // Log the error (optional)
+                
                 return Json(new { success = false, message = "An error occurred while deleting the room." });
             }
         }
@@ -76,7 +76,6 @@ namespace HotelManagement.Controllers
         public IActionResult CreateRoomSql(NewRoomDTO model)
         {
             try {
-                //SendEmail();
                 var isSaved = false;
             if (!ModelState.IsValid)
             {
@@ -158,10 +157,10 @@ namespace HotelManagement.Controllers
 
         public async Task<IActionResult> GenerateBill(int rezervimId)
         {
-            // Call the GenerateBillPdf method to get the PDF as a byte array
+        
             byte[] billPdf = await _billService.GenerateBillPdf(rezervimId);
 
-            // Return the PDF file as a download response
+            
             return File(billPdf, "application/pdf", "HotelBill.pdf");
         }
 

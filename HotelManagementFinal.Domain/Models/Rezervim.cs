@@ -12,6 +12,7 @@ namespace hotelManagement.Domain.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public int DhomeId { get; set; }
+        public string DhomeNumber { get; set; }
         public int RoomRateId { get; set; }
         public DateOnly CheckIn { get; set; }
         public DateOnly CheckOut { get; set; }

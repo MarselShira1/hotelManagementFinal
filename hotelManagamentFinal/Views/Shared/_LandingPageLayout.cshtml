@@ -154,6 +154,7 @@
             @{
               var userEmail = Context.Session.GetString("UserEmail");
               var userName = Context.Session.GetString("UserName");
+              var userRole = Context.Session.GetInt32("RoleId");
             }
             @if (!string.IsNullOrEmpty(userEmail))
             {
@@ -167,15 +168,18 @@
 
 
                           //  <span class="text-white" style="font-size: 16px; font-weight: bold;">Go to Profile</span>
-                            
 
+                            if (userRole == 2)
+                            {
+                                <button type="button" class="btn btn-outline-light me-3" style="margin-left: 10px;" onclick="location.href='@Url.Action("DashboardView", "Dashboard")'">
+                                    Go To Admin
+                                </button>
+                            }
 
             }
             else
             {
-             <button type="button" class="btn btn-outline-light me-3" onclick="location.href='@Url.Action("Index", "Home")'">
-             Go To Admin 
-              </button>
+              
               <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#logInModal">
                 Log In
               </button>
@@ -190,7 +194,7 @@
     </nav>
   </header>
 
-  <main role="main">
+  <main role="main" >
     @RenderBody()
   </main>
 
@@ -236,7 +240,7 @@
   </footer>
 
   <div class="modal fade" id="logInModal" tabindex="-1" aria-labelledby="logInModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="margin-top: 85px">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="logInModalLabel">Log In</h5>
@@ -266,7 +270,7 @@
   </div>
 
   <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+        <div class="modal-dialog" style="margin-top: 85px">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="signUpModalLabel">Create Account</h5>

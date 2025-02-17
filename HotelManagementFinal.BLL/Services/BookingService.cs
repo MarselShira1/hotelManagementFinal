@@ -157,14 +157,15 @@ namespace hotelManagement.BLL.Services
             var listaRezervimeve = await _bookingRepository.GetUserReservations(userId);
 
             if (listaRezervimeve == null)
-                return new List<RezervimModel>(); // Return an empty list instead of null to avoid null reference exceptions
+                return new List<RezervimModel>(); 
 
-            // Convert each entity in listaRezervimeve to a RezervimModel and return the list
+          
             return listaRezervimeve.Select(rezervim => new RezervimModel
             {
                 Id = rezervim.Id,
                 UserId = rezervim.User,
-                DhomeId = rezervim.Dhome,
+                DhomeId = rezervim.DhomeNavigation.Id,
+                DhomeNumber= rezervim.DhomeNavigation.NumerDhome,
                 RoomRateId = rezervim.RoomRate,
                 CheckIn = rezervim.CheckIn,
                 CheckOut = rezervim.CheckOut,

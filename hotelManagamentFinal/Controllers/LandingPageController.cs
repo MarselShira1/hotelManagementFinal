@@ -34,10 +34,14 @@ namespace HotelManagementISE.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var userId = HttpContext.Session.GetInt32("UserId");
+            var userRole = HttpContext.Session.GetInt32("RoleId");
+            
+
 
             ViewBag.UserName = userName;
             ViewBag.UserEmail = userEmail;
             ViewBag.UserId = userId;
+            ViewBag.UserRole = userRole;
             var roomRates = await _bookingService.GetAllRoomRatesAsync();
             ViewBag.RoomRates = roomRates;
             ViewBag.PaymentSuccess = success;

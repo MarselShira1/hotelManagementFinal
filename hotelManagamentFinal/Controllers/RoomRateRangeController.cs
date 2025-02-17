@@ -106,7 +106,7 @@ namespace HotelManagement.Controllers
                     EditRoomRateRange = editRoomRateRange
                 };
 
-                return View("RoomRateRangesView", model);
+                return View("RoomRateRangeView", model);
         }
         public IActionResult DeleteRoomRateRange(int id)
         { 

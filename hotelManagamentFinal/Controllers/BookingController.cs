@@ -41,51 +41,11 @@ namespace hotelManagement.Controllers
 
         }
 
-        //public IActionResult CreateCheckoutSession(string amount)
-        //{
-        //    var currency = "usd"; // Currency code
-        //    var successUrl = Url.Action("Success", "Home", null, Request.Scheme);
-        //    var cancelUrl = Url.Action("Cancel", "Home", null, Request.Scheme);
-        //    StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
-
-        //    var options = new SessionCreateOptions
-        //    {
-        //        PaymentMethodTypes = new List<string>
-        //{
-        //    "card"
-        //},
-        //        LineItems = new List<SessionLineItemOptions>
-        //{
-        //    new SessionLineItemOptions
-        //    {
-        //        PriceData = new SessionLineItemPriceDataOptions
-        //        {
-        //            Currency = currency,
-        //            UnitAmount = Convert.ToInt32(amount) * 100,  // Amount in smallest currency unit
-        //            ProductData = new SessionLineItemPriceDataProductDataOptions
-        //            {
-        //                Name = "Product Name",
-        //                Description = "Product Description"
-        //            }
-        //        },
-        //        Quantity = 1
-        //    }
-        //},
-        //        Mode = "payment",
-        //        SuccessUrl = successUrl,
-        //        CancelUrl = cancelUrl
-        //    };
-
-        //    var service = new SessionService();
-        //    var session = service.Create(options);
-
-        //    return Redirect(session.Url);
-        //}
 
         public  IActionResult CreateCheckoutSession1([FromBody] NewBookingDTO bookingDto)
         {
             try { 
-            var currency = "eur"; // Currency code
+            var currency = "eur";
             var successUrl = Url.Action("Success", "Booking", new
             {
                 sessionId = "{CHECKOUT_SESSION_ID}",
@@ -102,7 +62,7 @@ namespace hotelManagement.Controllers
 
                 StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
 
-                // Store necessary data in metadata
+            
                 var options = new SessionCreateOptions
                 {
                     PaymentMethodTypes = new List<string> { "card" },
@@ -113,7 +73,7 @@ namespace hotelManagement.Controllers
                     PriceData = new SessionLineItemPriceDataOptions
                     {
                         Currency = currency,
-                        UnitAmount = Convert.ToInt32(bookingDto.Price) * 100, // Amount in smallest currency unit (cents)
+                        UnitAmount = Convert.ToInt32(bookingDto.Price) * 100, 
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = "Product Name",
@@ -132,7 +92,7 @@ namespace hotelManagement.Controllers
                 var service = new SessionService();
                 var session =   service.Create(options);
 
-                // Return session URL if payment session creation is successful
+             
                 return Redirect(session.Url);
             }
             catch(Exception ex)
@@ -143,10 +103,10 @@ namespace hotelManagement.Controllers
 
 
         [HttpPost]
-        public IActionResult CreateCheckoutSession(NewBookingDTO bookingDto) // Removed [FromBody]
+        public IActionResult CreateCheckoutSession(NewBookingDTO bookingDto) 
 
         {
-            var currency = "usd"; // Currency code
+            var currency = "usd"; 
             var successUrl = Url.Action("Success", "Booking", new
             {
                 sessionId = "{CHECKOUT_SESSION_ID}",
@@ -171,7 +131,7 @@ namespace hotelManagement.Controllers
                 PriceData = new SessionLineItemPriceDataOptions
                 {
                     Currency = currency,
-                    UnitAmount = Convert.ToInt32(bookingDto.Price) * 100,  // Amount in smallest currency unit
+                    UnitAmount = Convert.ToInt32(bookingDto.Price) * 100,  
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {
                         Name = "Room Booking",
@@ -189,7 +149,7 @@ namespace hotelManagement.Controllers
             var service = new SessionService();
             var session = service.Create(options);
 
-            return Redirect(session.Url); // Ensure redirection happens here
+            return Redirect(session.Url); 
         }
 
 
@@ -282,8 +242,7 @@ namespace hotelManagement.Controllers
         public async Task<IActionResult> Rooms(bool? success)
         
         {
-            //bool paymentSuccess = HttpContext.Session.GetString("PaymentSuccess") == "true";
-            //HttpContext.Session.Remove("PaymentSuccess");
+          
             var userName = HttpContext.Session.GetString("UserName");
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -298,7 +257,7 @@ namespace hotelManagement.Controllers
             try
             {
                 var rooms = await _room.GetRoomsAsync();
-                //Console.WriteLine($" SUCCESS: Retrieved {rooms.Count()} rooms.");
+               
 
                 return View("LandingPage/Rooms",rooms);
             }
@@ -368,22 +327,21 @@ namespace hotelManagement.Controllers
 
                 AddBooking(bookingConfirmation);
 
-                // Initialize Stripe API
                 StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
 
-                // Retrieve the Stripe session using the sessionId
+                
                 var service = new SessionService();
                 var session = await service.GetAsync(sessionId);
 
-                // Check payment status
+             
                 if (session.PaymentStatus == "paid")
                 {
-                    // Retrieve metadata values
+                  
                     var checkInDate = session.Metadata["checkIn"];
                     var checkOutDate = session.Metadata["checkOut"];
                     var userEmail = session.Metadata["userEmail"];
 
-                    // Prepare email content
+                   
                     var emailSubject = "Booking Confirmation";
                     var emailBody = $@"
                 <h2>Booking Confirmation</h2>
@@ -394,15 +352,14 @@ namespace hotelManagement.Controllers
                 <p><strong>Total Price:</strong> ${session.AmountTotal / 100}</p>
                 <p>Thank you for choosing our hotel!</p>";
 
-                    // Send confirmation email
+                    
                     await _mailSenderService.SendEmailAsync(userEmail, emailSubject, emailBody);
 
-                    // You can set a flag to display success on your view
                     ViewBag.PaymentStatus = "Success";
                 }
                 else
                 {
-                    // If payment wasn't successful
+                   
                     ViewBag.PaymentStatus = "Failed";
                 }
             }
@@ -417,10 +374,9 @@ namespace hotelManagement.Controllers
                 ViewBag.PaymentStatus = "Failed";
             }
 
-            // Return to the view where you want to display the payment status
+           
             return RedirectToAction("Rooms", "LandingPage", new { success = true });
 
-            // Replace with your actual view name
         }
 
 
@@ -438,17 +394,17 @@ namespace hotelManagement.Controllers
             try { 
             var userID = HttpContext.Session.GetInt32("UserId");
 
-            if (userID.HasValue) // Properly checking if userID has a value
+            if (userID.HasValue) 
             {
-                var reservations = await _bookingService.GetUserReservations(userID.Value); // Use userID.Value since it's nullable
+                var reservations = await _bookingService.GetUserReservations(userID.Value); 
 
                 if (reservations == null || !reservations.Any())
                     return NotFound("No reservations found for this user.");
 
-                return Ok(reservations); // Return the list of reservations as JSON
+                return Ok(reservations); 
             }
 
-            return Unauthorized("User is not logged in or session has expired."); // Return 401 if no userID is found
+            return Unauthorized("User is not logged in or session has expired."); 
             }
             catch(Exception ex)
             {

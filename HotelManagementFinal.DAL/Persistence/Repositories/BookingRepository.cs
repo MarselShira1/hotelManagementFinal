@@ -113,7 +113,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
 
         public async Task<List<Rezervim>> GetUserReservations(int userId)
         {
-            return await _dbContext.Rezervime.Where(w => w.User == userId && w.Invalidated == 1).ToListAsync();
+            return await _dbContext.Rezervime.Include(r => r.DhomeNavigation).Where(w => w.User == userId && w.Invalidated == 1).ToListAsync();
         }
 
     }

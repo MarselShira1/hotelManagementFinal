@@ -17,18 +17,9 @@ public partial class HotelManagementContext : DbContext
         _configuration = configuration;
     }
 
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //    if (!optionsBuilder.IsConfigured)
-    //    {
-    //        var connectionString = _configuration.GetConnectionString("DefaultConnection");
-    //        optionsBuilder.UseSqlServer(connectionString);
-    //    }
-    //}
+ 
 
     public virtual DbSet<Action> Actions { get; set; }
-
-    //public virtual DbSet<Akomodim> Akomodims { get; set; }
 
     public virtual DbSet<Dhome> Dhomes { get; set; }
 
@@ -79,25 +70,7 @@ public partial class HotelManagementContext : DbContext
                 .HasColumnName("pershkrim");
         });
 
-        //modelBuilder.Entity<Akomodim>(entity =>
-        //{
-        //    entity.HasKey(e => e.Id).HasName("PK__Akomodim__3213E83FCC7936E6");
-
-        //    entity.ToTable("Akomodim");
-
-        //    entity.Property(e => e.Id).HasColumnName("id");
-        //    entity.Property(e => e.Adults).HasColumnName("adults");
-        //    entity.Property(e => e.Cmim)
-        //        .HasColumnType("decimal(10, 2)")
-        //        .HasColumnName("cmim");
-        //    entity.Property(e => e.CreatedOn).HasColumnType("datetime");
-        //    entity.Property(e => e.Emer)
-        //        .HasMaxLength(50)
-        //        .HasColumnName("emer");
-        //    entity.Property(e => e.Femije).HasColumnName("femije");
-        //    entity.Property(e => e.KrevatExtra).HasColumnName("krevat_extra");
-        //    entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
-        //});
+       
 
         modelBuilder.Entity<Dhome>(entity =>
         {
@@ -348,10 +321,7 @@ public partial class HotelManagementContext : DbContext
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("weekend_pricing");
 
-            //entity.HasOne(d => d.RoomRate).WithMany(p => p.RoomRateRanges)
-            //    .HasForeignKey(d => d.RoomRateId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull)
-            //    .HasConstraintName("FK__Room_Rate__room___4E88ABD4");
+         
         });
 
         modelBuilder.Entity<TipDhome>(entity =>

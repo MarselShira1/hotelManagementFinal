@@ -27,7 +27,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="editRoomFloor" class="form-label">Room Floor</label>
-                        <input type="number" id="editRoomFloor" name="RoomFloor" class="form-control" />
+                        <input type="number" id="editRoomFloor" name="RoomFloor" class="form-control" type="number" min="1" max="6" />
                     </div>
                     <div class="mb-3">
                         <label for="editRoomNumber" class="form-label">Room Number</label>
@@ -59,7 +59,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="NewRoom_room_floor" class="form-label">Room Floor:</label>
-                        <input id="NewRoom_room_floor" name="RoomFloor" class="form-control" />
+                        <input id="NewRoom_room_floor" name="RoomFloor" class="form-control" type="number" min="1" max="6" />
                     </div>
                     <div class="mb-3">
                         <label for="NewRoom_room_number" class="form-label">Room Number:</label>
@@ -110,7 +110,9 @@
                     RoomNumber: roomNumber
                 },
                 success: function (response) {
+                    debugger;
                     if (response.success) {
+                        
                         alert('Room saved successfully.');
                         $('#addRoomModal').modal('hide');
                         loadRoomData();
