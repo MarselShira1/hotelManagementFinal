@@ -430,8 +430,7 @@ namespace hotelManagement.Controllers
             return View("LandingPage/Rooms");
         }
 
-
-        }
+         
 
         [HttpGet]
         public async Task<IActionResult> GetUserReservations()
