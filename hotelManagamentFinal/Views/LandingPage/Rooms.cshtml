@@ -192,22 +192,64 @@
                         <p>Please review your details before submitting.</p>
                         <div id="bookingSummary"></div>
                         <button type="button" class="btn btn-secondary prev-step">Previous</button>
-                        <button type="submit" class="btn btn-success">Confirm Booking</button>
+                        <button type="button" class="btn btn-primary next-step">Next</button>
                     </div>
+
+                    <div class="form-step d-none" id="step-4">
+                        <h2>Invoice Preview</h2>
+
+               
+
+                        <iframe id="pdfPreview" width="100%" height="600px"></iframe>
+                        <br />
+                      
+
+                        <button type="button" class="btn btn-secondary prev-step">Previous</button>
+                        <button type="submit" class="btn btn-success">Confirm Payment</button>
+
+                    </div>
+
                 </form>
+                
             </div>
         </div>
     </div>
 </div>
+@if (ViewBag.PaymentSuccess != null && ViewBag.PaymentSuccess == true)
+{
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="paymentToast" class="toast text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        Payment was successful! Your booking has been confirmed.
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
+    let selectedRoomId = null;
+            document.addEventListener("DOMContentLoaded", function () {
+            let paymentToast = document.getElementById("paymentToast");
+            if (paymentToast) {
+                let toast = new bootstrap.Toast(paymentToast);
+                toast.show();
+            }
+        });
     $(document).ready(function () {
         const userId = "@ViewBag.UserId".trim() !== "" ? "@ViewBag.UserId" : null;
 
-        console.log("User id = " + userId);
+
+        console.log("User id = "+ userId);
         let selectedRoomId = null;
 
         $(document).on('click', '.book-room-btn', function () {
@@ -265,6 +307,10 @@
             if (nextStep.attr('id') === 'step-3') {
                 calculatePrice();
                 updateBookingSummary();
+            }
+            debugger
+            if (nextStep.attr('id') === 'step-4') {
+                previewBill();
             }
         });
 
@@ -334,40 +380,36 @@
             `);
         }
 
-        $('#bookingForm').on('submit', async function (e) {
-            e.preventDefault();
+                  $('#bookingForm').on('submit', function (e) {
+        e.preventDefault();
+        // Create a hidden form dynamically
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/Booking/CreateCheckoutSession'; // Your controller endpoint
 
-            const bookingData = {
-                roomId: selectedRoomId,
-                roomRateId: parseInt($('#roomRate').val()),
-                userId: userId,
-                checkIn: $('#checkin').val(),
-                checkOut: $('#checkout').val(),
-                price: parseFloat($('#totalPrice').text().replace('$', ''))
+        // Add required fields as hidden inputs
+        const bookingData = {
+            roomId: selectedRoomId,
+            roomRateId: parseInt($('#roomRate').val()),
+            userId: userId,
+            checkIn: $('#checkin').val(),
+            checkOut: $('#checkout').val(),
+            price: parseFloat($('#totalPrice').text().replace('$', ''))
+        };
             };
+        for (const key in bookingData) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = bookingData[key];
+            form.appendChild(input);
+        }
 
-            try {
-                const response = await fetch('/Booking/AddBooking', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(bookingData)
+        // Append form to body and submit it
+        document.body.appendChild(form);
+        form.submit();
+    });
                 });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    $('#bookingModal').modal('hide');
-                    alert('Confirmation email sent!');
-                    $('#bookingForm')[0].reset();
-                    $('.form-step').addClass('d-none');
-                    $('#step-1').removeClass('d-none');
-                } else {
-                    alert(result.errorMessage || 'Booking failed');
-                }
-            } catch (error) {
-                console.error('Booking submission error:', error);
-                alert('Error: ' + error.message);
-            }
         });
         $(document).on('click', '.close', function () {
             console.log("Closing modal via close button.");
@@ -474,5 +516,38 @@
         .catch(error => {
             console.error("Error fetching availability:", error);
         });
-    }
+
+    // preview bill
+    function previewBill() {
+        debugger
+    const roomRateId = $('#roomRate').val();
+    const checkIn = $('#checkin').val();
+    const checkOut = $('#checkout').val();
+     const totalPrice = parseFloat($('#totalPrice').text().replace('$', ''));
+    // const selectedRoomId = $(this).data('room-id');
+        const billDto = {
+        roomId: selectedRoomId,
+        roomRateId: roomRateId,
+        CheckIn: checkIn,
+        CheckOut: checkOut,
+        totalPrice: totalPrice
+    };
+         debugger
+      // Send the DTO via a POST request
+    fetch("/Room/GetBillPdf", {
+        method: "POST", // Change to POST since you are sending data
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(billDto) // Pass DTO as the request body
+    })
+    .then(response => response.json())
+    .then(data => {
+        const pdfFrame = document.getElementById("pdfPreview");
+        pdfFrame.src = "data:application/pdf;base64," + data.pdfData;
+        document.getElementById("downloadLink").href = "data:application/pdf;base64," + data.pdfData;
+    })
+    .catch(error => console.error("Error loading the bill:", error));
+}
+
 </script>

@@ -22,6 +22,7 @@ public interface _IBaseRepository<T, T1> where T : BaseEntity<T1>
     void Add(T entity);
     void Delete(T entity);
     void SaveChanges();
+    void SaveChangesAsync();
 }
 
 internal class _BaseRepository<T, T1> : _IBaseRepository<T, T1> where T : BaseEntity<T1>
@@ -51,6 +52,11 @@ public T GetById(T1 id)
     public void SaveChanges()
     {
         _dbContext.SaveChanges();
+    }
+
+    public async void SaveChangesAsync()
+    {
+       await _dbContext.SaveChangesAsync();
     }
     public void Add(T entity)
     {

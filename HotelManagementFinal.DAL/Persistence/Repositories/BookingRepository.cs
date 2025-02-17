@@ -10,7 +10,7 @@ namespace hotelManagement.DAL.Persistence.Repositories
 {
     public interface IBookingRepository
     {
-        Task AddBookingAsync(Rezervim booking);
+        Rezervim AddBookingAsync(Rezervim booking);
         Task<IEnumerable<Rezervim>> GetAllBookingsAsync();
         Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync();
         RoomRate GetRoomRateById(int roomRateId);
@@ -30,13 +30,15 @@ namespace hotelManagement.DAL.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddBookingAsync(Rezervim booking)
+        public Rezervim AddBookingAsync(Rezervim booking)
         {
-            await _dbContext.Rezervime.AddAsync(booking);
-            await _dbContext.SaveChangesAsync();
+              _dbContext.Rezervime.Add(booking);
+            _dbContext.SaveChanges();
+            return booking; // Return the saved booking entity
         }
 
-       
+
+
 
         public async Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync()
         {
