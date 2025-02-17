@@ -115,19 +115,7 @@ namespace HotelManagement.Controllers
 
             }
         }
-        [HttpGet]
-        //public async Task<IActionResult> SendEmail()
-        //{
-        //    try { 
-        //    await _mailSenderService.SendEmailAsync("selishira2017@gmail.com", "Test Subject", "This is a test email.");
-        //    return Ok("Email sent successfully!");
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        return Ok("Email sent successfully!");
-
-            }
-        }
+         
         [HttpPost]
         public async Task<IActionResult> GetBillPdf([FromBody] GenerateBillDto billDto)
         {

@@ -250,7 +250,6 @@
 
 
         console.log("User id = "+ userId);
-        let selectedRoomId = null;
 
         $(document).on('click', '.book-room-btn', function () {
             if (!userId || userId === "null" || userId === "undefined") {
@@ -380,7 +379,7 @@
             `);
         }
 
-                  $('#bookingForm').on('submit', function (e) {
+     $('#bookingForm').on('submit', function (e) {
         e.preventDefault();
         // Create a hidden form dynamically
         const form = document.createElement('form');
@@ -396,7 +395,7 @@
             checkOut: $('#checkout').val(),
             price: parseFloat($('#totalPrice').text().replace('$', ''))
         };
-            };
+           
         for (const key in bookingData) {
             const input = document.createElement('input');
             input.type = 'hidden';
@@ -409,9 +408,7 @@
         document.body.appendChild(form);
         form.submit();
     });
-                });
-        });
-        $(document).on('click', '.close', function () {
+     $(document).on('click', '.close', function () {
             console.log("Closing modal via close button.");
             $('#bookingModal').modal('hide');
         });
@@ -516,9 +513,9 @@
         .catch(error => {
             console.error("Error fetching availability:", error);
         });
-
+        }
     // preview bill
-    function previewBill() {
+function previewBill() {
         debugger
     const roomRateId = $('#roomRate').val();
     const checkIn = $('#checkin').val();
