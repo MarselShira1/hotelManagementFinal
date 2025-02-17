@@ -20,7 +20,8 @@ namespace HotelManagementFinal.BLL.Services
         IEnumerable<UserReservations> GetRezervationCount();
         public string GetUserEmailById(int userId);
 
-        //void UpdateUserRole(int userId, int roleId);
+        //   bool UpdateUserPassword(User user);
+        bool UpdatePassword(int userId, string oldPass, string newPass);
     }
 
     public class UserService : IUserService
@@ -74,6 +75,32 @@ namespace HotelManagementFinal.BLL.Services
         {
             return _userRepository.GetEmailById(userId);
         }
+
+
+
+        public bool UpdatePassword(int userId, string oldPass, string newPass)
+        {
+            var user = _userRepository.GetById(userId);
+            if (user == null)
+                return false; 
+
+            // nese i vjetri esht ok
+            if (!BCrypt.Net.BCrypt.Verify(oldPass, user.Password))
+            {
+                return false; 
+            }
+
+            // i riu dhe ruajtja
+            string hashedNewPassword = BCrypt.Net.BCrypt.HashPassword(newPass);
+            user.Password = hashedNewPassword;
+
+            _userRepository.Update(user);
+            _userRepository.SaveChanges();
+
+            return true;
+        }
+
+      
         public IEnumerable<UserReservations> GetRezervationCount()
         {
             // Retrieve the users with their reservation counts

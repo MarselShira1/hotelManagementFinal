@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using hotelManagement.DAL.Persistence;
 using hotelManagement.DAL.Persistence.Entities;
+using hotelManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using hotelManagement.Domain.Models;
 using iText.Commons.Actions.Contexts;
@@ -24,6 +25,8 @@ namespace hotelManagement.DAL.Persistence.Repositories
         public List<UserReservations> getRezervationCount();
 
 
+    
+        void Update(User user);
     }
 
     internal class UserRepository : _BaseRepository<User , int> , IUserRepository
@@ -84,6 +87,12 @@ namespace hotelManagement.DAL.Persistence.Repositories
                                    };
 
             return userReservations.ToList();
+        }
+
+        public void Update(User user)
+        {
+            _dbSet.Update(user);
+            _dbContext.SaveChanges();
         }
 
     }

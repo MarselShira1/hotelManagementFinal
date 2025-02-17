@@ -7,6 +7,8 @@ using hotelManagement.Domain.Models;
 using HotelManagementFinal.BLL.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
+using hotelManagamentFinal.Models.DTO.BillGeneration;
+using HotelManagementFinal.Domain.Models;
 using hotelManagamentFinal.Models.DTO;
 namespace HotelManagement.Controllers
 {
@@ -113,29 +115,55 @@ namespace HotelManagement.Controllers
 
             }
         }
-        [HttpGet]
-        //public async Task<IActionResult> SendEmail()
-        //{
-        //    try { 
-        //    await _mailSenderService.SendEmailAsync("selishira2017@gmail.com", "Test Subject", "This is a test email.");
-        //    return Ok("Email sent successfully!");
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        return Ok("Email sent successfully!");
+         
+        [HttpPost]
+        public async Task<IActionResult> GetBillPdf([FromBody] GenerateBillDto billDto)
+        {
+            if (billDto == null)
+            {
+                return BadRequest(new { message = "Invalid request. Bill details are required." });
+            }
 
-        //    }
-        //}
+            if (billDto.roomId <= 0)
+            {
+                return BadRequest(new { message = "Invalid Room ID." });
+            }
+
+            if (billDto.roomRateId <= 0)
+            {
+                return BadRequest(new { message = "Invalid Room Rate ID." });
+            }
+
+            if (billDto.CheckIn == default || billDto.CheckOut == default)
+            {
+                return BadRequest(new { message = "Check-in and Check-out dates are required." });
+            }
 
 
-        //public IActionResult GenerateBill(int rezervimId)
-        //{
-        //    // Call the GenerateBillPdf method to get the PDF as a byte array
-        //    byte[] billPdf = _billService.GenerateBillPdf(rezervimId);
+            var userName = HttpContext.Session.GetString("UserName");
 
-        //    // Return the PDF file as a download response
-        //    return File(billPdf, "application/pdf", "HotelBill.pdf");
-        //}
+            var generateBill = new GenerateBillModel
+            {
+                CheckIn = billDto.CheckIn,
+                CheckOut = billDto.CheckOut,
+                roomId = billDto.roomId,
+                roomRateId = billDto.roomRateId
+            };
+
+            var pdfBytes = await _billService.GenerateBillPdf(null, generateBill, userName);
+            string base64Pdf = Convert.ToBase64String(pdfBytes);
+            return Json(new { pdfData = base64Pdf });
+        }
+
+
+        public async Task<IActionResult> GenerateBill(int rezervimId)
+        {
+            // Call the GenerateBillPdf method to get the PDF as a byte array
+            byte[] billPdf = await _billService.GenerateBillPdf(rezervimId);
+
+            // Return the PDF file as a download response
+            return File(billPdf, "application/pdf", "HotelBill.pdf");
+        }
 
         public async Task<IActionResult> GetRoomList()
         {

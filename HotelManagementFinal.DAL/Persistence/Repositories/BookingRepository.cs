@@ -10,13 +10,14 @@ namespace hotelManagement.DAL.Persistence.Repositories
 {
     public interface IBookingRepository
     {
-        Task AddBookingAsync(Rezervim booking);
+        Rezervim AddBookingAsync(Rezervim booking);
         Task<IEnumerable<Rezervim>> GetAllBookingsAsync();
         Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync();
         RoomRate GetRoomRateById(int roomRateId);
         Task<Rezervim> GetRezervimById(int rezervimId);
         Task<IEnumerable<Rezervim>> GetByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end);
         Task<IEnumerable<RoomRateRange>> GetRoomRateRangesByRoomRateIdAsync(int roomRateId);
+        Task<List<Rezervim>> GetUserReservations(int userId);
         Task<List<Dhome>> GetAvailableRooms(DateOnly checkIn, DateOnly checkOut);
        
     }
@@ -30,13 +31,15 @@ namespace hotelManagement.DAL.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddBookingAsync(Rezervim booking)
+        public Rezervim AddBookingAsync(Rezervim booking)
         {
-            await _dbContext.Rezervime.AddAsync(booking);
-            await _dbContext.SaveChangesAsync();
+              _dbContext.Rezervime.Add(booking);
+            _dbContext.SaveChanges();
+            return booking; // Return the saved booking entity
         }
 
-       
+
+
 
         public async Task<IEnumerable<RoomRate>> GetAllRoomRatesAsync()
         {
@@ -105,5 +108,13 @@ namespace hotelManagement.DAL.Persistence.Repositories
                                 b.CheckOut > checkIn))
                 .ToListAsync();
         }
+
+
+
+        public async Task<List<Rezervim>> GetUserReservations(int userId)
+        {
+            return await _dbContext.Rezervime.Where(w => w.User == userId && w.Invalidated == 1).ToListAsync();
+        }
+
     }
 }
