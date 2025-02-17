@@ -5,6 +5,7 @@ using hotelManagamentFinal.Models.DTO.RoomRate;
 using HotelManagement.Models;
 using hotelManagamentFinal.Models.DTO;
 using hotelManagement.DAL.Persistence.Entities;
+using BCrypt.Net;
 
 namespace hotelManagamentFinal.Controllers
 {
@@ -25,6 +26,8 @@ namespace hotelManagamentFinal.Controllers
 
             // var users = await _userService.GetAllUsersAsync();
             var users =  _userService.GetRezervationCount() ;
+
+
 
             if (!users.Any())  
             {
@@ -48,5 +51,40 @@ namespace hotelManagamentFinal.Controllers
            
             return View(model); 
         }
+
+
+        public IActionResult ResetPassword(string oldPass, string newPass)
+        {
+            var userID = HttpContext.Session.GetInt32("UserId");
+
+            if (!userID.HasValue)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+
+            var user = _userService.GetUserById(userID.Value);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            bool isPasswordUpdated = _userService.UpdatePassword(userID.Value, oldPass, newPass);
+
+            if (!isPasswordUpdated)
+            {
+                return BadRequest("Failed to update password. Check old password.");
+            }
+
+            return Ok("Password updated successfully.");
+        }
+
+
+
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Auth");
+        }
     }
-}
+    }

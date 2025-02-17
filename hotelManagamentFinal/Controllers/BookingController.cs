@@ -15,6 +15,7 @@ using HotelManagementFinal.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 using HotelManagement.Models;
+using iText.StyledXmlParser.Node;
 
 namespace hotelManagement.Controllers
 {
@@ -429,6 +430,32 @@ namespace hotelManagement.Controllers
             return View("LandingPage/Rooms");
         }
 
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserReservations()
+        {
+            try { 
+            var userID = HttpContext.Session.GetInt32("UserId");
+
+            if (userID.HasValue) // Properly checking if userID has a value
+            {
+                var reservations = await _bookingService.GetUserReservations(userID.Value); // Use userID.Value since it's nullable
+
+                if (reservations == null || !reservations.Any())
+                    return NotFound("No reservations found for this user.");
+
+                return Ok(reservations); // Return the list of reservations as JSON
+            }
+
+            return Unauthorized("User is not logged in or session has expired."); // Return 401 if no userID is found
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
 
     }
 }

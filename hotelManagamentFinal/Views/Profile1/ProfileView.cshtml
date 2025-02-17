@@ -1,0 +1,195 @@
+﻿@model hotelManagamentFinal.Models1.ProfileViewModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4 rounded border-0 text-center" style="background: linear-gradient(135deg, #ffffff, #f0f0f0);">
+                <div class="d-flex flex-column align-items-center">
+                  
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle shadow-sm" alt="User Profile" width="120">
+
+                    <div class="auth-section">
+                        @{
+                            var userEmail = Context.Session.GetString("UserEmail");
+                            var userName = Context.Session.GetString("UserName");
+                        }
+                        @if (!string.IsNullOrEmpty(userEmail))
+                        {
+                            <h3 class="fw-bold mt-3 text-primary"> @userName's Profile!</h3>
+                        }
+                    </div>
+                </div>
+
+               
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <button class="btn custom-btn-blue" onclick="showBookings()">
+                        <i class="bi bi-journal-bookmark"></i> Bookings
+                    </button>
+                    <button class="btn custom-btn-yellow" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        <i class="bi bi-key-fill"></i> Change Password
+                    </button>
+                    <button class="btn custom-btn-red" onclick="location.href='@Url.Action("Logout", "Auth")'">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </div>
+
+                
+                <div id="bookingsSection" class="mt-4" style="display:none;">
+                    <h4 class="fw-bold text-center text-dark">📅 Your Bookings</h4>
+                    <table class="table table-striped table-hover text-center mt-3">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Room</th>
+                                <th>Check-In</th>
+                                <th>Check-Out</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title" id="changePasswordModalLabel">🔑 Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    @Html.AntiForgeryToken()
+                    <input type="password" id="currentPassword" class="form-control mb-2" placeholder="Current Password" required>
+                    <input type="password" id="newPassword" class="form-control mb-2" placeholder="New Password" required>
+                    <input type="password" id="confirmPassword" class="form-control mb-2" placeholder="Confirm Password" required>
+                    <button type="submit" class="btn btn-success w-100">💾 Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    .custom-btn-blue {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+        .custom-btn-blue:hover {
+            background: #0056b3;
+            box-shadow: 0px 4px 10px rgba(0, 0, 255, 0.2);
+        }
+
+    .custom-btn-yellow {
+        background: linear-gradient(135deg, #ffcc00, #ff9900);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+        .custom-btn-yellow:hover {
+            background: #ff9900;
+            box-shadow: 0px 4px 10px rgba(255, 204, 0, 0.2);
+        }
+
+    .custom-btn-red {
+        background: linear-gradient(135deg, #dc3545, #b30000);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+        .custom-btn-red:hover {
+            background: #b30000;
+            box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.2);
+        }
+</style>
+
+<script>
+    function showBookings() {
+        $("#bookingsSection").fadeIn();
+    }
+
+    $(document).ready(function () {
+        loadUserReservations();
+
+        $("#changePasswordForm").submit(function (e) {
+            e.preventDefault();
+
+            var oldPass = $("#currentPassword").val();
+            var newPass = $("#newPassword").val();
+            var confirmPass = $("#confirmPassword").val();
+
+            if (newPass !== confirmPass) {
+                alert("New password and confirm password do not match.");
+                return;
+            }
+
+            $.ajax({
+                url: "/User/ResetPassword",
+                type: "POST",
+                data: { oldPass: oldPass, newPass: newPass },
+                success: function (response) {
+                    alert(response);
+                    $("#changePasswordForm")[0].reset();
+                    $("#changePasswordModal").modal('hide');
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+    });
+
+    async function loadUserReservations() {
+        try {
+            const response = await fetch('/Booking/GetUserReservations');
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch reservations');
+            }
+
+            const reservations = await response.json();
+            const tableBody = $("table tbody");
+            tableBody.empty();
+
+            if (reservations.length === 0) {
+                tableBody.append(`<tr><td colspan="4" class="text-center text-muted">No reservations found</td></tr>`);
+                return;
+            }
+
+            reservations.forEach(reservation => {
+                const row = `
+                    <tr>
+                        <td>${reservation.id}</td>
+                        <td>${reservation.dhomeId}</td>
+                        <td>${new Date(reservation.checkIn).toLocaleDateString()}</td>
+                        <td>${new Date(reservation.checkOut).toLocaleDateString()}</td>
+                    </tr>`;
+                tableBody.append(row);
+            });
+
+        } catch (error) {
+            console.error("Error fetching reservations:", error);
+        }
+    }
+</script>

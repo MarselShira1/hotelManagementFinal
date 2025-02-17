@@ -19,6 +19,7 @@ namespace hotelManagement.BLL.Services
         Fature AddBill(int rezervimId);
         RezervimModel AddBookingAsync(Rezervim booking);
         Task<List<CreateRoom>> GetAvailableRooms(DateOnly checkinDate, DateOnly checkoutDate);
+        Task<List<RezervimModel>> GetUserReservations(int userId);
     }
 
     public class BookingService : IBookingService
@@ -149,6 +150,31 @@ namespace hotelManagement.BLL.Services
             };
 
         }
+
+
+        public async Task<List<RezervimModel>> GetUserReservations(int userId)
+        {
+            var listaRezervimeve = await _bookingRepository.GetUserReservations(userId);
+
+            if (listaRezervimeve == null)
+                return new List<RezervimModel>(); // Return an empty list instead of null to avoid null reference exceptions
+
+            // Convert each entity in listaRezervimeve to a RezervimModel and return the list
+            return listaRezervimeve.Select(rezervim => new RezervimModel
+            {
+                Id = rezervim.Id,
+                UserId = rezervim.User,
+                DhomeId = rezervim.Dhome,
+                RoomRateId = rezervim.RoomRate,
+                CheckIn = rezervim.CheckIn,
+                CheckOut = rezervim.CheckOut,
+                Cmim = rezervim.Cmim,
+                CreatedOn = rezervim.CreatedOn,
+                ModifiedOn = rezervim.ModifiedOn,
+                Invalidated = (byte)rezervim.Invalidated
+            }).ToList();
+        }
+
 
         public async Task<IEnumerable<Rezervim>> GetBookingsByRoomAndDateRangeAsync(int roomId, DateOnly start, DateOnly end)
         {

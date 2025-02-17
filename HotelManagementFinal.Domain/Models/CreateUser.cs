@@ -16,6 +16,7 @@ namespace hotelManagement.Domain.Models
         public DateTime? CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public bool Invalidated { get; set; }
+        public string Password { get; set; }
     }
 
     public class UserReservations
